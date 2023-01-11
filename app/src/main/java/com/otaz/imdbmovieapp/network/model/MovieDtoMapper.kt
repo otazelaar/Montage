@@ -7,29 +7,21 @@ class MovieDtoMapper : DomainMapper<MovieDto, Movie> {
 
     override fun mapToDomainModel(model: MovieDto): Movie {
         return Movie(
-            crew = model.crew,
-            fullTitle = model.fullTitle,
             id = model.id,
-            imDbRating = model.imDbRating,
-            imDbRatingCount = model.imDbRatingCount,
-            image = model.image,
-            rank = model.rank,
+            resultType = model.resultType,
+            imageURL = model.imageURL,
             title = model.title,
-            year = model.year,
+            description = model.description,
         )
     }
 
     override fun mapFromDomainModel(domainModel: Movie): MovieDto {
         return MovieDto(
-            crew = domainModel.crew,
-            fullTitle = domainModel.fullTitle,
             id = domainModel.id,
-            imDbRating = domainModel.imDbRating,
-            imDbRatingCount = domainModel.imDbRatingCount,
-            image = domainModel.image,
-            rank = domainModel.rank,
+            resultType = domainModel.resultType,
+            imageURL = domainModel.imageURL,
             title = domainModel.title,
-            year = domainModel.year,
+            description = domainModel.description,
         )
     }
 

@@ -9,12 +9,12 @@ class MovieRepositoryImpl(
     private val mapper: MovieDtoMapper,
 ): MovieRepository {
     override suspend fun search(apikey: String, query: String): List<Movie> {
-        val result = movieService.search(apikey, query).movies
+        val result = movieService.search(apikey = apikey, query = query).movies
         return mapper.toDomainList(result)
     }
 
     override suspend fun get(apikey: String, id: String): Movie {
-        val result = movieService.get(apikey, id)
+        val result = movieService.get(apikey = apikey, id = id)
         return mapper.mapToDomainModel(result)
     }
 }

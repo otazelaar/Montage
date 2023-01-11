@@ -22,6 +22,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.otaz.imdbmovieapp.R
+import com.otaz.imdbmovieapp.network.MovieService
 import com.otaz.imdbmovieapp.util.TAG
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -36,6 +37,7 @@ class MovieListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         return ComposeView(requireContext()).apply {
             setContent {
 
@@ -44,7 +46,7 @@ class MovieListFragment : Fragment() {
                 val movies = viewModel.movies.value
 
                 for (movie in movies){
-                    Log.d(TAG, "MovieListFragment: ${movie.fullTitle}")
+                    Log.d(TAG, "MovieListFragment: ${movie.title}")
                 }
 
                 Column(

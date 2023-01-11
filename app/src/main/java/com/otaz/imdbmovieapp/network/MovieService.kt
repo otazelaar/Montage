@@ -9,11 +9,11 @@ import retrofit2.http.Query
 interface MovieService {
 
     /**
-     * Search for the a movie
+     * Search for a movie using an expression
      */
     @GET("SearchMovie")
     suspend fun search(
-        @Header("apikey") apikey: String,
+        @Query("apikey") apikey: String,
         @Query("query") query: String,
     ): MovieSearchResponse
 

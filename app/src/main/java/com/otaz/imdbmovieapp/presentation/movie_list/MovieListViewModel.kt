@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.otaz.imdbmovieapp.domain.model.Movie
 import com.otaz.imdbmovieapp.network.model.MovieDtoMapper
 import com.otaz.imdbmovieapp.repository.MovieRepository
+import com.otaz.imdbmovieapp.repository.MovieRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,7 +21,7 @@ class MovieListViewModel @Inject constructor(
     @Named("api_key") private val apiKey: String
 ): ViewModel() {
 
-    val movies: MutableState<List<Movie>> = mutableStateOf(listOf())
+    val movies: MutableState<List<Movie>> = mutableStateOf(ArrayList())
 
     init {
         viewModelScope.launch {
