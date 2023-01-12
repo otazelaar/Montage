@@ -38,7 +38,7 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    @Named("api_key")
+    @Named("apiKey")
     fun provideApiKey(): String{
         return "k_ek2dl3yz"
     }

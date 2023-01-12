@@ -8,8 +8,8 @@ class MovieRepositoryImpl(
     private val movieService: MovieService,
     private val mapper: MovieDtoMapper,
 ): MovieRepository {
-    override suspend fun search(apikey: String, query: String): List<Movie> {
-        val result = movieService.search(apikey = apikey, query = query).movies
+    override suspend fun search(apikey: String, expression: String): List<Movie> {
+        val result = movieService.search(apikey = apikey, expression = expression).movies
         return mapper.toDomainList(result)
     }
 
