@@ -13,7 +13,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.otaz.imdbmovieapp.R
 
-const val DEFAULT_RECIPE_IMAGE = R.drawable.movie_projector
+const val DEFAULT_MOVIE_IMAGE = R.drawable.movie_projector
 
 @SuppressLint("UnrememberedMutableState")
 @Composable

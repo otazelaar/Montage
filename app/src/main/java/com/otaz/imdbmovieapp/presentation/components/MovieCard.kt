@@ -11,13 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.unit.dp
-import com.otaz.imdbmovieapp.R
 import com.otaz.imdbmovieapp.domain.model.Movie
-import com.otaz.imdbmovieapp.util.DEFAULT_RECIPE_IMAGE
+import com.otaz.imdbmovieapp.util.DEFAULT_MOVIE_IMAGE
 import com.otaz.imdbmovieapp.util.loadPicture
 
 @Composable
@@ -38,7 +34,7 @@ fun MovieCard(
     ) {
         Column {
             movie.imageURL.let { url ->
-                val image = loadPicture(url = url, defaultImage = DEFAULT_RECIPE_IMAGE).value
+                val image = loadPicture(url = url, defaultImage = DEFAULT_MOVIE_IMAGE).value
 
                 image?.let { img ->
                     Image(
@@ -46,7 +42,7 @@ fun MovieCard(
                         contentDescription = "movie image",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(225.dp),
+                            .height(580.dp),
                         contentScale = ContentScale.Crop
                     )
                 }
@@ -62,7 +58,7 @@ fun MovieCard(
                         modifier = Modifier
                             .fillMaxWidth(0.70f)
                             .wrapContentWidth(Alignment.Start),
-                        style = MaterialTheme.typography.h5
+                        style = MaterialTheme.typography.h3
                     )
                     Text(
                         text = movie.resultType,
@@ -70,7 +66,7 @@ fun MovieCard(
                             .fillMaxWidth()
                             .wrapContentWidth(Alignment.End)
                             .align(Alignment.CenterVertically),
-                        style = MaterialTheme.typography.h6
+                        style = MaterialTheme.typography.h5
                     )
                 }
             }
