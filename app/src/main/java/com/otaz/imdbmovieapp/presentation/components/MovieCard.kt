@@ -5,10 +5,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -60,13 +62,20 @@ fun MovieCard(
                             .wrapContentWidth(Alignment.Start),
                         style = MaterialTheme.typography.h3
                     )
+                    val rating = movie.imdbRating
+
                     Text(
-                        text = movie.resultType,
+                        text = "IMDB $rating",
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentWidth(Alignment.End)
                             .align(Alignment.CenterVertically),
-                        style = MaterialTheme.typography.h5
+                        style = MaterialTheme.typography.h5,
+                        color = if((rating != null) && (rating.toDouble() >= 7.0)) {
+                            Color.Green
+                        } else {
+                            Color.Red
+                        }
                     )
                 }
             }

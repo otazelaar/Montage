@@ -6,6 +6,7 @@ import com.otaz.imdbmovieapp.network.responses.MovieSearchResponse
 import com.otaz.imdbmovieapp.network.responses.PosterResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MovieService {
@@ -13,11 +14,12 @@ interface MovieService {
     /**
      * Search for a movie using an expression
      */
-    @GET("SearchAll")
+    @GET("AdvancedSearch")
     suspend fun search(
         @Query("apikey") apikey: String,
-        @Query("expression") expression: String,
-    ): MovieSearchResponse
+        @Query("title") expression: String,
+        @Query("count") count: String,
+        ): MovieSearchResponse
 
     /**
      * Get movie or series poster using movie id

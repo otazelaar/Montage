@@ -8,7 +8,7 @@ class MovieDtoMapper : DomainMapper<MovieDto, Movie> {
     override fun mapToDomainModel(model: MovieDto): Movie {
         return Movie(
             id = model.id,
-            resultType = model.resultType,
+            imdbRating = model.imdbRating,
             imageURL = model.imageURL,
             title = model.title,
             description = model.description,
@@ -18,7 +18,7 @@ class MovieDtoMapper : DomainMapper<MovieDto, Movie> {
     override fun mapFromDomainModel(domainModel: Movie): MovieDto {
         return MovieDto(
             id = domainModel.id,
-            resultType = domainModel.resultType,
+            imdbRating = domainModel.imdbRating,
             imageURL = domainModel.imageURL,
             title = domainModel.title,
             description = domainModel.description,

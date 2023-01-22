@@ -47,7 +47,9 @@ class MovieListFragment : Fragment() {
                     val movies = viewModel.movies.value
                     val loading = viewModel.loading.value
 
-                    // RememberSacffoldState will create a scaffold state object and persist across recompositions
+                    val page = viewModel.page.value
+
+                    // rememberSacffoldState will create a scaffold state object and persist across recompositions
                     val scaffoldState = rememberScaffoldState()
 
                     Scaffold(
@@ -83,7 +85,7 @@ class MovieListFragment : Fragment() {
                                 .fillMaxSize()
                                 .background(color = MaterialTheme.colors.surface)
                         ) {
-                            if (loading) {
+                            if (loading && movies.isEmpty()) {
                                 ShimmerMovieCardItem(
                                     imageHeight = 250.dp,
                                     padding = 8.dp
@@ -93,6 +95,10 @@ class MovieListFragment : Fragment() {
                                     itemsIndexed(
                                         items = movies
                                     ){ index, movie ->
+                                        viewModel.onChangeMovieScrollPosition(index)
+                                        if((index + 1) >= (page * PAGE_SIZE) && !loading){
+                                            viewModel.nextPage()
+                                        }
                                         MovieCard(movie = movie, onClick = {})
                                     }
                                 }

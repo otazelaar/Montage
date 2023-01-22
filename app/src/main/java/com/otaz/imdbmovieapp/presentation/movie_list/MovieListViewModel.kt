@@ -1,20 +1,22 @@
 package com.otaz.imdbmovieapp.presentation.movie_list
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.otaz.imdbmovieapp.domain.model.Movie
 import com.otaz.imdbmovieapp.domain.model.Poster
 import com.otaz.imdbmovieapp.repository.MovieRepository
 import com.otaz.imdbmovieapp.repository.PosterRepository
+import com.otaz.imdbmovieapp.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
+
+const val PAGE_SIZE = 30
 
 @HiltViewModel
 class MovieListViewModel @Inject constructor(
@@ -35,9 +37,13 @@ class MovieListViewModel @Inject constructor(
 
     val loading = mutableStateOf(false)
 
+    // Pagination
+    val page = mutableStateOf(1)
+    private var movieListScrollPosition = 0
+
     init {
         newSearch()
-        getPosterByID()
+//        getPosterByID()
     }
 
     fun newSearch(){
@@ -50,11 +56,52 @@ class MovieListViewModel @Inject constructor(
             val result = repository.search(
                 apikey = apiKey,
                 expression = expression.value,
+                count = (page.value * PAGE_SIZE).toString(),
             )
             movies.value = result
             loading.value = false
         }
     }
+
+    fun nextPage(){
+        viewModelScope.launch {
+            // Prevent duplicate events due to recompose happening too quickly
+            if((movieListScrollPosition + 1) >= (page.value * PAGE_SIZE)){
+                loading.value = true
+                incrementPage()
+                Log.d(TAG, "nextPage: triggered: ${page.value}")
+
+                if (page.value > 1){
+                    val result = repository.search(
+                        apikey = apiKey,
+                        expression = expression.value,
+                        count = (page.value * PAGE_SIZE).toString(),
+                    )
+                    Log.d(TAG, "nextPage: ${result}")
+                    appendMovies(result)
+                }
+                loading.value = false
+            }
+        }
+    }
+
+    /**
+     * Append new movies to the current list of movies
+     */
+    private fun appendMovies(movies: List<Movie>){
+        val currentList = ArrayList(this.movies.value)
+        currentList.addAll(movies)
+        this.movies.value = currentList
+    }
+
+    private fun incrementPage(){
+        page.value = page.value + 1
+    }
+
+    fun onChangeMovieScrollPosition(position: Int){
+        movieListScrollPosition = position
+    }
+
 
     fun getPosterByID(){
         viewModelScope.launch {
@@ -68,8 +115,13 @@ class MovieListViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Called when a new search is executed
+     */
     private fun resetSearchState(){
         movies.value = listOf()
+        page.value = 1
+        onChangeMovieScrollPosition(0)
         if(selectedCategory.value?.value != expression.value)
             clearSelectedCategory()
     }
