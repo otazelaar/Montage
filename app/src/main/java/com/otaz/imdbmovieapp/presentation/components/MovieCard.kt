@@ -73,7 +73,9 @@ fun MovieCard(
                         style = MaterialTheme.typography.h5,
                         color = if((rating != null) && (rating.toDouble() >= 7.0)) {
                             Color.Green
-                        } else {
+                        }else if((rating != null) && (rating.toDouble() < 7.0) && (rating.toDouble() > 5.0)) {
+                            Color.Yellow
+                        }else{
                             Color.Red
                         }
                     )

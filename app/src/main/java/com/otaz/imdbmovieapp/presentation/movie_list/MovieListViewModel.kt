@@ -3,13 +3,16 @@ package com.otaz.imdbmovieapp.presentation.movie_list
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.otaz.imdbmovieapp.domain.model.Movie
 import com.otaz.imdbmovieapp.domain.model.Poster
+import com.otaz.imdbmovieapp.presentation.movie_list.MovieListEvent.*
 import com.otaz.imdbmovieapp.repository.MovieRepository
 import com.otaz.imdbmovieapp.repository.PosterRepository
 import com.otaz.imdbmovieapp.util.TAG
+import dagger.assisted.Assisted
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -18,11 +21,17 @@ import javax.inject.Named
 
 const val PAGE_SIZE = 30
 
+const val STATE_KEY_PAGE = "recipe.state.page.key"
+const val STATE_KEY_QUERY = "recipe.state.query.key"
+const val STATE_KEY_LIST_POSITION = "recipe.state.query.list_position"
+const val STATE_KEY_SELECTED_CATEGORY = "recipe.state.query.selected_category"
+
 @HiltViewModel
 class MovieListViewModel @Inject constructor(
     private val repository: MovieRepository,
     private val repositoryPoster: PosterRepository,
-    @Named("apiKey") private val apiKey: String
+    @Named("apiKey") private val apiKey: String,
+    private val savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
     val expression = mutableStateOf("")
@@ -42,46 +51,96 @@ class MovieListViewModel @Inject constructor(
     private var movieListScrollPosition = 0
 
     init {
-        newSearch()
-//        getPosterByID()
-    }
+        savedStateHandle.get<Int>(STATE_KEY_PAGE)?.let { p ->
+            Log.d(TAG, "restoring page: ${p}")
+            setPage(p)
+        }
+        savedStateHandle.get<String>(STATE_KEY_QUERY)?.let { q ->
+            setQuery(q)
+        }
+        savedStateHandle.get<Int>(STATE_KEY_LIST_POSITION)?.let { p ->
+            Log.d(TAG, "restoring scroll position: ${p}")
+            setListScrollPosition(p)
+        }
+        savedStateHandle.get<MovieCategory>(STATE_KEY_SELECTED_CATEGORY)?.let { c ->
+            setSelectedCategory(c)
+        }
 
-    fun newSearch(){
-        viewModelScope.launch {
-
-            loading.value = true
-            resetSearchState()
-            delay(2000)
-
-            val result = repository.search(
-                apikey = apiKey,
-                expression = expression.value,
-                count = (page.value * PAGE_SIZE).toString(),
-            )
-            movies.value = result
-            loading.value = false
+        // Were they doing something before the process died?
+        if(movieListScrollPosition != 0){
+            onTriggerEvent(RestoreStateEvent)
+        }
+        else{
+            onTriggerEvent(NewSearchEvent)
         }
     }
 
-    fun nextPage(){
+    fun onTriggerEvent(event: MovieListEvent){
         viewModelScope.launch {
-            // Prevent duplicate events due to recompose happening too quickly
-            if((movieListScrollPosition + 1) >= (page.value * PAGE_SIZE)){
-                loading.value = true
-                incrementPage()
-                Log.d(TAG, "nextPage: triggered: ${page.value}")
-
-                if (page.value > 1){
-                    val result = repository.search(
-                        apikey = apiKey,
-                        expression = expression.value,
-                        count = (page.value * PAGE_SIZE).toString(),
-                    )
-                    Log.d(TAG, "nextPage: ${result}")
-                    appendMovies(result)
+            try {
+                when(event){
+                    is NewSearchEvent -> {
+                        newSearch()
+                    }
+                    is NextPageEvent -> {
+                        nextPage()
+                    }
+                    is RestoreStateEvent -> {
+                        restoreState()
+                    }
                 }
+            }catch (e: Exception){
+                Log.e(TAG, "onTriggerEvent: Exception ${e}, ${e.cause}")
+            }
+        }
+    }
+
+    private suspend fun restoreState(){
+        loading.value = true
+        // Must retrieve each page of results.
+        val results: MutableList<Movie> = mutableListOf()
+        for(p in 1..page.value){
+            Log.d(TAG, "restoreState: page: ${p}, query: ${expression.value}")
+            val result = repository.search(apikey = apiKey, expression = expression.value, count = expression.value )
+            results.addAll(result)
+            if(p == page.value){ // done
+                movies.value = results
                 loading.value = false
             }
+        }
+    }
+
+    private suspend fun newSearch(){
+        loading.value = true
+        resetSearchState()
+        delay(2000)
+
+        val result = repository.search(
+            apikey = apiKey,
+            expression = expression.value,
+            count = (page.value * PAGE_SIZE).toString(),
+        )
+        movies.value = result
+        loading.value = false
+    }
+
+    private suspend fun nextPage(){
+        // Prevent duplicate events due to recompose happening too quickly
+        if((movieListScrollPosition + 1) >= (page.value * PAGE_SIZE)){
+            loading.value = true
+            incrementPage()
+            Log.d(TAG, "nextPage: triggered: ${page.value}")
+
+            if (page.value > 1){
+                val result = repository.search(
+                    apikey = apiKey,
+                    expression = expression.value,
+                    count = (page.value * PAGE_SIZE).toString(),
+                )
+                Log.d(TAG, "nextPage: ${result}")
+                appendMovies(result)
+            }
+            loading.value = false
         }
     }
 
@@ -95,13 +154,12 @@ class MovieListViewModel @Inject constructor(
     }
 
     private fun incrementPage(){
-        page.value = page.value + 1
+        setPage(page.value + 1)
     }
 
     fun onChangeMovieScrollPosition(position: Int){
-        movieListScrollPosition = position
+        setListScrollPosition(position = position)
     }
-
 
     fun getPosterByID(){
         viewModelScope.launch {
@@ -127,20 +185,48 @@ class MovieListViewModel @Inject constructor(
     }
 
     private fun clearSelectedCategory(){
+        setSelectedCategory(null)
         selectedCategory.value = null
     }
 
     fun onExpressionChanged(expression: String){
-        this.expression.value = expression
+        setQuery(expression)
     }
 
     fun onSelectedCategoryChanged(category: String){
         val newCategory = getMovieCategory(category)
-        selectedCategory.value = newCategory
+        setSelectedCategory(newCategory)
         onExpressionChanged(category)
     }
 
     fun onChangedCategoryScrollPosition(position: Int){
         categoryScrollPosition = position
+    }
+
+    /**
+     * The following functions are for reading and writing to the savedStateHandle in the case of process death.
+     * This allows us to restore the state of the the user's experience in the app. For example, it saves the of the scroll
+     * position on the list, the page of the list for pagination, the selected category chip, and the expression entered into
+     * the search input.
+     */
+
+    private fun setListScrollPosition(position: Int){
+        movieListScrollPosition = position
+        savedStateHandle.set(STATE_KEY_LIST_POSITION, position)
+    }
+
+    private fun setPage(page: Int){
+        this.page.value = page
+        savedStateHandle.set(STATE_KEY_PAGE, page)
+    }
+
+    private fun setSelectedCategory(category: MovieCategory?){
+        selectedCategory.value = category
+        savedStateHandle.set(STATE_KEY_SELECTED_CATEGORY, category)
+    }
+
+    private fun setQuery(query: String){
+        this.expression.value = query
+        savedStateHandle.set(STATE_KEY_QUERY, query)
     }
 }

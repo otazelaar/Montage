@@ -1,6 +1,7 @@
 package com.otaz.imdbmovieapp.di
 
 import android.content.Context
+import androidx.lifecycle.SavedStateHandle
 import com.otaz.imdbmovieapp.network.MovieService
 import dagger.Module
 import dagger.Provides

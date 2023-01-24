@@ -20,6 +20,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.otaz.imdbmovieapp.presentation.components.*
 import com.otaz.imdbmovieapp.presentation.components.util.SnackbarController
+import com.otaz.imdbmovieapp.presentation.movie_list.MovieListEvent.NewSearchEvent
+import com.otaz.imdbmovieapp.presentation.movie_list.MovieListEvent.NextPageEvent
 import com.otaz.imdbmovieapp.presentation.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -67,7 +69,7 @@ class MovieListFragment : Fragment() {
                                             )
                                         }
                                     }else{
-                                        viewModel.newSearch()
+                                        viewModel.onTriggerEvent(NewSearchEvent)
                                     }
                                 },
                                 keyboardController = keyboardController,
@@ -97,7 +99,7 @@ class MovieListFragment : Fragment() {
                                     ){ index, movie ->
                                         viewModel.onChangeMovieScrollPosition(index)
                                         if((index + 1) >= (page * PAGE_SIZE) && !loading){
-                                            viewModel.nextPage()
+                                            viewModel.onTriggerEvent(NextPageEvent)
                                         }
                                         MovieCard(movie = movie, onClick = {})
                                     }
