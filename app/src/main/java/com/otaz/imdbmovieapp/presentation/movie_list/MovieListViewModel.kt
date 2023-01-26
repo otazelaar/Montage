@@ -48,7 +48,7 @@ class MovieListViewModel @Inject constructor(
 
     // Pagination
     val page = mutableStateOf(1)
-    private var movieListScrollPosition = 0
+    var movieListScrollPosition = 0
 
     init {
         savedStateHandle.get<Int>(STATE_KEY_PAGE)?.let { p ->
@@ -66,7 +66,7 @@ class MovieListViewModel @Inject constructor(
             setSelectedCategory(c)
         }
 
-        // Were they doing something before the process died?
+//         Were they doing something before the process died?
         if(movieListScrollPosition != 0){
             onTriggerEvent(RestoreStateEvent)
         }
@@ -113,7 +113,6 @@ class MovieListViewModel @Inject constructor(
     private suspend fun newSearch(){
         loading.value = true
         resetSearchState()
-        delay(2000)
 
         val result = repository.search(
             apikey = apiKey,
@@ -136,6 +135,8 @@ class MovieListViewModel @Inject constructor(
                     apikey = apiKey,
                     expression = expression.value,
                     count = (page.value * PAGE_SIZE).toString(),
+                    // api is NOT calling the next set of 30 movies. it is calling the original 30 plus 30 more.
+                    // the paging feature on Mitch's api is different from mine. Each page number is a new set of Recipes in his API.
                 )
                 Log.d(TAG, "nextPage: ${result}")
                 appendMovies(result)
@@ -180,8 +181,7 @@ class MovieListViewModel @Inject constructor(
         movies.value = listOf()
         page.value = 1
         onChangeMovieScrollPosition(0)
-        if(selectedCategory.value?.value != expression.value)
-            clearSelectedCategory()
+        if(selectedCategory.value?.value != expression.value) clearSelectedCategory()
     }
 
     private fun clearSelectedCategory(){

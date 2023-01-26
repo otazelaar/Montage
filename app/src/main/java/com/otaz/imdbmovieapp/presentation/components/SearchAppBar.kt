@@ -16,12 +16,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.otaz.imdbmovieapp.presentation.movie_list.MovieCategory
 import com.otaz.imdbmovieapp.presentation.movie_list.getAllMovieCategories
 import kotlinx.coroutines.launch
@@ -82,6 +84,7 @@ fun SearchAppBar(
 
             val scrollState = rememberScrollState()
             val coroutineScope = rememberCoroutineScope()
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

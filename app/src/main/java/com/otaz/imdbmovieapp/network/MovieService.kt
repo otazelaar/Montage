@@ -22,6 +22,15 @@ interface MovieService {
         ): MovieSearchResponse
 
     /**
+     * Return a movie by its specific ID
+     */
+    @GET("Title")
+    suspend fun get(
+        @Query("apikey") apikey: String,
+        @Query("id") id: String,
+    ): MovieDto
+
+    /**
      * Get movie or series poster using movie id
      */
     @GET("Posters")
@@ -29,15 +38,5 @@ interface MovieService {
         @Query("apikey") apikey: String,
         @Query("id") id: String,
     ): PosterResponse
-
-
-    /**
-     * Return a movie by its specific ID
-     */
-    @GET("Title")
-    suspend fun get(
-        @Header("apikey") apikey: String,
-        @Query("id") id: String,
-    ): MovieDto
 
 }

@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun DrawShimmerCard(
+fun DrawShimmerMovieListCard(
     imageHeight: Dp,
     padding:Dp,
     background: Brush

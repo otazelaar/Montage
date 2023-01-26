@@ -5,19 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.otaz.imdbmovieapp.presentation.components.*
 import com.otaz.imdbmovieapp.presentation.components.util.SnackbarController
 import com.otaz.imdbmovieapp.presentation.movie_list.MovieListEvent.NewSearchEvent
@@ -42,18 +39,22 @@ class MovieListFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                AppTheme {
-                    val keyboardController = LocalSoftwareKeyboardController.current
-                    // Anytime [val movies: MutableState<List<Movie>>] from [MovieListFragment] changes, this value below
-                    // [movies] will be updated here and in any composable that uses this value.
-                    val movies = viewModel.movies.value
-                    val loading = viewModel.loading.value
 
-                    val page = viewModel.page.value
+                val keyboardController = LocalSoftwareKeyboardController.current
+                // Anytime [val movies: MutableState<List<Movie>>] from [MovieListFragment] changes, this value below
+                // [movies] will be updated here and in any composable that uses this value.
+                val movies = viewModel.movies.value
+                val loading = viewModel.loading.value
 
-                    // rememberSacffoldState will create a scaffold state object and persist across recompositions
-                    val scaffoldState = rememberScaffoldState()
+                val page = viewModel.page.value
 
+                // rememberSacffoldState will create a scaffold state object and persist across recompositions
+                val scaffoldState = rememberScaffoldState()
+
+                AppTheme(
+                    displayProgressBar = loading,
+                    scaffoldState = scaffoldState,
+                ) {
                     Scaffold(
                         topBar = {
                             SearchAppBar(
@@ -82,40 +83,16 @@ class MovieListFragment : Fragment() {
                         scaffoldState = scaffoldState,
                         snackbarHost = { scaffoldState.snackbarHostState },
                     ){
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(color = MaterialTheme.colors.surface)
-                        ) {
-                            if (loading && movies.isEmpty()) {
-                                ShimmerMovieCardItem(
-                                    imageHeight = 250.dp,
-                                    padding = 8.dp
-                                )
-                            } else {
-                                LazyColumn {
-                                    itemsIndexed(
-                                        items = movies
-                                    ){ index, movie ->
-                                        viewModel.onChangeMovieScrollPosition(index)
-                                        if((index + 1) >= (page * PAGE_SIZE) && !loading){
-                                            viewModel.onTriggerEvent(NextPageEvent)
-                                        }
-                                        MovieCard(movie = movie, onClick = {})
-                                    }
-                                }
-                            }
-                            CircularIndeterminateProgressBar(isDisplayed = loading)
-                            DefaultSnackbar(
-                                snackbarHostState = scaffoldState.snackbarHostState,
-                                onDismiss = {
-                                    scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
-                                },
-                                modifier = Modifier.align(
-                                    alignment = Alignment.BottomCenter
-                                )
-                            )
-                        }
+                        MovieList(
+                            loading = loading,
+                            movies = movies,
+                            onChangeMovieScrollPosition = viewModel::onChangeMovieScrollPosition,
+                            page = page,
+                            onTriggerNextPage = { viewModel.onTriggerEvent(NextPageEvent) },
+                            navController = findNavController(),
+                            scaffoldState = scaffoldState,
+                            snackbarController = snackbarController,
+                        )
                     }
                 }
             }

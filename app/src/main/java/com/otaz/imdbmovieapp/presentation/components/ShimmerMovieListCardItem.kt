@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.otaz.imdbmovieapp.presentation.components.util.DrawShimmerMovieListCard
 
 @Composable
-fun ShimmerMovieCardItem(
+fun ShimmerMovieListCardItem(
     imageHeight: Dp,
     padding: Dp = 16.dp
 ){
@@ -60,11 +60,13 @@ fun ShimmerMovieCardItem(
         )
 
         Column {
-            DrawShimmerMovieCard(
-                imageHeight = imageHeight,
-                padding = padding,
-                background = brush
-            )
+            repeat(5) {
+                DrawShimmerMovieListCard(
+                    imageHeight = imageHeight,
+                    padding = padding,
+                    background = brush
+                )
+            }
         }
     }
 }

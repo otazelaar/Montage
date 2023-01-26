@@ -35,7 +35,7 @@ fun MovieCard(
         elevation = 8.dp,
     ) {
         Column {
-            movie.imageURL.let { url ->
+            movie.imageURL?.let { url ->
                 val image = loadPicture(url = url, defaultImage = DEFAULT_MOVIE_IMAGE).value
 
                 image?.let { img ->
@@ -49,7 +49,7 @@ fun MovieCard(
                     )
                 }
             }
-            movie.title.let { title ->
+            movie.title?.let { title ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
