@@ -19,11 +19,13 @@ import javax.inject.Named
 const val STATE_KEY_MOVIE = "movie.state.movie.key"
 
 @HiltViewModel
-class MovieViewModel @Inject constructor(
+class MovieDetailViewModel @Inject constructor(
     private val repository: MovieRepository,
     @Named("apiKey") private val apiKey: String,
     private val state: SavedStateHandle,
 ): ViewModel(){
+
+    val onLoad: MutableState<Boolean> = mutableStateOf(false)
 
     val movie: MutableState<Movie?> = mutableStateOf(null)
 

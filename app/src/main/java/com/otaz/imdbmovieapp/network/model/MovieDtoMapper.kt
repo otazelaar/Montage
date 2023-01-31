@@ -12,6 +12,7 @@ class MovieDtoMapper : DomainMapper<MovieDto, Movie> {
             imageURL = model.imageURL,
             title = model.title,
             description = model.description,
+//            keywords = model.keywords,
         )
     }
 
@@ -22,6 +23,7 @@ class MovieDtoMapper : DomainMapper<MovieDto, Movie> {
             imageURL = domainModel.imageURL,
             title = domainModel.title,
             description = domainModel.description,
+//            keywords = domainModel.keywords
         )
     }
 
@@ -29,8 +31,8 @@ class MovieDtoMapper : DomainMapper<MovieDto, Movie> {
         return initial.map { mapToDomainModel(it) }
     }
 
-    fun fromDomainList(initial: List<Movie>): List<MovieDto>{
-        return initial.map { mapFromDomainModel(it) }
-    }
+//    fun fromDomainList(initial: List<Movie>): List<MovieDto>{
+//        return initial.map { mapFromDomainModel(it) }
+//    }
 
 }

@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,35 +34,31 @@ fun MovieCard(
         elevation = 8.dp,
     ) {
         Column {
-            movie.imageURL?.let { url ->
-                val image = loadPicture(url = url, defaultImage = DEFAULT_MOVIE_IMAGE).value
-
-                image?.let { img ->
-                    Image(
-                        bitmap = img.asImageBitmap(),
-                        contentDescription = "movie image",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(580.dp),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            }
-            movie.title?.let { title ->
-                Row(
+            val image = loadPicture(url = movie.imageURL, defaultImage = DEFAULT_MOVIE_IMAGE).value
+            image?.let { img ->
+                Image(
+                    bitmap = img.asImageBitmap(),
+                    contentDescription = "movie image",
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 12.dp, bottom = 12.dp, start = 8.dp, end = 8.dp),
-                ) {
-                    Text(
-                        text = title,
-                        modifier = Modifier
-                            .fillMaxWidth(0.70f)
-                            .wrapContentWidth(Alignment.Start),
-                        style = MaterialTheme.typography.h3
-                    )
-                    val rating = movie.imdbRating
-
+                        .height(580.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp, bottom = 12.dp, start = 8.dp, end = 8.dp),
+            ) {
+                Text(
+                    text = movie.title,
+                    modifier = Modifier
+                        .fillMaxWidth(0.70f)
+                        .wrapContentWidth(Alignment.Start),
+                    style = MaterialTheme.typography.h3
+                )
+                val rating = movie.imdbRating
+                if (rating != null) {
                     Text(
                         text = "IMDB $rating",
                         modifier = Modifier
@@ -71,9 +66,9 @@ fun MovieCard(
                             .wrapContentWidth(Alignment.End)
                             .align(Alignment.CenterVertically),
                         style = MaterialTheme.typography.h5,
-                        color = if((rating != null) && (rating.toDouble() >= 7.0)) {
+                        color = if(rating.toDouble() >= 7.0) {
                             Color.Green
-                        }else if((rating != null) && (rating.toDouble() < 7.0) && (rating.toDouble() > 5.0)) {
+                        }else if((rating.toDouble() < 7.0) && (rating.toDouble() > 5.0)) {
                             Color.Yellow
                         }else{
                             Color.Red
@@ -81,9 +76,6 @@ fun MovieCard(
                     )
                 }
             }
-
         }
-
     }
-
 }

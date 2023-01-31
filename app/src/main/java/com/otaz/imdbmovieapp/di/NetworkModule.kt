@@ -2,7 +2,6 @@ package com.otaz.imdbmovieapp.di
 
 import com.otaz.imdbmovieapp.network.MovieService
 import com.otaz.imdbmovieapp.network.model.MovieDtoMapper
-import com.otaz.imdbmovieapp.network.model.PosterDtoMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,12 +21,6 @@ object NetworkModule {
     @Provides
     fun provideMovieMapper(): MovieDtoMapper {
         return MovieDtoMapper()
-    }
-
-    @Singleton
-    @Provides
-    fun providePosterMapper(): PosterDtoMapper {
-        return PosterDtoMapper()
     }
 
     @Singleton

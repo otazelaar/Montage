@@ -7,19 +7,18 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.otaz.imdbmovieapp.domain.model.Movie
-import com.otaz.imdbmovieapp.domain.model.Poster
+import com.otaz.imdbmovieapp.interactors.movie_list.SearchMovies
+import com.otaz.imdbmovieapp.network.model.MovieDao
 import com.otaz.imdbmovieapp.presentation.movie_list.MovieListEvent.*
 import com.otaz.imdbmovieapp.repository.MovieRepository
-import com.otaz.imdbmovieapp.repository.PosterRepository
+import com.otaz.imdbmovieapp.util.MOVIE_PAGINATION_PAGE_SIZE
 import com.otaz.imdbmovieapp.util.TAG
-import dagger.assisted.Assisted
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
-
-const val PAGE_SIZE = 30
 
 const val STATE_KEY_PAGE = "recipe.state.page.key"
 const val STATE_KEY_QUERY = "recipe.state.query.key"
@@ -28,17 +27,14 @@ const val STATE_KEY_SELECTED_CATEGORY = "recipe.state.query.selected_category"
 
 @HiltViewModel
 class MovieListViewModel @Inject constructor(
+    private val searchMovies: SearchMovies,
     private val repository: MovieRepository,
-    private val repositoryPoster: PosterRepository,
     @Named("apiKey") private val apiKey: String,
     private val savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
     val expression = mutableStateOf("")
     val movies: MutableState<List<Movie>> = mutableStateOf(ArrayList())
-
-    val id = mutableStateOf("")
-    val poster: MutableState<List<Poster>> = mutableStateOf(ArrayList())
 
     val selectedCategory: MutableState<MovieCategory?> = mutableStateOf(null)
 
@@ -110,38 +106,39 @@ class MovieListViewModel @Inject constructor(
         }
     }
 
-    private suspend fun newSearch(){
-        loading.value = true
-        resetSearchState()
+    private fun newSearch(){
+        Log.d(TAG, "newSearch: query: ${expression.value}, page: ${page.value}")
 
-        val result = repository.search(
+        resetSearchState()
+        searchMovies.execute(
             apikey = apiKey,
             expression = expression.value,
-            count = (page.value * PAGE_SIZE).toString(),
-        )
-        movies.value = result
-        loading.value = false
+            page = page.value,
+            count = MOVIE_PAGINATION_PAGE_SIZE.toString(),
+        ).onEach { dataState ->
+            loading.value = dataState.loading
+            dataState.data?.let { list -> movies.value = list }
+            dataState.error?.let { error -> Log.e(TAG, "newSearch: error: ${error}") }
+        }.launchIn(viewModelScope)
     }
 
-    private suspend fun nextPage(){
-        // Prevent duplicate events due to recompose happening too quickly
-        if((movieListScrollPosition + 1) >= (page.value * PAGE_SIZE)){
-            loading.value = true
+    private fun nextPage(){
+        if((movieListScrollPosition + 1) >= (page.value * MOVIE_PAGINATION_PAGE_SIZE)){
             incrementPage()
             Log.d(TAG, "nextPage: triggered: ${page.value}")
 
-            if (page.value > 1){
-                val result = repository.search(
+            if(page.value > 1){
+                searchMovies.execute(
                     apikey = apiKey,
                     expression = expression.value,
-                    count = (page.value * PAGE_SIZE).toString(),
-                    // api is NOT calling the next set of 30 movies. it is calling the original 30 plus 30 more.
-                    // the paging feature on Mitch's api is different from mine. Each page number is a new set of Recipes in his API.
-                )
-                Log.d(TAG, "nextPage: ${result}")
-                appendMovies(result)
+                    page = page.value,
+                    count = (page.value * MOVIE_PAGINATION_PAGE_SIZE).toString(),
+                ).onEach { dataState ->
+                    loading.value = dataState.loading
+                    dataState.data?.let { list -> appendMovies(list) }
+                    dataState.error?.let { error -> Log.e(TAG, "nextPage: ${error}") }
+                }.launchIn(viewModelScope)
             }
-            loading.value = false
         }
     }
 
@@ -160,18 +157,6 @@ class MovieListViewModel @Inject constructor(
 
     fun onChangeMovieScrollPosition(position: Int){
         setListScrollPosition(position = position)
-    }
-
-    fun getPosterByID(){
-        viewModelScope.launch {
-
-            val result = repositoryPoster.poster(
-                apikey = apiKey,
-                id = id.value,
-            )
-            poster.value = result
-
-        }
     }
 
     /**

@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.otaz.imdbmovieapp.presentation.components.util.DrawShimmerMovieListCard
 
 @Composable
 fun ShimmerMovieCardItem(
