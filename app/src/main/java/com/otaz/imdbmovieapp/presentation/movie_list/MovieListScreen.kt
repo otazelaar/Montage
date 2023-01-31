@@ -41,9 +41,7 @@ fun MovieListScreen(
                 SearchAppBar(
                     expression = viewModel.expression.value,
                     onExpressionChanged = viewModel::onExpressionChanged,
-                    onExecuteSearch = {
-                        viewModel.onTriggerEvent(MovieListEvent.NewSearchEvent)
-                    },
+                    onExecuteSearch = { viewModel.onTriggerEvent(MovieListEvent.NewSearchEvent) },
                     keyboardController = keyboardController,
                     categoryScrollPosition = viewModel.categoryScrollPosition,
                     selectedCategory = viewModel.selectedCategory.value,

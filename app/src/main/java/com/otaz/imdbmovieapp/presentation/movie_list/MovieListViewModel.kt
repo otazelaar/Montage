@@ -14,9 +14,11 @@ import com.otaz.imdbmovieapp.repository.MovieRepository
 import com.otaz.imdbmovieapp.util.MOVIE_PAGINATION_PAGE_SIZE
 import com.otaz.imdbmovieapp.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -44,9 +46,15 @@ class MovieListViewModel @Inject constructor(
 
     // Pagination
     val page = mutableStateOf(1)
+    // due to MOVIE_PAGINATION_PAGE_SIZE = 10 at this time. Not sure if I can set a mutableStateOf to a const val
+    var index = mutableStateOf(10)
     var movieListScrollPosition = 0
 
     init {
+        savedStateHandle.get<Int>(STATE_KEY_PAGE)?.let { p ->
+            Log.d(TAG, "restoring index: ${p}")
+            setIndex(p)
+        }
         savedStateHandle.get<Int>(STATE_KEY_PAGE)?.let { p ->
             Log.d(TAG, "restoring page: ${p}")
             setPage(p)
@@ -143,12 +151,20 @@ class MovieListViewModel @Inject constructor(
     }
 
     /**
-     * Append new movies to the current list of movies
+     * Append new movies to the current list of movies. This may be inefficiently calling
+     * extra data and appending the desired data to the list. For Ex: if my page size = 10
+     * and i go to the second page, I may be calling the first 10 movies as well as the second 10
+     * and then appending only the second 10. I am not clear on if this is the case yet.
      */
     private fun appendMovies(movies: List<Movie>){
         val currentList = ArrayList(this.movies.value)
         currentList.addAll(movies)
+        incrementIndex()
         this.movies.value = currentList
+    }
+
+    private fun incrementIndex(){
+        setIndex(index.value * 2)
     }
 
     private fun incrementPage(){
@@ -166,6 +182,7 @@ class MovieListViewModel @Inject constructor(
         movies.value = listOf()
         page.value = 1
         onChangeMovieScrollPosition(0)
+        // might need to reset index here as well
         if(selectedCategory.value?.value != expression.value) clearSelectedCategory()
     }
 
@@ -203,6 +220,11 @@ class MovieListViewModel @Inject constructor(
     private fun setPage(page: Int){
         this.page.value = page
         savedStateHandle.set(STATE_KEY_PAGE, page)
+    }
+
+    private fun setIndex(index: Int){
+        this.index.value = index
+        savedStateHandle.set(STATE_KEY_PAGE, index)
     }
 
     private fun setSelectedCategory(category: MovieCategory?){
