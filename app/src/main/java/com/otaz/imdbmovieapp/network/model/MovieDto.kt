@@ -3,10 +3,11 @@ package com.otaz.imdbmovieapp.network.model
 import com.google.gson.annotations.SerializedName
 
 data class MovieDto(
-    @SerializedName("id") var id: String,
-    @SerializedName("imDbRating") var imdbRating: String?,
-    @SerializedName("image") var imageURL: String,
-    @SerializedName("title") var title: String,
-    @SerializedName("plot") var description: String?,
+    @SerializedName("imdbID") var id: String,
+    @SerializedName("Year") var year: String?,
+    @SerializedName("Poster") var imageURL: String,
+    @SerializedName("Title") var title: String,
+    @SerializedName("Type") var type: String?,
 //    @SerializedName("keywordList") var keywords: List<String> = emptyList(),
 )
+

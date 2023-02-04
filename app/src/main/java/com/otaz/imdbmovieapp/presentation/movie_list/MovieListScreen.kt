@@ -39,7 +39,7 @@ fun MovieListScreen(
         Scaffold(
             topBar = {
                 SearchAppBar(
-                    expression = viewModel.expression.value,
+                    expression = viewModel.query.value,
                     onExpressionChanged = viewModel::onExpressionChanged,
                     onExecuteSearch = { viewModel.onTriggerEvent(MovieListEvent.NewSearchEvent) },
                     keyboardController = keyboardController,

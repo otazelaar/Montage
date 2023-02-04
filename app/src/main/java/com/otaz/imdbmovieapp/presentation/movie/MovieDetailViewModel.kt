@@ -20,8 +20,8 @@ const val STATE_KEY_MOVIE = "movie.state.movie.key"
 
 @HiltViewModel
 class MovieDetailViewModel @Inject constructor(
-    private val repository: MovieRepository,
-    @Named("apiKey") private val apiKey: String,
+//    private val repository: MovieRepository,
+    @Named("apikey") private val apiKey: String,
     private val state: SavedStateHandle,
 ): ViewModel(){
 
@@ -44,7 +44,7 @@ class MovieDetailViewModel @Inject constructor(
                 when(event){
                     is GetMovieEvent -> {
                         if(movie.value == null){
-                            getMovie(event.id)
+//                            getMovie(event.id)
                         }
                     }
                 }
@@ -55,20 +55,20 @@ class MovieDetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getMovie(id: String){
-        loading.value = true
-
-        // simulate a delay to show loading
-        delay(1000)
-
-        val movie = repository.get(
-            apikey = apiKey,
-            id = id,
-        )
-        this.movie.value = movie
-
-        state.set(STATE_KEY_MOVIE, movie.id)
-
-        loading.value = false
-    }
+//    private suspend fun getMovie(id: String, page: ){
+//        loading.value = true
+//
+//        // simulate a delay to show loading
+//        delay(1000)
+//
+//        val movie = repository.search(
+//            query = id,
+//            page = page
+//        )
+//        this.movie.value = movie
+//
+//        state.set(STATE_KEY_MOVIE, movie.imdbID)
+//
+//        loading.value = false
+//    }
 }

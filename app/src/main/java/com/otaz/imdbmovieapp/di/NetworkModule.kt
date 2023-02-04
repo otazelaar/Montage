@@ -29,7 +29,7 @@ object NetworkModule {
         val client = OkHttpClient.Builder()
             .connectTimeout(100, TimeUnit.SECONDS)
             .readTimeout(100, TimeUnit.SECONDS).build();
-        return Retrofit.Builder().baseUrl("https://imdb-api.com/en/API/")
+        return Retrofit.Builder().baseUrl("https://www.omdbapi.com/")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -38,9 +38,9 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    @Named("apiKey")
+    @Named("apikey")
     fun provideApiKey(): String{
-        return "k_ek2dl3yz"
+        return "f59dfd2c"
     }
 
 }

@@ -26,7 +26,7 @@ class SearchMovies(
         apikey: String,
         expression: String,
         page: Int,
-        count: String,
+//        count: String,
     ): Flow<DataState<List<Movie>>> = flow {
         try {
             emit(DataState.loading())
@@ -37,7 +37,7 @@ class SearchMovies(
             val movies = getMoviesFromNetwork(
                 apikey = apikey,
                 expression = expression,
-                count = count
+                page = page.toString()
             )
 
             // insert into the cache
@@ -53,7 +53,7 @@ class SearchMovies(
                 movieDao.searchMovies(
                     query = expression,
                     page = page,
-                    pageSize = count.toInt(),
+                    pageSize = MOVIE_PAGINATION_PAGE_SIZE,
                 )
             }
             // Emit List<Movie> from the cache
@@ -71,13 +71,13 @@ class SearchMovies(
     private suspend fun getMoviesFromNetwork(
         apikey: String,
         expression: String,
-        count: String,
+        page: String,
     ): List<Movie>{
         return dtoMapper.toDomainList(
             movieService.search(
                 apikey = apikey,
-                expression = expression,
-                count = count,
+                query = expression,
+                page = page,
             ).movies
         )
     }

@@ -58,7 +58,7 @@ fun MovieCard(
                         .wrapContentWidth(Alignment.Start),
                     style = MaterialTheme.typography.h3
                 )
-                val rating = movie.imdbRating
+                val rating = movie.year
                 if (rating != null) {
                     Text(
                         text = "IMDB $rating",

@@ -8,17 +8,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.otaz.imdbmovieapp.domain.model.Movie
 import com.otaz.imdbmovieapp.interactors.movie_list.SearchMovies
-import com.otaz.imdbmovieapp.network.model.MovieDao
 import com.otaz.imdbmovieapp.presentation.movie_list.MovieListEvent.*
 import com.otaz.imdbmovieapp.repository.MovieRepository
 import com.otaz.imdbmovieapp.util.MOVIE_PAGINATION_PAGE_SIZE
 import com.otaz.imdbmovieapp.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -31,11 +28,11 @@ const val STATE_KEY_SELECTED_CATEGORY = "recipe.state.query.selected_category"
 class MovieListViewModel @Inject constructor(
     private val searchMovies: SearchMovies,
     private val repository: MovieRepository,
-    @Named("apiKey") private val apiKey: String,
+    @Named("apikey") private val apiKey: String,
     private val savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
-    val expression = mutableStateOf("")
+    val query = mutableStateOf("")
     val movies: MutableState<List<Movie>> = mutableStateOf(ArrayList())
 
     val selectedCategory: MutableState<MovieCategory?> = mutableStateOf(null)
@@ -104,8 +101,8 @@ class MovieListViewModel @Inject constructor(
         // Must retrieve each page of results.
         val results: MutableList<Movie> = mutableListOf()
         for(p in 1..page.value){
-            Log.d(TAG, "restoreState: page: ${p}, query: ${expression.value}")
-            val result = repository.search(apikey = apiKey, expression = expression.value, count = expression.value )
+            Log.d(TAG, "restoreState: page: ${p}, query: ${query.value}")
+            val result = repository.search(apikey = apiKey, query = query.value, page = query.value )
             results.addAll(result)
             if(p == page.value){ // done
                 movies.value = results
@@ -115,14 +112,13 @@ class MovieListViewModel @Inject constructor(
     }
 
     private fun newSearch(){
-        Log.d(TAG, "newSearch: query: ${expression.value}, page: ${page.value}")
+        Log.d(TAG, "newSearch: query: ${query.value}, page: ${page.value}")
 
         resetSearchState()
         searchMovies.execute(
             apikey = apiKey,
-            expression = expression.value,
+            expression = query.value,
             page = page.value,
-            count = MOVIE_PAGINATION_PAGE_SIZE.toString(),
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> movies.value = list }
@@ -138,9 +134,8 @@ class MovieListViewModel @Inject constructor(
             if(page.value > 1){
                 searchMovies.execute(
                     apikey = apiKey,
-                    expression = expression.value,
+                    expression = query.value,
                     page = page.value,
-                    count = (page.value * MOVIE_PAGINATION_PAGE_SIZE).toString(),
                 ).onEach { dataState ->
                     loading.value = dataState.loading
                     dataState.data?.let { list -> appendMovies(list) }
@@ -183,7 +178,7 @@ class MovieListViewModel @Inject constructor(
         page.value = 1
         onChangeMovieScrollPosition(0)
         // might need to reset index here as well
-        if(selectedCategory.value?.value != expression.value) clearSelectedCategory()
+        if(selectedCategory.value?.value != query.value) clearSelectedCategory()
     }
 
     private fun clearSelectedCategory(){
@@ -233,7 +228,7 @@ class MovieListViewModel @Inject constructor(
     }
 
     private fun setQuery(query: String){
-        this.expression.value = query
+        this.query.value = query
         savedStateHandle.set(STATE_KEY_QUERY, query)
     }
 }

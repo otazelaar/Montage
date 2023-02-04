@@ -8,31 +8,24 @@ class MovieDtoMapper : DomainMapper<MovieDto, Movie> {
     override fun mapToDomainModel(model: MovieDto): Movie {
         return Movie(
             id = model.id,
-            imdbRating = model.imdbRating,
+            year = model.year,
             imageURL = model.imageURL,
             title = model.title,
-            description = model.description,
-//            keywords = model.keywords,
+            type = model.type,
         )
     }
 
     override fun mapFromDomainModel(domainModel: Movie): MovieDto {
         return MovieDto(
             id = domainModel.id,
-            imdbRating = domainModel.imdbRating,
+            year = domainModel.year,
             imageURL = domainModel.imageURL,
             title = domainModel.title,
-            description = domainModel.description,
-//            keywords = domainModel.keywords
+            type = domainModel.type,
         )
     }
 
     fun toDomainList(initial: List<MovieDto>): List<Movie>{
         return initial.map { mapToDomainModel(it) }
     }
-
-//    fun fromDomainList(initial: List<Movie>): List<MovieDto>{
-//        return initial.map { mapFromDomainModel(it) }
-//    }
-
 }

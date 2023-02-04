@@ -28,7 +28,7 @@ fun MovieView(
             .fillMaxWidth()
             .verticalScroll(scrollState)
     ) {
-        movie.imageURL?.let { url ->
+        movie.imageURL.let { url ->
             val image = loadPicture(url = url, defaultImage = DEFAULT_MOVIE_IMAGE).value
             image?.let { img ->
                 Image(
@@ -46,7 +46,7 @@ fun MovieView(
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
-            movie.title?.let { title ->
+            movie.title.let { title ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -59,9 +59,8 @@ fun MovieView(
                             .wrapContentWidth(Alignment.Start),
                         style = MaterialTheme.typography.h3
                     )
-                    val rank = movie.imdbRating.toString()
                     Text(
-                        text = rank,
+                        text = "rank",
                         modifier = Modifier
                             .fillMaxWidth(0.85f)
                             .wrapContentWidth(Alignment.End)
@@ -69,7 +68,7 @@ fun MovieView(
                         style = MaterialTheme.typography.h5
                     )
                 }
-                movie.description?.let { description ->
+                movie.year?.let { description ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()

@@ -22,7 +22,7 @@ object RepositoryModule {
     ): MovieRepository {
         return MovieRepositoryImpl(
             movieService = movieService,
-            mapper = movieMapper
+            mapper = movieMapper,
         )
     }
 }

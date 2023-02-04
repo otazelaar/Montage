@@ -7,10 +7,10 @@ class MovieEntityMapper : DomainMapper<MovieEntity, Movie> {
     override fun mapToDomainModel(model: MovieEntity): Movie {
         return Movie(
             id = model.id,
-            imdbRating = model.imdbRating,
+            year = model.imdbRating,
             imageURL = model.imageURL,
             title = model.title,
-            description = model.description,
+            type = model.description,
 //            keywords = convertKeywordsToList(model.keywords),
         )
     }
@@ -18,10 +18,10 @@ class MovieEntityMapper : DomainMapper<MovieEntity, Movie> {
     override fun mapFromDomainModel(domainModel: Movie): MovieEntity {
         return MovieEntity(
             id = domainModel.id,
-            imdbRating = domainModel.imdbRating,
+            imdbRating = domainModel.year,
             imageURL = domainModel.imageURL,
             title = domainModel.title,
-            description = domainModel.description,
+            description = domainModel.type,
 //            keywords = convertKeywordListToString(domainModel.keywords)
         )
     }
