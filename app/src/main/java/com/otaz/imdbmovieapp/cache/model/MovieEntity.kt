@@ -17,11 +17,11 @@ data class MovieEntity(
     var id: String,
 
     // Value from API
-    @ColumnInfo(name = "imDbRating")
-    var imdbRating: String?,
+    @ColumnInfo(name = "year")
+    var year: String?,
 
     // Value from API
-    @ColumnInfo(name = "image")
+    @ColumnInfo(name = "imageURL")
     var imageURL: String,
 
     // Value from API
@@ -29,14 +29,6 @@ data class MovieEntity(
     var title: String,
 
     // Value from API
-    @ColumnInfo(name = "plot")
-    var description: String?,
-
-//    /**
-//     * Value from API
-//     * Comma separated list of keywords
-//     * EX: "billionaire, inventor, robot suit,"
-//     */
-//    @ColumnInfo(name = "keywordList")
-//    var keywords: String = "",
+    @ColumnInfo(name = "type")
+    var type: String?,
 )

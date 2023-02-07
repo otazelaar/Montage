@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -58,22 +57,16 @@ fun MovieCard(
                         .wrapContentWidth(Alignment.Start),
                     style = MaterialTheme.typography.h3
                 )
-                val rating = movie.year
-                if (rating != null) {
+                val year = movie.year
+                if (year != null) {
                     Text(
-                        text = "IMDB $rating",
+                        text = "$year",
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentWidth(Alignment.End)
                             .align(Alignment.CenterVertically),
                         style = MaterialTheme.typography.h5,
-                        color = if(rating.toDouble() >= 7.0) {
-                            Color.Green
-                        }else if((rating.toDouble() < 7.0) && (rating.toDouble() > 5.0)) {
-                            Color.Yellow
-                        }else{
-                            Color.Red
-                        }
+                        color = Color.Green
                     )
                 }
             }

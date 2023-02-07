@@ -24,9 +24,8 @@ class SearchMovies(
 ){
     fun execute(
         apikey: String,
-        expression: String,
+        query: String,
         page: Int,
-//        count: String,
     ): Flow<DataState<List<Movie>>> = flow {
         try {
             emit(DataState.loading())
@@ -34,9 +33,10 @@ class SearchMovies(
             // just to show pagination/progress bar because api is fast
             delay(1000)
 
+            // Convert: NetworkMovieEntity -> Movie -> MovieCacheEntity
             val movies = getMoviesFromNetwork(
                 apikey = apikey,
-                expression = expression,
+                query = query,
                 page = page.toString()
             )
 
@@ -44,14 +44,14 @@ class SearchMovies(
             movieDao.insertMovies(entityMapper.toEntityList(movies))
 
             // query the cache
-            val cacheResult = if(expression.isBlank()){
+            val cacheResult = if(query.isBlank()){
                 movieDao.getAllMovies(
                     page = page,
                     pageSize = MOVIE_PAGINATION_PAGE_SIZE,
                 )
             }else{
                 movieDao.searchMovies(
-                    query = expression,
+                    query = query,
                     page = page,
                     pageSize = MOVIE_PAGINATION_PAGE_SIZE,
                 )
@@ -70,13 +70,13 @@ class SearchMovies(
     // This function gets Dto's from the network and converts them to Movie Objects
     private suspend fun getMoviesFromNetwork(
         apikey: String,
-        expression: String,
+        query: String,
         page: String,
     ): List<Movie>{
         return dtoMapper.toDomainList(
             movieService.search(
                 apikey = apikey,
-                query = expression,
+                query = query,
                 page = page,
             ).movies
         )

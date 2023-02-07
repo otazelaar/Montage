@@ -6,28 +6,30 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.otaz.imdbmovieapp.domain.model.Movie
+import com.otaz.imdbmovieapp.domain.model.MovieSpecs
+import com.otaz.imdbmovieapp.interactors.movie.GetMovie
 import com.otaz.imdbmovieapp.presentation.movie.MovieEvent.*
-import com.otaz.imdbmovieapp.repository.MovieRepository
 import com.otaz.imdbmovieapp.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
 const val STATE_KEY_MOVIE = "movie.state.movie.key"
+const val STATE_KEY_MOVIE_SPECS = "movie.state.movie.specs.key"
 
 @HiltViewModel
 class MovieDetailViewModel @Inject constructor(
-//    private val repository: MovieRepository,
+    private val getMovie: GetMovie,
     @Named("apikey") private val apiKey: String,
     private val state: SavedStateHandle,
 ): ViewModel(){
 
     val onLoad: MutableState<Boolean> = mutableStateOf(false)
 
-    val movie: MutableState<Movie?> = mutableStateOf(null)
+    val movie: MutableState<MovieSpecs?> = mutableStateOf(null)
 
     val loading = mutableStateOf(false)
 
@@ -44,7 +46,7 @@ class MovieDetailViewModel @Inject constructor(
                 when(event){
                     is GetMovieEvent -> {
                         if(movie.value == null){
-//                            getMovie(event.id)
+                            getMovie(event.id)
                         }
                     }
                 }
@@ -55,20 +57,18 @@ class MovieDetailViewModel @Inject constructor(
         }
     }
 
-//    private suspend fun getMovie(id: String, page: ){
-//        loading.value = true
-//
-//        // simulate a delay to show loading
-//        delay(1000)
-//
-//        val movie = repository.search(
-//            query = id,
-//            page = page
-//        )
-//        this.movie.value = movie
-//
-//        state.set(STATE_KEY_MOVIE, movie.imdbID)
-//
-//        loading.value = false
-//    }
+    private fun getMovie(id: String){
+        getMovie.execute(
+            apikey = apiKey,
+            id = id,
+        ).onEach { dataState ->
+            loading.value = dataState.loading
+            dataState.data?.let {
+                data -> movie.value = data
+                state.set(STATE_KEY_MOVIE_SPECS, data.id)
+                Log.i(TAG, "getMovie: Success: ${data.id}")
+            }
+            dataState.error?.let { error -> Log.e(TAG, "getMovie: error: ${error}") }
+        }.launchIn(viewModelScope)
+    }
 }

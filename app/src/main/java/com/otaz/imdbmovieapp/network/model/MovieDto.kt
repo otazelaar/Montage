@@ -8,6 +8,5 @@ data class MovieDto(
     @SerializedName("Poster") var imageURL: String,
     @SerializedName("Title") var title: String,
     @SerializedName("Type") var type: String?,
-//    @SerializedName("keywordList") var keywords: List<String> = emptyList(),
 )
 
