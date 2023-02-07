@@ -1,18 +1,18 @@
 package com.otaz.imdbmovieapp.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.otaz.imdbmovieapp.presentation.components.CircularIndeterminateProgressBar
-import com.otaz.imdbmovieapp.presentation.components.DefaultSnackbar
+import androidx.compose.ui.unit.dp
+import com.otaz.imdbmovieapp.presentation.components.*
+import com.otaz.imdbmovieapp.presentation.ui.util.DialogQueue
+import java.util.Queue
 
 private val LightThemeColors = lightColors(
     primary = Yellow600,
@@ -47,6 +47,7 @@ fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     displayProgressBar: Boolean,
     scaffoldState: ScaffoldState,
+    dialogQueue: Queue<GenericDialogInfo>,
     content: @Composable () -> Unit,
 ) {
     MaterialTheme(
@@ -69,6 +70,22 @@ fun AppTheme(
                     alignment = Alignment.BottomCenter
                 )
             )
+            ProcessDialogQueue(dialogQueue = dialogQueue)
         }
+    }
+}
+
+@Composable
+fun ProcessDialogQueue(
+    dialogQueue: Queue<GenericDialogInfo>?,
+) {
+    dialogQueue?.peek()?.let { dialogInfo ->
+        GenericDialog(
+            onDismiss = dialogInfo.onDismiss,
+            title = dialogInfo.title,
+            description = dialogInfo.description,
+            positiveAction = dialogInfo.positiveAction,
+            negativeAction = dialogInfo.negativeAction
+        )
     }
 }

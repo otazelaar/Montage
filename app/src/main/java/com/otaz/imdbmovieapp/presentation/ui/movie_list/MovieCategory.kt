@@ -1,8 +1,9 @@
-package com.otaz.imdbmovieapp.presentation.movie_list
+package com.otaz.imdbmovieapp.presentation.ui.movie_list
 
-import com.otaz.imdbmovieapp.presentation.movie_list.MovieCategory.*
+import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieCategory.*
 
 enum class MovieCategory(val value: String){
+    ERROR("error"),
     CHICKEN("Chicken"),
     BEEF("Beef"),
     SOUP("Soup"),
@@ -15,7 +16,7 @@ enum class MovieCategory(val value: String){
 }
 
 fun getAllMovieCategories(): List<MovieCategory>{
-    return listOf(CHICKEN, BEEF, SOUP, DESSERT, VEGETARIAN, MILK, VEGAN, PIZZA, DONUT)
+    return listOf(ERROR, CHICKEN, BEEF, SOUP, DESSERT, VEGETARIAN, MILK, VEGAN, PIZZA, DONUT)
 }
 
 fun getMovieCategory(value: String): MovieCategory? {

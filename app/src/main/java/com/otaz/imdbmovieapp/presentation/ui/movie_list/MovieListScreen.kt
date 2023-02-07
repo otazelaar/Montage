@@ -1,8 +1,7 @@
-package com.otaz.imdbmovieapp.presentation.movie_list
+package com.otaz.imdbmovieapp.presentation.ui.movie_list
 
 import android.annotation.SuppressLint
 import android.util.Log
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -14,27 +13,31 @@ import com.otaz.imdbmovieapp.presentation.theme.AppTheme
 import com.otaz.imdbmovieapp.util.TAG
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MovieListScreen(
     onNavigateToMovieDetailScreen: (String) -> Unit,
     viewModel: MovieListViewModel,
 ){
-    Log.d(TAG, "MovieListScreen: ${viewModel}")
+    Log.d(TAG, "MovieListScreen: $viewModel")
     val keyboardController = LocalSoftwareKeyboardController.current
     // Anytime [val movies: MutableState<List<Movie>>] from [MovieListFragment] changes, this value below
     // [movies] will be updated here and in any composable that uses this value.
     val movies = viewModel.movies.value
+
     val loading = viewModel.loading.value
+
+    val dialogQueue = viewModel.dialogQueue
 
     val page = viewModel.page.value
 
-    // rememberSacffoldState will create a scaffold state object and persist across recompositions
+    // rememberScaffoldState will create a scaffold state object and persist across recompositions
     val scaffoldState = rememberScaffoldState()
 
     AppTheme(
         displayProgressBar = loading,
         scaffoldState = scaffoldState,
+        dialogQueue = dialogQueue.queue.value
     ) {
         Scaffold(
             topBar = {

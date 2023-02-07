@@ -1,4 +1,4 @@
-package com.otaz.imdbmovieapp.presentation.movie_list
+package com.otaz.imdbmovieapp.presentation.ui.movie_list
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
@@ -9,7 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.otaz.imdbmovieapp.domain.model.Movie
 import com.otaz.imdbmovieapp.interactors.movie_list.RestoreMovies
 import com.otaz.imdbmovieapp.interactors.movie_list.SearchMovies
-import com.otaz.imdbmovieapp.presentation.movie_list.MovieListEvent.*
+import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieListEvent.*
+import com.otaz.imdbmovieapp.presentation.ui.util.DialogQueue
 import com.otaz.imdbmovieapp.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -48,6 +49,8 @@ class MovieListViewModel @Inject constructor(
     // due to MOVIE_PAGINATION_PAGE_SIZE = 10 at this time. Not sure if I can set a mutableStateOf to a const val
     var movieListScrollPosition = 0
 
+    val dialogQueue = DialogQueue()
+
     init {
         savedStateHandle.get<Int>(STATE_KEY_PAGE)?.let { p ->
             Log.d(TAG, "restoring page: ${p}")
@@ -64,12 +67,9 @@ class MovieListViewModel @Inject constructor(
             setSelectedCategory(c)
         }
 
-//         Were they doing something before the process died?
+//      Were they doing something before the process died?
         if(movieListScrollPosition != 0){
             onTriggerEvent(RestoreStateEvent)
-        }
-        else{
-            onTriggerEvent(NewSearchEvent)
         }
     }
 
@@ -100,7 +100,7 @@ class MovieListViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> movies.value = list }
-            dataState.error?.let { error -> Log.e(TAG, "restoreState: error: ${error}") }
+            dataState.error?.let { error -> dialogQueue.appendErrorMessage("Error", error) }
         }.launchIn(viewModelScope)
     }
 
@@ -115,7 +115,9 @@ class MovieListViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> movies.value = list }
-            dataState.error?.let { error -> Log.e(TAG, "newSearch: error: ${error}") }
+            dataState.error?.let { error -> dialogQueue.appendErrorMessage("Error1", error)
+                dialogQueue.appendErrorMessage("Error2", error)
+                dialogQueue.appendErrorMessage("Error3", error)}
         }.launchIn(viewModelScope)
     }
 
@@ -132,7 +134,7 @@ class MovieListViewModel @Inject constructor(
                 ).onEach { dataState ->
                     loading.value = dataState.loading
                     dataState.data?.let { list -> appendMovies(list) }
-                    dataState.error?.let { error -> Log.e(TAG, "nextPage: ${error}") }
+                    dataState.error?.let { error -> dialogQueue.appendErrorMessage("Error", error) }
                 }.launchIn(viewModelScope)
             }
         }

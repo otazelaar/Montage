@@ -39,7 +39,7 @@ class GetMovie(
             } else {
                 val networkMovieSpecs = getMovieSpecsFromNetwork(
                     apikey = apikey,
-                    id = id.toString(),
+                    id = id,
                 )
 
                 movieDao.insertMovie(

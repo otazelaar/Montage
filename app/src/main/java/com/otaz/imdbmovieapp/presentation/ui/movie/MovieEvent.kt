@@ -1,4 +1,4 @@
-package com.otaz.imdbmovieapp.presentation.movie
+package com.otaz.imdbmovieapp.presentation.ui.movie
 
 sealed class MovieEvent {
 

@@ -33,6 +33,11 @@ class SearchMovies(
             // just to show pagination/progress bar because api is fast
             delay(1000)
 
+            // Force error for testing
+            if (query == "error"){
+                throw Exception("Search Failed")
+            }
+
             // Convert: NetworkMovieEntity -> Movie -> MovieCacheEntity
             val movies = getMoviesFromNetwork(
                 apikey = apikey,

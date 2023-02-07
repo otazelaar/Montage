@@ -1,12 +1,9 @@
-package com.otaz.imdbmovieapp.presentation.movie
+package com.otaz.imdbmovieapp.presentation.ui.movie
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,9 +11,8 @@ import androidx.compose.ui.unit.dp
 import com.otaz.imdbmovieapp.presentation.components.IMAGE_HEIGHT
 import com.otaz.imdbmovieapp.presentation.components.MovieView
 import com.otaz.imdbmovieapp.presentation.components.ShimmerMovieCardItem
-import com.otaz.imdbmovieapp.presentation.movie.MovieEvent.GetMovieEvent
+import com.otaz.imdbmovieapp.presentation.ui.movie.MovieEvent.GetMovieEvent
 import com.otaz.imdbmovieapp.presentation.theme.AppTheme
-import com.otaz.imdbmovieapp.util.TAG
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -38,11 +34,14 @@ fun MovieDetailScreen(
 
         val movie = viewModel.movie.value
 
+        val dialogQueue = viewModel.dialogQueue
+
         val scaffoldState = rememberScaffoldState()
 
         AppTheme(
             displayProgressBar = loading,
             scaffoldState = scaffoldState,
+            dialogQueue = dialogQueue.queue.value
         ) {
             Scaffold(
                 scaffoldState = scaffoldState,

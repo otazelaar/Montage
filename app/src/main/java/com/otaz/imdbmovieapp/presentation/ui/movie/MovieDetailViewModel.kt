@@ -1,4 +1,4 @@
-package com.otaz.imdbmovieapp.presentation.movie
+package com.otaz.imdbmovieapp.presentation.ui.movie
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
@@ -8,7 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.otaz.imdbmovieapp.domain.model.MovieSpecs
 import com.otaz.imdbmovieapp.interactors.movie.GetMovie
-import com.otaz.imdbmovieapp.presentation.movie.MovieEvent.*
+import com.otaz.imdbmovieapp.presentation.ui.movie.MovieEvent.*
+import com.otaz.imdbmovieapp.presentation.ui.util.DialogQueue
 import com.otaz.imdbmovieapp.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -32,6 +33,8 @@ class MovieDetailViewModel @Inject constructor(
     val movie: MutableState<MovieSpecs?> = mutableStateOf(null)
 
     val loading = mutableStateOf(false)
+
+    val dialogQueue = DialogQueue()
 
     init {
         // restore if process dies
@@ -68,7 +71,7 @@ class MovieDetailViewModel @Inject constructor(
                 state.set(STATE_KEY_MOVIE_SPECS, data.id)
                 Log.i(TAG, "getMovie: Success: ${data.id}")
             }
-            dataState.error?.let { error -> Log.e(TAG, "getMovie: error: ${error}") }
+            dataState.error?.let { error -> dialogQueue.appendErrorMessage("Error", error) }
         }.launchIn(viewModelScope)
     }
 }

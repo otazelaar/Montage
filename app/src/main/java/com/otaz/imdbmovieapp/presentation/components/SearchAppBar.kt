@@ -21,8 +21,8 @@ import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.otaz.imdbmovieapp.presentation.movie_list.MovieCategory
-import com.otaz.imdbmovieapp.presentation.movie_list.getAllMovieCategories
+import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieCategory
+import com.otaz.imdbmovieapp.presentation.ui.movie_list.getAllMovieCategories
 import kotlinx.coroutines.launch
 
 /**

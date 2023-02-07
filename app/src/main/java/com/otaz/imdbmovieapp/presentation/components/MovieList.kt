@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.otaz.imdbmovieapp.domain.model.Movie
 import com.otaz.imdbmovieapp.presentation.navigation.Screen
+import com.otaz.imdbmovieapp.presentation.ui.movie_list.PAGE_SIZE
 import com.otaz.imdbmovieapp.util.MOVIE_PAGINATION_PAGE_SIZE
 
 @Composable
@@ -38,7 +39,7 @@ fun MovieList(
                     items = movies
                 ){ index, movie ->
                     onChangeMovieScrollPosition(index)
-                    if((index + 1) >= (page * MOVIE_PAGINATION_PAGE_SIZE) && !loading){
+                    if((index + 1) >= (page * PAGE_SIZE) && !loading){
                         onTriggerNextPage()
                     }
                     MovieCard(
