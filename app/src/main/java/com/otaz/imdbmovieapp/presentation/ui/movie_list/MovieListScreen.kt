@@ -16,6 +16,7 @@ import com.otaz.imdbmovieapp.util.TAG
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MovieListScreen(
+    isNetworkAvailable: Boolean,
     onNavigateToMovieDetailScreen: (String) -> Unit,
     viewModel: MovieListViewModel,
 ){
@@ -36,6 +37,7 @@ fun MovieListScreen(
 
     AppTheme(
         displayProgressBar = loading,
+        isNetworkAvailable = isNetworkAvailable,
         scaffoldState = scaffoldState,
         dialogQueue = dialogQueue.queue.value
     ) {

@@ -25,6 +25,7 @@ class GetMovie(
     fun execute(
         apikey: String,
         id: String,
+        isNetworkAvailable: Boolean,
     ): Flow<DataState<MovieSpecs>> = flow {
         try {
             emit(DataState.loading())
@@ -36,18 +37,27 @@ class GetMovie(
 
             if (movie != null){
                 emit(DataState.success(movie))
+                // If the movie is null, it means it was not in the cache for some reason.
+                // So get it from the network. Theoretically, this is very unlikely because the data is coming from the cache
             } else {
-                val networkMovieSpecs = getMovieSpecsFromNetwork(
-                    apikey = apikey,
-                    id = id,
-                )
+                if (isNetworkAvailable){
+                    // Get movie from network and dto -> domain
+                    val networkMovieSpecs = getMovieSpecsFromNetwork(
+                        apikey = apikey,
+                        id = id,
+                    )
 
-                movieDao.insertMovie(
-                    entityMapper.mapFromDomainModel(networkMovieSpecs)
-                )
+                    //Insert into cache
+                    movieDao.insertMovie(
+                        // Map domain -> entity
+                        entityMapper.mapFromDomainModel(networkMovieSpecs)
+                    )
+                }
 
+                // Get from the cache
                 movie = getMovieSpecsFromCache(movieId = id)
 
+                // emit and finish
                 if (movie != null){
                     emit(DataState.success(movie))
                 }else{

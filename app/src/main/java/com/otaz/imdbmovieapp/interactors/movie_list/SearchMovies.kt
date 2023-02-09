@@ -26,6 +26,7 @@ class SearchMovies(
         apikey: String,
         query: String,
         page: Int,
+        isNetworkAvailable: Boolean,
     ): Flow<DataState<List<Movie>>> = flow {
         try {
             emit(DataState.loading())
@@ -38,15 +39,17 @@ class SearchMovies(
                 throw Exception("Search Failed")
             }
 
-            // Convert: NetworkMovieEntity -> Movie -> MovieCacheEntity
-            val movies = getMoviesFromNetwork(
-                apikey = apikey,
-                query = query,
-                page = page.toString()
-            )
+            if (isNetworkAvailable){
+                // Convert: NetworkMovieEntity -> Movie -> MovieCacheEntity
+                val movies = getMoviesFromNetwork(
+                    apikey = apikey,
+                    query = query,
+                    page = page.toString()
+                )
 
-            // insert into the cache
-            movieDao.insertMovies(entityMapper.toEntityList(movies))
+                // insert into the cache
+                movieDao.insertMovies(entityMapper.toEntityList(movies))
+            }
 
             // query the cache
             val cacheResult = if(query.isBlank()){

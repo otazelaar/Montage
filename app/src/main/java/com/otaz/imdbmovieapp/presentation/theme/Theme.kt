@@ -1,5 +1,6 @@
 package com.otaz.imdbmovieapp.presentation.theme
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -45,6 +46,7 @@ private val DarkThemeColors = darkColors(
 @Composable
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    isNetworkAvailable : Boolean,
     displayProgressBar: Boolean,
     scaffoldState: ScaffoldState,
     dialogQueue: Queue<GenericDialogInfo>,
@@ -59,7 +61,12 @@ fun AppTheme(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            content()
+            Column(
+                modifier = Modifier.background(MaterialTheme.colors.surface)
+            ){
+                ConnectivityMonitor(isNetworkAvailable = isNetworkAvailable)
+                content()
+            }
             CircularIndeterminateProgressBar(isDisplayed = displayProgressBar)
             DefaultSnackbar(
                 snackbarHostState = scaffoldState.snackbarHostState,

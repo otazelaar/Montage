@@ -17,6 +17,7 @@ import com.otaz.imdbmovieapp.presentation.theme.AppTheme
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MovieDetailScreen(
+    isNetworkAvailable: Boolean,
     viewModel: MovieDetailViewModel,
     movieId: String?,
 ) {
@@ -40,6 +41,7 @@ fun MovieDetailScreen(
 
         AppTheme(
             displayProgressBar = loading,
+            isNetworkAvailable = isNetworkAvailable,
             scaffoldState = scaffoldState,
             dialogQueue = dialogQueue.queue.value
         ) {

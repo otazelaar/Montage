@@ -11,6 +11,7 @@ import com.otaz.imdbmovieapp.interactors.movie_list.RestoreMovies
 import com.otaz.imdbmovieapp.interactors.movie_list.SearchMovies
 import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieListEvent.*
 import com.otaz.imdbmovieapp.presentation.ui.util.DialogQueue
+import com.otaz.imdbmovieapp.presentation.util.ConnectivityManager
 import com.otaz.imdbmovieapp.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -30,6 +31,7 @@ const val STATE_KEY_SELECTED_CATEGORY = "recipe.state.query.selected_category"
 class MovieListViewModel @Inject constructor(
     private val searchMovies: SearchMovies,
     private val restoreMovies: RestoreMovies,
+    private val connectivityManager: ConnectivityManager,
     @Named("apikey") private val apiKey: String,
     private val savedStateHandle: SavedStateHandle,
 ): ViewModel() {
@@ -112,6 +114,7 @@ class MovieListViewModel @Inject constructor(
             apikey = apiKey,
             query = query.value,
             page = page.value,
+            isNetworkAvailable = connectivityManager.isNetworkAvailable.value,
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> movies.value = list }
@@ -131,6 +134,7 @@ class MovieListViewModel @Inject constructor(
                     apikey = apiKey,
                     query = query.value,
                     page = page.value,
+                    isNetworkAvailable = connectivityManager.isNetworkAvailable.value,
                 ).onEach { dataState ->
                     loading.value = dataState.loading
                     dataState.data?.let { list -> appendMovies(list) }

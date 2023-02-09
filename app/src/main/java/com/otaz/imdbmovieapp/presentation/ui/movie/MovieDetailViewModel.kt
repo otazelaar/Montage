@@ -10,6 +10,7 @@ import com.otaz.imdbmovieapp.domain.model.MovieSpecs
 import com.otaz.imdbmovieapp.interactors.movie.GetMovie
 import com.otaz.imdbmovieapp.presentation.ui.movie.MovieEvent.*
 import com.otaz.imdbmovieapp.presentation.ui.util.DialogQueue
+import com.otaz.imdbmovieapp.presentation.util.ConnectivityManager
 import com.otaz.imdbmovieapp.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -24,6 +25,7 @@ const val STATE_KEY_MOVIE_SPECS = "movie.state.movie.specs.key"
 @HiltViewModel
 class MovieDetailViewModel @Inject constructor(
     private val getMovie: GetMovie,
+    private val connectivityManager: ConnectivityManager,
     @Named("apikey") private val apiKey: String,
     private val state: SavedStateHandle,
 ): ViewModel(){
@@ -64,6 +66,7 @@ class MovieDetailViewModel @Inject constructor(
         getMovie.execute(
             apikey = apiKey,
             id = id,
+            isNetworkAvailable = connectivityManager.isNetworkAvailable.value,
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let {

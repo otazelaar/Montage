@@ -9,15 +9,31 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.otaz.imdbmovieapp.presentation.navigation.Screen
 import com.otaz.imdbmovieapp.presentation.ui.movie.MovieDetailScreen
 import com.otaz.imdbmovieapp.presentation.ui.movie.MovieDetailViewModel
 import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieListScreen
 import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieListViewModel
-import com.otaz.imdbmovieapp.presentation.navigation.Screen
+import com.otaz.imdbmovieapp.presentation.util.ConnectivityManager
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var connectivityManager: ConnectivityManager
+
+    override fun onStart() {
+        connectivityManager.registerConnectionObserver(this)
+        super.onStart()
+    }
+
+    override fun onDestroy() {
+        connectivityManager.unregisterConnectionObserver(this)
+        super.onDestroy()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -28,6 +44,7 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     val viewModel = hiltViewModel<MovieListViewModel>()
                     MovieListScreen(
+                        isNetworkAvailable = connectivityManager.isNetworkAvailable.value,
                         onNavigateToMovieDetailScreen = navController::navigate,
                         viewModel = viewModel,
                     )
@@ -41,6 +58,7 @@ class MainActivity : AppCompatActivity() {
                 ) { navBackStackEntry ->
                     val viewModel = hiltViewModel<MovieDetailViewModel>()
                     MovieDetailScreen(
+                        isNetworkAvailable = connectivityManager.isNetworkAvailable.value,
                         movieId = navBackStackEntry.arguments?.getString("movieId"),
                         viewModel = viewModel,
                     )
