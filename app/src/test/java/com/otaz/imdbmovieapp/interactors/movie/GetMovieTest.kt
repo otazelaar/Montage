@@ -41,7 +41,6 @@ class GetMovieTest {
     private lateinit var movieDaoFake: MovieDaoFake
     private val movieSpecDtoMapper = MovieSpecDtoMapper()
     private val movieDtoMapper = MovieDtoMapper()
-    private val movieSpecEntityMapper = MovieSpecEntityMapper()
     private val movieEntityMapper = MovieEntityMapper()
 
 
@@ -67,9 +66,7 @@ class GetMovieTest {
 
         // Instantiate the system in test
         getMovie = GetMovie(
-            movieSpecDao = movieSpecDaoFake,
             movieService = movieService,
-            entityMapper = movieSpecEntityMapper,
             dtoMapper = movieSpecDtoMapper,
         )
     }
@@ -112,7 +109,6 @@ class GetMovieTest {
         val movieAsFlow = getMovie.execute(
             apikey = FAKE_APIKEY,
             id = MOVIE_ID,
-            isNetworkAvailable = true
         ).toList()
 
         // first emission should be `loading`
@@ -152,7 +148,6 @@ class GetMovieTest {
         val movieAsFlow = getMovie.execute(
             apikey = FAKE_APIKEY,
             id = MOVIE_ID,
-            isNetworkAvailable = true
         ).toList()
 
         // first emission should be `loading`

@@ -25,7 +25,6 @@ const val STATE_KEY_MOVIE_SPECS = "movie.state.movie.specs.key"
 @HiltViewModel
 class MovieDetailViewModel @Inject constructor(
     private val getMovie: GetMovie,
-    private val connectivityManager: ConnectivityManager,
     @Named("apikey") private val apiKey: String,
     private val state: SavedStateHandle,
 ): ViewModel(){
@@ -66,7 +65,6 @@ class MovieDetailViewModel @Inject constructor(
         getMovie.execute(
             apikey = apiKey,
             id = id,
-            isNetworkAvailable = connectivityManager.isNetworkAvailable.value,
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let {
