@@ -52,13 +52,13 @@ object InteractorsModule {
     @Provides
     fun provideGetMovie(
         movieService: MovieService,
-        movieDao: MovieSpecDao,
+        movieSpecDao: MovieSpecDao,
         movieEntityMapper: MovieSpecEntityMapper,
         movieDtoMapper: MovieSpecDtoMapper,
     ): GetMovie{
         return GetMovie(
             movieService = movieService,
-            movieDao = movieDao,
+            movieSpecDao = movieSpecDao,
             entityMapper = movieEntityMapper,
             dtoMapper = movieDtoMapper,
         )

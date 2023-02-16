@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.flow
  */
 
 class GetMovie(
-    private val movieDao: MovieSpecDao,
+    private val movieSpecDao: MovieSpecDao,
     private val movieService: MovieService,
     private val entityMapper: MovieSpecEntityMapper,
     private val dtoMapper: MovieSpecDtoMapper,
@@ -29,9 +29,6 @@ class GetMovie(
     ): Flow<DataState<MovieSpecs>> = flow {
         try {
             emit(DataState.loading())
-
-            // just to show pagination/progress bar because api is fast
-            delay(1000)
 
             var movie = getMovieSpecsFromCache(movieId = id)
 
@@ -48,7 +45,7 @@ class GetMovie(
                     )
 
                     //Insert into cache
-                    movieDao.insertMovie(
+                    movieSpecDao.insertMovie(
                         // Map domain -> entity
                         entityMapper.mapFromDomainModel(networkMovieSpecs)
                     )
@@ -86,7 +83,7 @@ class GetMovie(
     private suspend fun getMovieSpecsFromCache(
         movieId: String,
     ): MovieSpecs?{
-        return movieDao.getMovieById(movieId)?.let { movieSpecEntity ->
+        return movieSpecDao.getMovieById(movieId)?.let { movieSpecEntity ->
             entityMapper.mapToDomainModel(movieSpecEntity)
         }
     }

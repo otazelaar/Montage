@@ -22,7 +22,7 @@ interface MovieSpecDao {
     suspend fun insertMovies(movies: List<MovieSpecsEntity>): LongArray
 
     @Query("SELECT * FROM movie_specs WHERE id = :id")
-    suspend fun getMovieById(id: String): MovieSpecsEntity
+    suspend fun getMovieById(id: String): MovieSpecsEntity?
 
     @Query("DELETE FROM movie_specs WHERE id IN (:ids)")
     suspend fun deleteMovies(ids: List<String>): Int

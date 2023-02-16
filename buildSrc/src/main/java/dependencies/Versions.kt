@@ -12,7 +12,7 @@ object Versions {
   const val kotlin = "1.7.20"
   const val gradle = "7.3.1"
   const val hilt = "2.44"
-  const val junit5 = "1.7.0.0"
+  const val junit5 = "1.8.2.1"
   const val kotlin_compiler_extension = "1.3.2"
 
   const val core_ktx = "1.9.0"

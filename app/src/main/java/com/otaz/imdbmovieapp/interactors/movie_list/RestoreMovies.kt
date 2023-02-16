@@ -15,15 +15,13 @@ class RestoreMovies (
     private val movieDao: MovieDao,
     private val entityMapper: MovieEntityMapper,
 ){
-
     fun execute(
         page: Int,
         query: String,
     ): Flow<DataState<List<Movie>>> = flow {
         try {
-
             emit(DataState.loading())
-            delay(1000)
+
             val cacheResult = if (query.isBlank()){
                 movieDao.restoreAllMovies(
                     pageSize = MOVIE_PAGINATION_PAGE_SIZE,
