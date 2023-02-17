@@ -46,7 +46,7 @@ private val DarkThemeColors = darkColors(
 @Composable
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    isNetworkAvailable : Boolean,
+//    isNetworkAvailable : Boolean,
     displayProgressBar: Boolean,
     scaffoldState: ScaffoldState,
     dialogQueue: Queue<GenericDialogInfo>,
@@ -64,7 +64,7 @@ fun AppTheme(
             Column(
                 modifier = Modifier.background(MaterialTheme.colors.surface)
             ){
-                ConnectivityMonitor(isNetworkAvailable = isNetworkAvailable)
+//                ConnectivityMonitor(isNetworkAvailable = isNetworkAvailable)
                 content()
             }
             CircularIndeterminateProgressBar(isDisplayed = displayProgressBar)

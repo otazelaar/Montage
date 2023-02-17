@@ -9,15 +9,16 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.otaz.imdbmovieapp.domain.model.Configurations
 import com.otaz.imdbmovieapp.domain.model.Movie
 import com.otaz.imdbmovieapp.presentation.navigation.Screen
-import com.otaz.imdbmovieapp.presentation.ui.movie_list.PAGE_SIZE
 import com.otaz.imdbmovieapp.util.MOVIE_PAGINATION_PAGE_SIZE
 
 @Composable
 fun MovieList(
     loading: Boolean,
     movies: List<Movie>,
+    configurations: Configurations,
     onChangeMovieScrollPosition: (Int) -> Unit,
     onTriggerNextPage: () -> Unit,
     page: Int,
@@ -39,11 +40,12 @@ fun MovieList(
                     items = movies
                 ){ index, movie ->
                     onChangeMovieScrollPosition(index)
-                    if((index + 1) >= (page * PAGE_SIZE) && !loading){
+                    if((index + 1) >= (page * MOVIE_PAGINATION_PAGE_SIZE) && !loading){
                         onTriggerNextPage()
                     }
                     MovieCard(
                         movie = movie,
+                        configurations = configurations,
                         onClick = {
                             val route = Screen.MovieDetail.route + "/${movie.id}"
                             onNavigateToMovieDetailScreen(route)

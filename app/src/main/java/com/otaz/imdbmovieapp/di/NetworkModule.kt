@@ -1,8 +1,8 @@
 package com.otaz.imdbmovieapp.di
 
 import com.otaz.imdbmovieapp.network.MovieService
+import com.otaz.imdbmovieapp.network.model.ConfigurationDtoMapper
 import com.otaz.imdbmovieapp.network.model.MovieDtoMapper
-import com.otaz.imdbmovieapp.network.model.MovieSpecDtoMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,8 +26,8 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideMovieSpecMapper(): MovieSpecDtoMapper {
-        return MovieSpecDtoMapper()
+    fun provideConfigurationMapper(): ConfigurationDtoMapper {
+        return ConfigurationDtoMapper()
     }
 
     @Singleton
@@ -36,7 +36,7 @@ object NetworkModule {
         val client = OkHttpClient.Builder()
             .connectTimeout(100, TimeUnit.SECONDS)
             .readTimeout(100, TimeUnit.SECONDS).build();
-        return Retrofit.Builder().baseUrl("https://www.omdbapi.com/")
+        return Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -45,9 +45,9 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    @Named("apikey")
+    @Named("api_key")
     fun provideApiKey(): String{
-        return "f59dfd2c"
+        return "987919538d8b8520ab30e57e981971bf"
     }
 
 }

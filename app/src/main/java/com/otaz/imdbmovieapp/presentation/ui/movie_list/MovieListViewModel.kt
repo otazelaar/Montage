@@ -3,15 +3,15 @@ package com.otaz.imdbmovieapp.presentation.ui.movie_list
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.otaz.imdbmovieapp.domain.model.Configurations
 import com.otaz.imdbmovieapp.domain.model.Movie
-import com.otaz.imdbmovieapp.interactors.movie_list.RestoreMovies
+import com.otaz.imdbmovieapp.interactors.app.GetConfigurations
 import com.otaz.imdbmovieapp.interactors.movie_list.SearchMovies
 import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieListEvent.*
 import com.otaz.imdbmovieapp.presentation.ui.util.DialogQueue
-import com.otaz.imdbmovieapp.presentation.util.ConnectivityManager
+import com.otaz.imdbmovieapp.util.MOVIE_PAGINATION_PAGE_SIZE
 import com.otaz.imdbmovieapp.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -20,23 +20,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
-const val PAGE_SIZE = 10
-
-const val STATE_KEY_PAGE = "recipe.state.page.key"
-const val STATE_KEY_QUERY = "recipe.state.query.key"
-const val STATE_KEY_LIST_POSITION = "recipe.state.query.list_position"
-const val STATE_KEY_SELECTED_CATEGORY = "recipe.state.query.selected_category"
-
 @HiltViewModel
 class MovieListViewModel @Inject constructor(
     private val searchMovies: SearchMovies,
-    private val restoreMovies: RestoreMovies,
-    private val connectivityManager: ConnectivityManager,
-    @Named("apikey") private val apiKey: String,
-    private val savedStateHandle: SavedStateHandle,
+    private val getConfigurations: GetConfigurations,
+    @Named("api_key") private val apiKey: String,
 ): ViewModel() {
 
     val movies: MutableState<List<Movie>> = mutableStateOf(ArrayList())
+    val configurations: MutableState<Configurations> = mutableStateOf(GetConfigurations.EMPTY_CONFIGURATIONS)
 
     val query = mutableStateOf("")
 
@@ -54,25 +46,7 @@ class MovieListViewModel @Inject constructor(
     val dialogQueue = DialogQueue()
 
     init {
-        savedStateHandle.get<Int>(STATE_KEY_PAGE)?.let { p ->
-            Log.d(TAG, "restoring page: ${p}")
-            setPage(p)
-        }
-        savedStateHandle.get<String>(STATE_KEY_QUERY)?.let { q ->
-            setQuery(q)
-        }
-        savedStateHandle.get<Int>(STATE_KEY_LIST_POSITION)?.let { p ->
-            Log.d(TAG, "restoring scroll position: ${p}")
-            setListScrollPosition(p)
-        }
-        savedStateHandle.get<MovieCategory>(STATE_KEY_SELECTED_CATEGORY)?.let { c ->
-            setSelectedCategory(c)
-        }
-
-//      Were they doing something before the process died?
-        if(movieListScrollPosition != 0){
-            onTriggerEvent(RestoreStateEvent)
-        }
+        getConfigurations()
     }
 
     fun onTriggerEvent(event: MovieListEvent){
@@ -85,25 +59,11 @@ class MovieListViewModel @Inject constructor(
                     is NextPageEvent -> {
                         nextPage()
                     }
-                    is RestoreStateEvent -> {
-                        restoreState()
-                    }
                 }
             }catch (e: Exception){
                 Log.e(TAG, "onTriggerEvent: Exception ${e}, ${e.cause}")
             }
         }
-    }
-
-    private fun restoreState(){
-        restoreMovies.execute(
-            query = query.value,
-            page = page.value,
-        ).onEach { dataState ->
-            loading.value = dataState.loading
-            dataState.data?.let { list -> movies.value = list }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("Error", error) }
-        }.launchIn(viewModelScope)
     }
 
     private fun newSearch(){
@@ -113,19 +73,15 @@ class MovieListViewModel @Inject constructor(
         searchMovies.execute(
             apikey = apiKey,
             query = query.value,
-            page = page.value,
-            isNetworkAvailable = connectivityManager.isNetworkAvailable.value,
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> movies.value = list }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("Error1", error)
-                dialogQueue.appendErrorMessage("Error2", error)
-                dialogQueue.appendErrorMessage("Error3", error)}
+            dataState.error?.let { error -> dialogQueue.appendErrorMessage("Error1", error)}
         }.launchIn(viewModelScope)
     }
 
     private fun nextPage(){
-        if((movieListScrollPosition + 1) >= (page.value * PAGE_SIZE)){
+        if((movieListScrollPosition + 1) >= (page.value * MOVIE_PAGINATION_PAGE_SIZE)){
             incrementPage()
             Log.d(TAG, "nextPage: triggered: ${page.value}")
 
@@ -133,8 +89,6 @@ class MovieListViewModel @Inject constructor(
                 searchMovies.execute(
                     apikey = apiKey,
                     query = query.value,
-                    page = page.value,
-                    isNetworkAvailable = connectivityManager.isNetworkAvailable.value,
                 ).onEach { dataState ->
                     loading.value = dataState.loading
                     dataState.data?.let { list -> appendMovies(list) }
@@ -142,6 +96,18 @@ class MovieListViewModel @Inject constructor(
                 }.launchIn(viewModelScope)
             }
         }
+    }
+
+    private fun getConfigurations(){
+        Log.d(TAG, "getConfigurations running")
+
+        getConfigurations.execute(
+            apikey = apiKey,
+        ).onEach { dataState ->
+            loading.value = dataState.loading
+            dataState.data?.let { value -> configurations.value = value }
+            dataState.error?.let { error -> dialogQueue.appendErrorMessage("GetConfigurations Error", error)}
+        }.launchIn(viewModelScope)
     }
 
     /**
@@ -194,30 +160,19 @@ class MovieListViewModel @Inject constructor(
         categoryScrollPosition = position
     }
 
-    /**
-     * The following functions are for reading and writing to the savedStateHandle in the case of process death.
-     * This allows us to restore the state of the the user's experience in the app. For example, it saves the of the scroll
-     * position on the list, the page of the list for pagination, the selected category chip, and the expression entered into
-     * the search input.
-     */
-
     private fun setListScrollPosition(position: Int){
         movieListScrollPosition = position
-        savedStateHandle.set(STATE_KEY_LIST_POSITION, position)
     }
 
     private fun setPage(page: Int){
         this.page.value = page
-        savedStateHandle.set(STATE_KEY_PAGE, page)
     }
 
     private fun setSelectedCategory(category: MovieCategory?){
         selectedCategory.value = category
-        savedStateHandle.set(STATE_KEY_SELECTED_CATEGORY, category)
     }
 
     private fun setQuery(query: String){
         this.query.value = query
-        savedStateHandle.set(STATE_KEY_QUERY, query)
     }
 }

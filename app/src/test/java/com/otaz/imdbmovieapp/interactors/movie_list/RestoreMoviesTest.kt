@@ -3,7 +3,6 @@ package com.otaz.imdbmovieapp.interactors.movie_list
 import com.otaz.imdbmovieapp.cache.AppDatabaseFake
 import com.otaz.imdbmovieapp.cache.MovieDaoFake
 import com.otaz.imdbmovieapp.cache.model.MovieEntityMapper
-import com.otaz.imdbmovieapp.domain.model.Movie
 import com.otaz.imdbmovieapp.network.MovieService
 import com.otaz.imdbmovieapp.network.data.MockWebServerResponses
 import com.otaz.imdbmovieapp.network.model.MovieDtoMapper

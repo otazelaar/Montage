@@ -16,7 +16,6 @@ import com.otaz.imdbmovieapp.util.TAG
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MovieListScreen(
-    isNetworkAvailable: Boolean,
     onNavigateToMovieDetailScreen: (String) -> Unit,
     viewModel: MovieListViewModel,
 ){
@@ -25,6 +24,7 @@ fun MovieListScreen(
     // Anytime [val movies: MutableState<List<Movie>>] from [MovieListFragment] changes, this value below
     // [movies] will be updated here and in any composable that uses this value.
     val movies = viewModel.movies.value
+    val configurations = viewModel.configurations.value
 
     val loading = viewModel.loading.value
 
@@ -37,7 +37,6 @@ fun MovieListScreen(
 
     AppTheme(
         displayProgressBar = loading,
-        isNetworkAvailable = isNetworkAvailable,
         scaffoldState = scaffoldState,
         dialogQueue = dialogQueue.queue.value
     ) {
@@ -60,6 +59,7 @@ fun MovieListScreen(
             MovieList(
                 loading = loading,
                 movies = movies,
+                configurations = configurations,
                 onChangeMovieScrollPosition = viewModel::onChangeMovieScrollPosition,
                 page = page,
                 onTriggerNextPage = { viewModel.onTriggerEvent(MovieListEvent.NextPageEvent) },

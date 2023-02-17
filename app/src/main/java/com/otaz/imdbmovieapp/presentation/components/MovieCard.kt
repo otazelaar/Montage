@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import com.otaz.imdbmovieapp.domain.model.Configurations
 import com.otaz.imdbmovieapp.domain.model.Movie
 import com.otaz.imdbmovieapp.util.DEFAULT_MOVIE_IMAGE
 import com.otaz.imdbmovieapp.util.loadPicture
@@ -20,6 +21,7 @@ import com.otaz.imdbmovieapp.util.loadPicture
 @Composable
 fun MovieCard(
     movie: Movie,
+    configurations: Configurations,
     onClick: () -> Unit,
 ){
     Card(
@@ -34,7 +36,8 @@ fun MovieCard(
         elevation = 8.dp,
     ) {
         Column {
-            val image = loadPicture(url = movie.imageURL, defaultImage = DEFAULT_MOVIE_IMAGE).value
+            val image = loadPicture(
+                url = configurations.secure_base_url + "original" + movie.poster_path, defaultImage = DEFAULT_MOVIE_IMAGE).value
             image?.let { img ->
                 Image(
                     bitmap = img.asImageBitmap(),
@@ -57,10 +60,9 @@ fun MovieCard(
                         .wrapContentWidth(Alignment.Start),
                     style = MaterialTheme.typography.h3
                 )
-                val year = movie.year
-                if (year != null) {
-                    Text(
-                        text = "$year",
+                val year = movie.title
+                Text(
+                        text = year,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentWidth(Alignment.End)
@@ -68,7 +70,6 @@ fun MovieCard(
                         style = MaterialTheme.typography.h5,
                         color = Color.Green
                     )
-                }
             }
         }
     }

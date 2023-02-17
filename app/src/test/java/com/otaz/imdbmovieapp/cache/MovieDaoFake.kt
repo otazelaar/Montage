@@ -1,7 +1,6 @@
 package com.otaz.imdbmovieapp.cache
 
 import com.otaz.imdbmovieapp.cache.model.MovieEntity
-import com.otaz.imdbmovieapp.network.model.MovieDao
 
 class MovieDaoFake(
     private val appDatabaseFake: AppDatabaseFake
