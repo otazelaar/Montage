@@ -1,6 +1,6 @@
 package com.otaz.imdbmovieapp.domain.model
 
-data class Configurations(
+data class ImageConfigs(
     val backdrop_sizes: List<String>,
     val base_url: String,
     val logo_sizes: List<String>,

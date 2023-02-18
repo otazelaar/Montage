@@ -2,7 +2,7 @@ package com.otaz.imdbmovieapp.network.model
 
 import com.google.gson.annotations.SerializedName
 
-data class ImageConfigurationsDto(
+data class ImageConfigsDto(
     @SerializedName("backdrop_sizes") var backdrop_sizes: List<String>,
     @SerializedName("base_url") var base_url: String,
     @SerializedName("logo_sizes") var logo_sizes: List<String>,

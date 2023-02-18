@@ -1,12 +1,12 @@
 package com.otaz.imdbmovieapp.network.model
 
-import com.otaz.imdbmovieapp.domain.model.Configurations
+import com.otaz.imdbmovieapp.domain.model.ImageConfigs
 import com.otaz.imdbmovieapp.domain.util.DomainMapper
 
-class ConfigurationDtoMapper : DomainMapper<ImageConfigurationsDto, Configurations> {
+class ConfigsDtoMapper : DomainMapper<ImageConfigsDto, ImageConfigs> {
 
-    override fun mapToDomainModel(model: ImageConfigurationsDto): Configurations {
-        return Configurations(
+    override fun mapToDomainModel(model: ImageConfigsDto): ImageConfigs {
+        return ImageConfigs(
             backdrop_sizes = model.backdrop_sizes,
             base_url = model.base_url,
             logo_sizes = model.logo_sizes,
@@ -17,8 +17,8 @@ class ConfigurationDtoMapper : DomainMapper<ImageConfigurationsDto, Configuratio
         )
     }
 
-    override fun mapFromDomainModel(domainModel: Configurations): ImageConfigurationsDto {
-        return ImageConfigurationsDto(
+    override fun mapFromDomainModel(domainModel: ImageConfigs): ImageConfigsDto {
+        return ImageConfigsDto(
             backdrop_sizes = domainModel.backdrop_sizes,
             base_url = domainModel.base_url,
             logo_sizes = domainModel.logo_sizes,
@@ -29,7 +29,7 @@ class ConfigurationDtoMapper : DomainMapper<ImageConfigurationsDto, Configuratio
         )
     }
 
-    fun toDomainList(initial: List<ImageConfigurationsDto>): List<Configurations>{
+    fun toDomainList(initial: List<ImageConfigsDto>): List<ImageConfigs>{
         return initial.map { mapToDomainModel(it) }
     }
 }

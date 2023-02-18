@@ -5,7 +5,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.otaz.imdbmovieapp.domain.model.Configurations
+import com.otaz.imdbmovieapp.domain.model.ImageConfigs
 import com.otaz.imdbmovieapp.domain.model.Movie
 import com.otaz.imdbmovieapp.interactors.app.GetConfigurations
 import com.otaz.imdbmovieapp.interactors.movie_list.SearchMovies
@@ -28,7 +28,7 @@ class MovieListViewModel @Inject constructor(
 ): ViewModel() {
 
     val movies: MutableState<List<Movie>> = mutableStateOf(ArrayList())
-    val configurations: MutableState<Configurations> = mutableStateOf(GetConfigurations.EMPTY_CONFIGURATIONS)
+    val configurations: MutableState<ImageConfigs> = mutableStateOf(GetConfigurations.EMPTY_CONFIGURATIONS)
 
     val query = mutableStateOf("")
 

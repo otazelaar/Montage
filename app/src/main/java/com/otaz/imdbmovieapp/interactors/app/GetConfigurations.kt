@@ -1,19 +1,19 @@
 package com.otaz.imdbmovieapp.interactors.app
 
 import com.otaz.imdbmovieapp.domain.data.DataState
-import com.otaz.imdbmovieapp.domain.model.Configurations
+import com.otaz.imdbmovieapp.domain.model.ImageConfigs
 import com.otaz.imdbmovieapp.network.MovieService
-import com.otaz.imdbmovieapp.network.model.ConfigurationDtoMapper
+import com.otaz.imdbmovieapp.network.model.ConfigsDtoMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class GetConfigurations(
     private val movieService: MovieService,
-    private val configurationsDtoMapper: ConfigurationDtoMapper,
+    private val configurationsDtoMapper: ConfigsDtoMapper,
 ){
     fun execute(
         apikey: String,
-    ): Flow<DataState<Configurations>> = flow {
+    ): Flow<DataState<ImageConfigs>> = flow {
         try {
             emit(DataState.loading())
 
@@ -32,7 +32,7 @@ class GetConfigurations(
     // This function gets Dto's from the network and converts them to Movie Objects
     private suspend fun getConfigurationsFromNetwork(
         apikey: String,
-    ): Configurations{
+    ): ImageConfigs{
         return configurationsDtoMapper.mapToDomainModel(
             movieService.configuration(
                 apikey = apikey,
@@ -41,7 +41,7 @@ class GetConfigurations(
     }
 
     companion object {
-        val EMPTY_CONFIGURATIONS = Configurations(
+        val EMPTY_CONFIGURATIONS = ImageConfigs(
             backdrop_sizes = emptyList(),
             base_url = String(),
             logo_sizes = emptyList(),

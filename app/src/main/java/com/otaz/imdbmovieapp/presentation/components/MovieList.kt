@@ -9,7 +9,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.otaz.imdbmovieapp.domain.model.Configurations
+import com.otaz.imdbmovieapp.domain.model.ImageConfigs
 import com.otaz.imdbmovieapp.domain.model.Movie
 import com.otaz.imdbmovieapp.presentation.navigation.Screen
 import com.otaz.imdbmovieapp.util.MOVIE_PAGINATION_PAGE_SIZE
@@ -18,7 +18,7 @@ import com.otaz.imdbmovieapp.util.MOVIE_PAGINATION_PAGE_SIZE
 fun MovieList(
     loading: Boolean,
     movies: List<Movie>,
-    configurations: Configurations,
+    configurations: ImageConfigs,
     onChangeMovieScrollPosition: (Int) -> Unit,
     onTriggerNextPage: () -> Unit,
     page: Int,
