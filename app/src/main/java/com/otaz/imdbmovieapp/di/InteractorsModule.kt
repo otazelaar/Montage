@@ -2,6 +2,8 @@ package com.otaz.imdbmovieapp.di
 
 import com.otaz.imdbmovieapp.interactors.app.GetConfigurations
 import com.otaz.imdbmovieapp.interactors.movie.GetMovie
+import com.otaz.imdbmovieapp.interactors.movie_list.GetMostPopularMovies
+import com.otaz.imdbmovieapp.interactors.movie_list.GetUpcomingMovies
 import com.otaz.imdbmovieapp.interactors.movie_list.SearchMovies
 import com.otaz.imdbmovieapp.network.MovieService
 import com.otaz.imdbmovieapp.network.model.ConfigsDtoMapper
@@ -24,6 +26,30 @@ object InteractorsModule {
         movieDtoMapper: MovieDtoMapper,
     ): SearchMovies{
         return SearchMovies(
+            movieService = movieService,
+            dtoMapper = movieDtoMapper,
+        )
+    }
+
+    @ViewModelScoped
+    @Provides
+    fun provideGetMostPopularMovies(
+        movieService: MovieService,
+        movieDtoMapper: MovieDtoMapper,
+    ): GetMostPopularMovies{
+        return GetMostPopularMovies(
+            movieService = movieService,
+            dtoMapper = movieDtoMapper,
+        )
+    }
+
+    @ViewModelScoped
+    @Provides
+    fun provideGetUpcomingMovies(
+        movieService: MovieService,
+        movieDtoMapper: MovieDtoMapper,
+    ): GetUpcomingMovies{
+        return GetUpcomingMovies(
             movieService = movieService,
             dtoMapper = movieDtoMapper,
         )

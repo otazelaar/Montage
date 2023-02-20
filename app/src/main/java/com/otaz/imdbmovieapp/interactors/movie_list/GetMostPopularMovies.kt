@@ -7,42 +7,42 @@ import com.otaz.imdbmovieapp.network.model.MovieDtoMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class SearchMovies(
+class GetMostPopularMovies (
     private val movieService: MovieService,
     private val dtoMapper: MovieDtoMapper,
 ){
     fun execute(
         apikey: String,
-        query: String,
+        sortBy: String,
         page: Int,
     ): Flow<DataState<List<Movie>>> = flow {
         try {
             emit(DataState.loading())
 
-            val movies = getMoviesFromNetwork(
+            val movies = getMostPopularMoviesFromNetwork(
                 apikey = apikey,
-                query = query,
+                sortBy = sortBy,
                 page = page,
             )
 
             emit(DataState.success(movies))
 
         }catch (e: Exception){
-            emit(DataState.error(e.message ?: "SearchMovies: Unknown error"))
+            emit(DataState.error(e.message ?: "GetMostPopularMovies: Unknown error"))
         }
     }
 
     // This can throw an exception if there is no network connection
     // This function gets Dto's from the network and converts them to Movie Objects
-    private suspend fun getMoviesFromNetwork(
+    private suspend fun getMostPopularMoviesFromNetwork(
         apikey: String,
-        query: String,
+        sortBy: String,
         page: Int,
     ): List<Movie>{
         return dtoMapper.toDomainList(
-            movieService.searchMovies(
+            movieService.getMostPopularMovies(
                 apikey = apikey,
-                query = query,
+                sortBy = sortBy,
                 page = page,
             ).movies
         ).filter {

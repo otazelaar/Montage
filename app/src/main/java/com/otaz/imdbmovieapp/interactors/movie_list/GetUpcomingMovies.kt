@@ -7,13 +7,12 @@ import com.otaz.imdbmovieapp.network.model.MovieDtoMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class SearchMovies(
+class GetUpcomingMovies(
     private val movieService: MovieService,
     private val dtoMapper: MovieDtoMapper,
 ){
     fun execute(
         apikey: String,
-        query: String,
         page: Int,
     ): Flow<DataState<List<Movie>>> = flow {
         try {
@@ -21,14 +20,13 @@ class SearchMovies(
 
             val movies = getMoviesFromNetwork(
                 apikey = apikey,
-                query = query,
                 page = page,
             )
 
             emit(DataState.success(movies))
 
         }catch (e: Exception){
-            emit(DataState.error(e.message ?: "SearchMovies: Unknown error"))
+            emit(DataState.error(e.message ?: "GetUpcomingMovies: Unknown error"))
         }
     }
 
@@ -36,13 +34,11 @@ class SearchMovies(
     // This function gets Dto's from the network and converts them to Movie Objects
     private suspend fun getMoviesFromNetwork(
         apikey: String,
-        query: String,
         page: Int,
     ): List<Movie>{
         return dtoMapper.toDomainList(
-            movieService.searchMovies(
+            movieService.getUpcomingMovies(
                 apikey = apikey,
-                query = query,
                 page = page,
             ).movies
         ).filter {

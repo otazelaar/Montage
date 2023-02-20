@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.otaz.imdbmovieapp.domain.model.ImageConfigs
 import com.otaz.imdbmovieapp.domain.model.Movie
 import com.otaz.imdbmovieapp.interactors.app.GetConfigurations
+import com.otaz.imdbmovieapp.interactors.movie_list.GetMostPopularMovies
+import com.otaz.imdbmovieapp.interactors.movie_list.GetUpcomingMovies
 import com.otaz.imdbmovieapp.interactors.movie_list.SearchMovies
 import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieListEvent.*
 import com.otaz.imdbmovieapp.presentation.ui.util.DialogQueue
@@ -24,6 +26,8 @@ import javax.inject.Named
 class MovieListViewModel @Inject constructor(
     private val searchMovies: SearchMovies,
     private val getConfigurations: GetConfigurations,
+    private val getMostPopularMovies: GetMostPopularMovies,
+    private val getUpcomingMovies: GetUpcomingMovies,
     @Named("api_key") private val apiKey: String,
 ): ViewModel() {
 
@@ -31,18 +35,18 @@ class MovieListViewModel @Inject constructor(
     val configurations: MutableState<ImageConfigs> = mutableStateOf(GetConfigurations.EMPTY_CONFIGURATIONS)
 
     val query = mutableStateOf("")
+    private val sortingParameterPopularityDescending = "popularity.desc"
 
     val selectedCategory: MutableState<MovieCategory?> = mutableStateOf(null)
-
     var categoryScrollPosition: Int = 0
 
     val loading = mutableStateOf(false)
 
     // Pagination
     val page = mutableStateOf(1)
-    // due to MOVIE_PAGINATION_PAGE_SIZE = 10 at this time. Not sure if I can set a mutableStateOf to a const val
     var movieListScrollPosition = 0
 
+    // Error Handling
     val dialogQueue = DialogQueue()
 
     init {
@@ -54,7 +58,10 @@ class MovieListViewModel @Inject constructor(
             try {
                 when(event){
                     is NewSearchEvent -> {
-                        newSearch()
+                        // The function below abstracts out the if statements for deciding which use case/api call to use for the search
+                        // for example if a category is picked that requires a different use case than the traditional search bar is using,
+                        // then it uses the selected category to tell the onTriggerEvent which UseCase to use.
+                        newSearchUseCasePicker()
                     }
                     is NextPageEvent -> {
                         nextPage()
@@ -73,10 +80,40 @@ class MovieListViewModel @Inject constructor(
         searchMovies.execute(
             apikey = apiKey,
             query = query.value,
+            page = page.value
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> movies.value = list }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("Error1", error)}
+            dataState.error?.let { error -> dialogQueue.appendErrorMessage("newSearch: Error:", error)}
+        }.launchIn(viewModelScope)
+    }
+
+    private fun getMostPopularMovies(){
+        Log.d(TAG, "getMostPopularMovies: query: ${query.value}, page: ${page.value}")
+
+        resetSearchState()
+        getMostPopularMovies.execute(
+            apikey = apiKey,
+            sortBy = sortingParameterPopularityDescending,
+            page = page.value
+        ).onEach { dataState ->
+            loading.value = dataState.loading
+            dataState.data?.let { list -> movies.value = list }
+            dataState.error?.let { error -> dialogQueue.appendErrorMessage("getMostPopularMovies: Error:", error)}
+        }.launchIn(viewModelScope)
+    }
+
+    private fun getUpcomingMovies(){
+        Log.d(TAG, "getUpcomingMovies: query: ${query.value}, page: ${page.value}")
+
+        resetSearchState()
+        getUpcomingMovies.execute(
+            apikey = apiKey,
+            page = page.value
+        ).onEach { dataState ->
+            loading.value = dataState.loading
+            dataState.data?.let { list -> movies.value = list }
+            dataState.error?.let { error -> dialogQueue.appendErrorMessage("getUpcomingMovies: Error:", error)}
         }.launchIn(viewModelScope)
     }
 
@@ -89,6 +126,7 @@ class MovieListViewModel @Inject constructor(
                 searchMovies.execute(
                     apikey = apiKey,
                     query = query.value,
+                    page = page.value,
                 ).onEach { dataState ->
                     loading.value = dataState.loading
                     dataState.data?.let { list -> appendMovies(list) }
@@ -158,6 +196,24 @@ class MovieListViewModel @Inject constructor(
 
     fun onChangedCategoryScrollPosition(position: Int){
         categoryScrollPosition = position
+    }
+
+    private fun newSearchUseCasePicker(){
+        val movieCategorySelected = selectedCategory.value
+        val getMostPopularMovies = getMovieCategory(MovieCategory.GET_MOST_POPULAR_MOVIES.value)
+        val getUpcomingMovies = getMovieCategory(MovieCategory.GET_UPCOMING_MOVIES.value)
+
+        when (movieCategorySelected) {
+            getMostPopularMovies -> {
+                getMostPopularMovies()
+            }
+            getUpcomingMovies -> {
+                getUpcomingMovies()
+            }
+            else -> {
+                newSearch()
+            }
+        }
     }
 
     private fun setListScrollPosition(position: Int){

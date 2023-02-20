@@ -34,7 +34,7 @@ fun MovieView(
             .fillMaxWidth()
             .verticalScroll(scrollState)
     ) {
-        movie.backdrop_path.let { url ->
+        movie.backdrop_path?.let { url ->
             val image = loadPicture(
                 configurations = configurations,
                 url = url,
@@ -83,13 +83,15 @@ fun MovieView(
                             .fillMaxWidth()
                             .padding(8.dp)
                     ) {
-                        Text(
-                            text = plot,
-                            modifier = Modifier
-                                .fillMaxWidth(0.85f)
-                                .wrapContentWidth(Alignment.Start),
-                            style = MaterialTheme.typography.h3
-                        )
+                        if (plot != null) {
+                            Text(
+                                text = plot,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.85f)
+                                    .wrapContentWidth(Alignment.Start),
+                                style = MaterialTheme.typography.h3
+                            )
+                        }
                     }
                 }
             }

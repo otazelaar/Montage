@@ -26,6 +26,8 @@ fun MovieListScreen(
     val movies = viewModel.movies.value
     val configurations = viewModel.configurations.value
 
+    val selectedCategory = viewModel.selectedCategory.value
+
     val loading = viewModel.loading.value
 
     val dialogQueue = viewModel.dialogQueue
@@ -48,7 +50,7 @@ fun MovieListScreen(
                     onExecuteSearch = { viewModel.onTriggerEvent(MovieListEvent.NewSearchEvent) },
                     keyboardController = keyboardController,
                     categoryScrollPosition = viewModel.categoryScrollPosition,
-                    selectedCategory = viewModel.selectedCategory.value,
+                    selectedCategory = selectedCategory,
                     onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
                     onChangedCategoryScrollPosition = viewModel::onChangedCategoryScrollPosition,
                 )
