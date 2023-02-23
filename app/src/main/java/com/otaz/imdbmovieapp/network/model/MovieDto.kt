@@ -11,7 +11,7 @@ data class MovieDto(
     @SerializedName("overview") var overview: String,
     @SerializedName("popularity") var popularity: Double,
     @SerializedName("poster_path") var poster_path: String?,
-    @SerializedName("release_date") var release_date: String?,
+    @SerializedName("release_date") var release_date: String,
     @SerializedName("title") var title: String,
     @SerializedName("vote_count") var vote_count: Int,
 )

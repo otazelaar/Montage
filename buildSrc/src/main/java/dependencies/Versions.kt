@@ -32,4 +32,5 @@ object Versions {
   const val room =  "2.5.0"
   const val junit_jupiter = "5.7.0"
   const val datastore = "1.0.0-alpha06"
+  const val splash = "1.0.0"
 }

@@ -3,7 +3,7 @@ package com.otaz.imdbmovieapp.interactors.movie_list
 import com.otaz.imdbmovieapp.cache.AppDatabaseFake
 import com.otaz.imdbmovieapp.cache.MovieDaoFake
 import com.otaz.imdbmovieapp.cache.model.MovieEntityMapper
-import com.otaz.imdbmovieapp.network.MovieService
+import com.otaz.imdbmovieapp.network.TmdbApiService
 import com.otaz.imdbmovieapp.network.data.MockWebServerResponses
 import com.otaz.imdbmovieapp.network.model.MovieDtoMapper
 import kotlinx.coroutines.flow.toList
@@ -43,7 +43,7 @@ class RestoreMoviesTest {
 
     // Dependencies
     private lateinit var searchMovies: SearchMovies
-    private lateinit var movieService: MovieService
+    private lateinit var tmdbApiService: TmdbApiService
     private lateinit var movieDao: MovieDaoFake
     private val dtoMapper = MovieDtoMapper()
     private val entityMapper = MovieEntityMapper()
@@ -56,16 +56,16 @@ class RestoreMoviesTest {
 
         // maybe try "/" if "." doesn't work. technically mitch says we need to use whatever comes before the "." but the only text before that is the base url.
         baseUrl = mockWebServer.url(".")
-        movieService = Retrofit.Builder().baseUrl(baseUrl)
+        tmdbApiService = Retrofit.Builder().baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(MovieService::class.java)
+            .create(TmdbApiService::class.java)
 
         movieDao = MovieDaoFake(appDatabase)
 
         searchMovies = SearchMovies(
             movieDao = movieDao,
-            movieService = movieService,
+            movieService = tmdbApiService,
             entityMapper = entityMapper,
             dtoMapper = dtoMapper,
         )

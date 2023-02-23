@@ -9,6 +9,7 @@ import com.otaz.imdbmovieapp.domain.model.ImageConfigs
 import com.otaz.imdbmovieapp.domain.model.Movie
 import com.otaz.imdbmovieapp.interactors.app.GetConfigurations
 import com.otaz.imdbmovieapp.interactors.movie_list.GetMostPopularMovies
+import com.otaz.imdbmovieapp.interactors.movie_list.GetTopRatedMovies
 import com.otaz.imdbmovieapp.interactors.movie_list.GetUpcomingMovies
 import com.otaz.imdbmovieapp.interactors.movie_list.SearchMovies
 import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieListEvent.*
@@ -28,7 +29,8 @@ class MovieListViewModel @Inject constructor(
     private val getConfigurations: GetConfigurations,
     private val getMostPopularMovies: GetMostPopularMovies,
     private val getUpcomingMovies: GetUpcomingMovies,
-    @Named("api_key") private val apiKey: String,
+    private val getNowPlayingMovies: GetTopRatedMovies,
+    @Named("tmdb_apikey") private val apiKey: String,
 ): ViewModel() {
 
     val movies: MutableState<List<Movie>> = mutableStateOf(ArrayList())
@@ -117,6 +119,20 @@ class MovieListViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    private fun getTopRatedMovies(){
+        Log.d(TAG, "getTopRatedMovies: query: ${query.value}, page: ${page.value}")
+
+        resetSearchState()
+        getNowPlayingMovies.execute(
+            apikey = apiKey,
+            page = page.value
+        ).onEach { dataState ->
+            loading.value = dataState.loading
+            dataState.data?.let { list -> movies.value = list }
+            dataState.error?.let { error -> dialogQueue.appendErrorMessage("getTopRatedMovies: Error:", error)}
+        }.launchIn(viewModelScope)
+    }
+
     private fun nextPage(){
         if((movieListScrollPosition + 1) >= (page.value * MOVIE_PAGINATION_PAGE_SIZE)){
             incrementPage()
@@ -202,6 +218,7 @@ class MovieListViewModel @Inject constructor(
         val movieCategorySelected = selectedCategory.value
         val getMostPopularMovies = getMovieCategory(MovieCategory.GET_MOST_POPULAR_MOVIES.value)
         val getUpcomingMovies = getMovieCategory(MovieCategory.GET_UPCOMING_MOVIES.value)
+        val getTopRatedMovies = getMovieCategory(MovieCategory.GET_TOP_RATED_MOVIES.value)
 
         when (movieCategorySelected) {
             getMostPopularMovies -> {
@@ -209,6 +226,9 @@ class MovieListViewModel @Inject constructor(
             }
             getUpcomingMovies -> {
                 getUpcomingMovies()
+            }
+            getTopRatedMovies -> {
+                getTopRatedMovies()
             }
             else -> {
                 newSearch()

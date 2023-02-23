@@ -61,7 +61,7 @@ fun SearchAppBar(
                         onExpressionChanged(userInput)
                     },
                     label = {
-                        Text(text = "Search Movies, Series, etc.")
+                        Text(text = "Search Movies")
                     },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,

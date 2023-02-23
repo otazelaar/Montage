@@ -2,13 +2,13 @@ package com.otaz.imdbmovieapp.interactors.app
 
 import com.otaz.imdbmovieapp.domain.data.DataState
 import com.otaz.imdbmovieapp.domain.model.ImageConfigs
-import com.otaz.imdbmovieapp.network.MovieService
+import com.otaz.imdbmovieapp.network.TmdbApiService
 import com.otaz.imdbmovieapp.network.model.ConfigsDtoMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class GetConfigurations(
-    private val movieService: MovieService,
+    private val tmdbApiService: TmdbApiService,
     private val configurationsDtoMapper: ConfigsDtoMapper,
 ){
     fun execute(
@@ -34,7 +34,7 @@ class GetConfigurations(
         apikey: String,
     ): ImageConfigs{
         return configurationsDtoMapper.mapToDomainModel(
-            movieService.configuration(
+            tmdbApiService.configuration(
                 apikey = apikey,
             ).imageConfigurations
         )

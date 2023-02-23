@@ -5,17 +5,11 @@ import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieCategory.*
 enum class MovieCategory(val value: String){
     GET_MOST_POPULAR_MOVIES("Popular"),
     GET_UPCOMING_MOVIES("Upcoming"),
-    MOVIE_ONE("Iron Man"),
-    MOVIE_TWO("Interstellar"),
-    MOVIE_FOUR("Dessert"),
-    MOVIE_FIVE("Vegetarian"),
-    MOVIE_SIX("Milk"),
-    MOVIE_SEVEN("Vegan"),
-    MOVIE_NINE("Donut"),
+    GET_TOP_RATED_MOVIES("Top Rated"),
 }
 
 fun getAllMovieCategories(): List<MovieCategory>{
-    return listOf(GET_MOST_POPULAR_MOVIES, GET_UPCOMING_MOVIES, MOVIE_ONE, MOVIE_TWO, MOVIE_FOUR, MOVIE_FIVE, MOVIE_SIX, MOVIE_SEVEN, MOVIE_NINE)
+    return listOf(GET_MOST_POPULAR_MOVIES, GET_UPCOMING_MOVIES, GET_TOP_RATED_MOVIES)
 }
 
 fun getMovieCategory(value: String): MovieCategory? {

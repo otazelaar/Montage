@@ -9,11 +9,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.otaz.imdbmovieapp.domain.model.ImageConfigs
-import com.otaz.imdbmovieapp.domain.model.MovieSpecs
+import com.otaz.imdbmovieapp.domain.model.OmdbMovieSpecs
+import com.otaz.imdbmovieapp.domain.model.TmdbMovieSpecs
 import com.otaz.imdbmovieapp.util.DEFAULT_MOVIE_IMAGE
 import com.otaz.imdbmovieapp.util.loadPicture
 
@@ -25,7 +27,8 @@ const val IMAGE_HEIGHT = 260
 @Composable
 fun MovieView(
     configurations: ImageConfigs,
-    movie: MovieSpecs
+    movieTmdb: TmdbMovieSpecs,
+    movieOmdb: OmdbMovieSpecs,
 ){
     val scrollState = rememberScrollState()
 
@@ -34,7 +37,7 @@ fun MovieView(
             .fillMaxWidth()
             .verticalScroll(scrollState)
     ) {
-        movie.backdrop_path?.let { url ->
+        movieTmdb.backdrop_path?.let { url ->
             val image = loadPicture(
                 configurations = configurations,
                 url = url,
@@ -56,7 +59,7 @@ fun MovieView(
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
-            movie.title.let { title ->
+            movieTmdb.title.let { title ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -70,14 +73,14 @@ fun MovieView(
                         style = MaterialTheme.typography.h3
                     )
                     Text(
-                        text = movie.release_date,
+                        text = movieTmdb.release_date,
                         modifier = Modifier
                             .wrapContentWidth(Alignment.End)
                             .align(Alignment.CenterVertically), // because the rank text is smaller, it needs to be center vertically to be in line with the Title next to it.
                         style = MaterialTheme.typography.h5
                     )
                 }
-                movie.overview.let { plot ->
+                movieTmdb.overview.let { plot ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -90,6 +93,24 @@ fun MovieView(
                                     .fillMaxWidth(0.85f)
                                     .wrapContentWidth(Alignment.Start),
                                 style = MaterialTheme.typography.h3
+                            )
+                        }
+                    }
+                }
+                movieOmdb.imdbRating.let { rating ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    ) {
+                        if (rating != null) {
+                            Text(
+                                text = rating,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.85f)
+                                    .wrapContentWidth(Alignment.Start),
+                                style = MaterialTheme.typography.h3,
+                                color = Color.Green,
                             )
                         }
                     }

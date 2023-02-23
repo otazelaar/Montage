@@ -2,13 +2,13 @@ package com.otaz.imdbmovieapp.interactors.movie_list
 
 import com.otaz.imdbmovieapp.domain.data.DataState
 import com.otaz.imdbmovieapp.domain.model.Movie
-import com.otaz.imdbmovieapp.network.MovieService
+import com.otaz.imdbmovieapp.network.TmdbApiService
 import com.otaz.imdbmovieapp.network.model.MovieDtoMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class GetUpcomingMovies(
-    private val movieService: MovieService,
+    private val tmdbApiService: TmdbApiService,
     private val dtoMapper: MovieDtoMapper,
 ){
     fun execute(
@@ -37,7 +37,7 @@ class GetUpcomingMovies(
         page: Int,
     ): List<Movie>{
         return dtoMapper.toDomainList(
-            movieService.getUpcomingMovies(
+            tmdbApiService.getUpcomingMovies(
                 apikey = apikey,
                 page = page,
             ).movies

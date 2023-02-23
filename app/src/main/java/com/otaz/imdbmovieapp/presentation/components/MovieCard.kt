@@ -65,9 +65,11 @@ fun MovieCard(
                         .wrapContentWidth(Alignment.Start),
                     style = MaterialTheme.typography.h3
                 )
-                val year = movie.title
+                val year = movie.release_date
                 Text(
-                        text = year,
+                        // the dates are formatted as yyyy-dd-mm
+                        // All we want is the year which is the first 4 characters
+                        text = year.take(4),
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentWidth(Alignment.End)
