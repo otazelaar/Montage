@@ -1,4 +1,4 @@
-package com.otaz.imdbmovieapp.interactors.movie
+package com.otaz.imdbmovieapp.interactors.movie_detail
 
 import com.otaz.imdbmovieapp.domain.data.DataState
 import com.otaz.imdbmovieapp.domain.model.TmdbMovieSpecs
@@ -37,7 +37,7 @@ class GetTmdbMovie(
         tmdb_id: Int,
     ): TmdbMovieSpecs{
         return tmdbMovieSpecDtoMapper.mapToDomainModel(
-            tmdbApiService.getMovie(
+            tmdbApiService.getMovieSpecs(
                 apikey = tmdb_apikey,
                 id = tmdb_id,
             )

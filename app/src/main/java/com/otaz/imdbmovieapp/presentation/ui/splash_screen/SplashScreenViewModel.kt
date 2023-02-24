@@ -3,7 +3,6 @@ package com.otaz.imdbmovieapp.presentation.ui.splash_screen
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.otaz.imdbmovieapp.di.BaseApplication
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

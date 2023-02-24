@@ -1,4 +1,4 @@
-package com.otaz.imdbmovieapp.interactors.movie
+package com.otaz.imdbmovieapp.interactors.movie_detail
 
 import com.otaz.imdbmovieapp.domain.data.DataState
 import com.otaz.imdbmovieapp.domain.model.OmdbMovieSpecs

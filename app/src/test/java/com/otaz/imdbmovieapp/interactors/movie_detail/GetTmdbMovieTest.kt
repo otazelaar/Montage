@@ -1,4 +1,4 @@
-package com.otaz.imdbmovieapp.interactors.movie
+package com.otaz.imdbmovieapp.interactors.movie_detail
 
 import com.otaz.imdbmovieapp.cache.AppDatabaseFake
 import com.otaz.imdbmovieapp.cache.MovieDaoFake

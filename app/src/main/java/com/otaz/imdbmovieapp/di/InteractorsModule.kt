@@ -1,18 +1,16 @@
 package com.otaz.imdbmovieapp.di
 
 import com.otaz.imdbmovieapp.interactors.app.GetConfigurations
-import com.otaz.imdbmovieapp.interactors.movie.GetOmdbMovie
-import com.otaz.imdbmovieapp.interactors.movie.GetTmdbMovie
+import com.otaz.imdbmovieapp.interactors.movie_detail.GetMovieReviews
+import com.otaz.imdbmovieapp.interactors.movie_detail.GetOmdbMovie
+import com.otaz.imdbmovieapp.interactors.movie_detail.GetTmdbMovie
 import com.otaz.imdbmovieapp.interactors.movie_list.GetMostPopularMovies
 import com.otaz.imdbmovieapp.interactors.movie_list.GetTopRatedMovies
 import com.otaz.imdbmovieapp.interactors.movie_list.GetUpcomingMovies
 import com.otaz.imdbmovieapp.interactors.movie_list.SearchMovies
 import com.otaz.imdbmovieapp.network.OmdbApiService
 import com.otaz.imdbmovieapp.network.TmdbApiService
-import com.otaz.imdbmovieapp.network.model.ConfigsDtoMapper
-import com.otaz.imdbmovieapp.network.model.MovieDtoMapper
-import com.otaz.imdbmovieapp.network.model.OmdbMoviesSpecsDtoMapper
-import com.otaz.imdbmovieapp.network.model.TmdbMovieSpecsDtoMapper
+import com.otaz.imdbmovieapp.network.model.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -61,7 +59,7 @@ object InteractorsModule {
 
     @ViewModelScoped
     @Provides
-    fun provideGetNowPlayingMovies(
+    fun provideGetTopRatedMovies(
         tmdbApiService: TmdbApiService,
         movieDtoMapper: MovieDtoMapper,
     ): GetTopRatedMovies{
@@ -104,6 +102,18 @@ object InteractorsModule {
         return GetOmdbMovie(
             omdbApiService = omdbApiService,
             omdbMovieSpecDtoMapper = omdbMoviesSpecsDtoMapper,
+        )
+    }
+
+    @ViewModelScoped
+    @Provides
+    fun provideGetMovieReviews(
+        tmdbApiService: TmdbApiService,
+        movieReviewsDtoMapper: MovieReviewsDtoMapper,
+    ): GetMovieReviews{
+        return GetMovieReviews(
+            tmdbApiService = tmdbApiService,
+            movieReviewsDtoMapper = movieReviewsDtoMapper,
         )
     }
 }

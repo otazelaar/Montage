@@ -29,7 +29,7 @@ class MovieListViewModel @Inject constructor(
     private val getConfigurations: GetConfigurations,
     private val getMostPopularMovies: GetMostPopularMovies,
     private val getUpcomingMovies: GetUpcomingMovies,
-    private val getNowPlayingMovies: GetTopRatedMovies,
+    private val getTopRatedMovies: GetTopRatedMovies,
     @Named("tmdb_apikey") private val apiKey: String,
 ): ViewModel() {
 
@@ -123,7 +123,7 @@ class MovieListViewModel @Inject constructor(
         Log.d(TAG, "getTopRatedMovies: query: ${query.value}, page: ${page.value}")
 
         resetSearchState()
-        getNowPlayingMovies.execute(
+        getTopRatedMovies.execute(
             apikey = apiKey,
             page = page.value
         ).onEach { dataState ->

@@ -13,7 +13,7 @@ data class TmdbMovieSpecs(
     val popularity: Double,
     val poster_path: String?,
     val release_date: String,
-    val revenue: Int,
+    val revenue: Long?,
     val runtime: Int?,
     val status: String,
     val tagline: String?,

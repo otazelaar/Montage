@@ -3,6 +3,7 @@ package com.otaz.imdbmovieapp.network
 import com.otaz.imdbmovieapp.network.responses.ConfigurationResponse
 import com.otaz.imdbmovieapp.network.responses.MovieResponse
 import com.otaz.imdbmovieapp.network.model.TmdbMovieSpecsDto
+import com.otaz.imdbmovieapp.network.responses.MovieReviewsResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -51,10 +52,20 @@ interface TmdbApiService {
      * Search for a movie using an id
      */
     @GET("movie/{movie_id}")
-    suspend fun getMovie(
+    suspend fun getMovieSpecs(
         @Path("movie_id") id: Int,
         @Query("api_key") apikey: String,
     ): TmdbMovieSpecsDto
+
+    /**
+     * Search for the review of a movie using an TMDB ID
+     */
+    @GET("movie/{movie_id}/reviews")
+    suspend fun getMovieReviews(
+        @Path("movie_id") id: Int,
+        @Query("api_key") apikey: String,
+        @Query("page") page: Int,
+    ): MovieReviewsResponse
 
     /**
      *

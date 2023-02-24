@@ -2,10 +2,7 @@ package com.otaz.imdbmovieapp.di
 
 import com.otaz.imdbmovieapp.network.OmdbApiService
 import com.otaz.imdbmovieapp.network.TmdbApiService
-import com.otaz.imdbmovieapp.network.model.ConfigsDtoMapper
-import com.otaz.imdbmovieapp.network.model.MovieDtoMapper
-import com.otaz.imdbmovieapp.network.model.OmdbMoviesSpecsDtoMapper
-import com.otaz.imdbmovieapp.network.model.TmdbMovieSpecsDtoMapper
+import com.otaz.imdbmovieapp.network.model.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,6 +40,12 @@ object NetworkModule {
     @Provides
     fun provideOmdbMovieSpecsMapper(): OmdbMoviesSpecsDtoMapper {
         return OmdbMoviesSpecsDtoMapper()
+    }
+
+    @Singleton
+    @Provides
+    fun provideMovieReviewsDtoMapper(): MovieReviewsDtoMapper {
+        return MovieReviewsDtoMapper()
     }
 
     @Singleton

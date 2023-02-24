@@ -19,7 +19,7 @@ import com.otaz.imdbmovieapp.util.DEFAULT_MOVIE_IMAGE
 import com.otaz.imdbmovieapp.util.loadPicture
 
 @Composable
-fun MovieCard(
+fun MovieListView(
     movie: Movie,
     configurations: ImageConfigs,
     onClick: () -> Unit,

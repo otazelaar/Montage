@@ -15,7 +15,7 @@ data class TmdbMovieSpecsDto(
     @SerializedName("popularity") var popularity: Double,
     @SerializedName("poster_path") var poster_path: String?,
     @SerializedName("release_date") var release_date: String,
-    @SerializedName("revenue") var revenue: Int,
+    @SerializedName("revenue") var revenue: Long?,
     @SerializedName("runtime") var runtime: Int?,
     @SerializedName("status") var status: String,
     @SerializedName("tagline") var tagline: String?,

@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
@@ -14,8 +13,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.otaz.imdbmovieapp.di.BaseApplication
 import com.otaz.imdbmovieapp.presentation.navigation.Screen
-import com.otaz.imdbmovieapp.presentation.ui.movie.MovieDetailScreen
-import com.otaz.imdbmovieapp.presentation.ui.movie.MovieDetailViewModel
+import com.otaz.imdbmovieapp.presentation.ui.movie_detail.MovieDetailScreen
+import com.otaz.imdbmovieapp.presentation.ui.movie_detail.MovieDetailViewModel
 import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieListScreen
 import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieListViewModel
 import com.otaz.imdbmovieapp.presentation.ui.splash_screen.SplashScreenViewModel
@@ -62,7 +61,6 @@ class MainActivity : AppCompatActivity() {
                         onNavigateToMovieDetailScreen = navController::navigate,
                         viewModel = viewModel,
                     )
-
                 }
                 composable(
                     route = Screen.MovieDetail.route + "/{movieId}",
