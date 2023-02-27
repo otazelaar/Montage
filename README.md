@@ -1,25 +1,25 @@
 # Movie Database App
 
-- Search Movies by Title of the film
+- Search movies by film title
 
 - Learn information such as:
-  - Director, Release date, Runtime
+  - Director, release date, runtime
   - IMDB Rating
-  - Metacritic Score
+  - Metacritic score
   - Plot overview
   - Reviews from TMDB API users (***SPOILER ALERT***)
 
-- Use search presets to see lists of Popular, Upcoming, Top Rated movies
+- Use search presets to see lists of popular, upcoming, top rated movies
 
 <img src="https://user-images.githubusercontent.com/98372611/221631977-e1e4fda2-9aad-4736-a5b3-2ae35a835e68.png" width="250" height="550"><img src="https://user-images.githubusercontent.com/98372611/221631989-bf245f37-a128-40f3-b1f8-86415b809ee0.png" width="250" height="550">
 
 # Features
-- Light & Dark Mode
+- Light & dark Mode
   - Mode matches your system preferences
 
 # Architecture
 - MVVM
-- Use Cases
+- Use cases
 
 # APIs
 - Two different APIs were integrated using Retrofit
