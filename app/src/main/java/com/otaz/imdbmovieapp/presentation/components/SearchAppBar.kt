@@ -8,18 +8,26 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.SoftwareKeyboardController
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.dp
 import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieCategory
 import com.otaz.imdbmovieapp.presentation.ui.movie_list.getAllMovieCategories
@@ -37,6 +45,8 @@ fun SearchAppBar(
     onExpressionChanged: (String) -> Unit,
     onExecuteSearch: () -> Unit,
     keyboardController: SoftwareKeyboardController?,
+    focusRequester: FocusRequester,
+    focusManager: FocusManager,
     categoryScrollPosition: Int,
     selectedCategory: MovieCategory?,
     onSelectedCategoryChanged: (String) -> Unit,
@@ -44,7 +54,7 @@ fun SearchAppBar(
 ){
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colors.surface,
+        color = MaterialTheme.colors.background,
         elevation = 8.dp,
     ) {
         Column {
@@ -52,10 +62,17 @@ fun SearchAppBar(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 TextField(
+                    shape = RoundedCornerShape(20.dp),
                     modifier = Modifier
-                        .fillMaxWidth(.9f)
-                        .padding(8.dp)
-                        .background(MaterialTheme.colors.surface),
+                        .focusRequester(focusRequester)
+                        .fillMaxWidth()
+                        .padding(top = 4.dp, bottom = 8.dp, start = 4.dp, end = 4.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        backgroundColor = MaterialTheme.colors.surface,
+                    ),
                     value = expression,
                     onValueChange = { userInput ->
                         onExpressionChanged(userInput)
@@ -70,13 +87,23 @@ fun SearchAppBar(
                     leadingIcon = {
                         Icon(Icons.Filled.Search, "Search Icon")
                     },
-                    keyboardActions = KeyboardActions(onSearch = {
-                        onExecuteSearch()
-                        keyboardController?.hide()
-                    }),
+                    keyboardActions = KeyboardActions(
+                        onSearch = {
+                            onExecuteSearch()
+                            keyboardController?.hide()
+                            focusRequester.freeFocus()
+                            focusManager.clearFocus(true)
+                        },
+                        onDone = {
+//                            KeyboardActions.Default.onDone
+                            keyboardController?.hide()
+                            focusRequester.freeFocus()
+                            focusManager.clearFocus(true)
+                        }
+                    ),
                     textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.onSurface),
 
-                )
+                    )
             }
 
             val scrollState = rememberScrollState()

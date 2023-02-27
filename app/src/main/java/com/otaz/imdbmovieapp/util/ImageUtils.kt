@@ -14,7 +14,6 @@ import com.bumptech.glide.request.transition.Transition
 import com.otaz.imdbmovieapp.R
 import com.otaz.imdbmovieapp.domain.model.ImageConfigs
 
-const val DEFAULT_MOVIE_IMAGE = R.drawable.ic_movie_image
 
 @SuppressLint("UnrememberedMutableState")
 @Composable

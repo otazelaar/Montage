@@ -2,18 +2,22 @@ package com.otaz.imdbmovieapp.presentation.theme
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.darkColors
+import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import com.otaz.imdbmovieapp.presentation.components.*
-import com.otaz.imdbmovieapp.presentation.ui.util.DialogQueue
-import java.util.Queue
+import com.otaz.imdbmovieapp.presentation.components.CircularIndeterminateProgressBar
+import com.otaz.imdbmovieapp.presentation.components.DefaultSnackbar
+import com.otaz.imdbmovieapp.presentation.components.GenericDialog
+import com.otaz.imdbmovieapp.presentation.components.GenericDialogInfo
+import java.util.*
 
 private val LightThemeColors = lightColors(
     primary = Yellow600,
@@ -62,7 +66,7 @@ fun AppTheme(
                 .fillMaxSize()
         ) {
             Column(
-                modifier = Modifier.background(MaterialTheme.colors.surface)
+                modifier = Modifier.background(MaterialTheme.colors.background)
             ){
 //                ConnectivityMonitor(isNetworkAvailable = isNetworkAvailable)
                 content()

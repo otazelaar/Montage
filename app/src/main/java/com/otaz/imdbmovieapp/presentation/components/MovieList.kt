@@ -27,7 +27,7 @@ fun MovieList(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colors.surface)
+            .background(color = MaterialTheme.colors.background)
     ) {
         if (loading && movies.isEmpty()) {
             ShimmerMovieListCardItem(

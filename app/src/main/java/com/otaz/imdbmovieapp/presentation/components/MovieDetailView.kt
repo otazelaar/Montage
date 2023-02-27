@@ -1,11 +1,9 @@
 package com.otaz.imdbmovieapp.presentation.components
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Card
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -21,16 +19,13 @@ import com.otaz.imdbmovieapp.domain.model.ImageConfigs
 import com.otaz.imdbmovieapp.domain.model.MovieReview
 import com.otaz.imdbmovieapp.domain.model.OmdbMovieSpecs
 import com.otaz.imdbmovieapp.domain.model.TmdbMovieSpecs
-import com.otaz.imdbmovieapp.presentation.navigation.Screen
-import com.otaz.imdbmovieapp.util.DEFAULT_MOVIE_IMAGE
-import com.otaz.imdbmovieapp.util.MOVIE_PAGINATION_PAGE_SIZE
+import com.otaz.imdbmovieapp.presentation.components.util.DEFAULT_MOVIE_IMAGE
+import com.otaz.imdbmovieapp.presentation.components.util.IMAGE_HEIGHT
 import com.otaz.imdbmovieapp.util.loadPicture
 
 /**
  * This screen represents the
  */
-
-const val IMAGE_HEIGHT = 260
 
 @Composable
 fun MovieDetailView(

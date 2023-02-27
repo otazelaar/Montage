@@ -8,12 +8,12 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.otaz.imdbmovieapp.presentation.components.IMAGE_HEIGHT
 import com.otaz.imdbmovieapp.presentation.components.MovieDetailView
 import com.otaz.imdbmovieapp.presentation.components.ShimmerMovieCardItem
+import com.otaz.imdbmovieapp.presentation.components.ShimmerMovieListCardItem
+import com.otaz.imdbmovieapp.presentation.components.util.IMAGE_HEIGHT
 import com.otaz.imdbmovieapp.presentation.theme.AppTheme
 import com.otaz.imdbmovieapp.presentation.ui.movie_detail.MovieEvent.*
-import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieListEvent
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -22,7 +22,10 @@ fun MovieDetailScreen(
     movieId: Int?,
 ) {
     if(movieId == null){
-//        TODO("Show invalid Movie")
+        ShimmerMovieListCardItem(
+                imageHeight = 250.dp,
+                padding = 8.dp
+            )
     } else {
         // The purpose of the following block is to make sure the movie is only called once.
         // Before, this was being performed in the onCreate function but we are no longer using fragments.
@@ -40,8 +43,6 @@ fun MovieDetailScreen(
             viewModel.onLoad.value = true
             viewModel.onTriggerEvent(GetTmdbMovieEvent(movieId))
         }
-
-        // for review list
 
         AppTheme(
             displayProgressBar = loading,

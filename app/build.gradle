@@ -31,6 +31,7 @@ android {
     }
     buildTypes {
         release {
+            // make sure to turn the following line of code to true when I release it
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -101,4 +102,6 @@ dependencies {
 
     // compose testing
     implementation InstrumentationTest.compose_ui
+    implementation AndroidX.compose_ui_preview
+    debugImplementation AndroidX.compose_ui_preview_tooling
 }

@@ -5,8 +5,13 @@ import android.util.Log
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalTextInputService
+import androidx.compose.ui.text.input.TextInputService
 import com.otaz.imdbmovieapp.presentation.components.MovieList
 import com.otaz.imdbmovieapp.presentation.components.SearchAppBar
 import com.otaz.imdbmovieapp.presentation.theme.AppTheme
@@ -21,6 +26,10 @@ fun MovieListScreen(
 ){
     Log.d(TAG, "MovieListScreen: $viewModel")
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    val focusRequester = FocusRequester()
+    val f = LocalFocusManager.current
+
     // Anytime [val movies: MutableState<List<Movie>>] from [MovieListFragment] changes, this value below
     // [movies] will be updated here and in any composable that uses this value.
     val movies = viewModel.movies.value
@@ -49,6 +58,8 @@ fun MovieListScreen(
                     onExpressionChanged = viewModel::onQueryChanged,
                     onExecuteSearch = { viewModel.onTriggerEvent(MovieListEvent.NewSearchEvent) },
                     keyboardController = keyboardController,
+                    focusRequester = focusRequester,
+                    focusManager = f,
                     categoryScrollPosition = viewModel.categoryScrollPosition,
                     selectedCategory = selectedCategory,
                     onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,

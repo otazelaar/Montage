@@ -17,11 +17,12 @@ object Versions {
 
   const val core_ktx = "1.9.0"
   const val app_compat = "1.7.0-alpha01"
-  const val material = "1.2.1" // not sure if this is for compose or not
+  const val material = "1.2.1"
   const val constraint_layout = "1.0.1"
   const val androidx_ui = "1.0.0-alpha07"
-  const val compose = "1.4.0-alpha03"
+  const val compose = "1.3.1"
   const val compose_activity = "1.6.1"
+  const val compose_tooling = "1.3.2"
   const val nav_component = "2.5.3"
   const val nav_compose = "2.4.0-beta02" // I did not have this previously. may cause an issue
   const val hilt_navigation = "1.0.0-alpha03"
