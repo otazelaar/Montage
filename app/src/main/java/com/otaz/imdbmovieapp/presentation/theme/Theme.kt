@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.otaz.imdbmovieapp.presentation.components.CircularIndeterminateProgressBar
 import com.otaz.imdbmovieapp.presentation.components.DefaultSnackbar
 import com.otaz.imdbmovieapp.presentation.components.GenericDialog
 import com.otaz.imdbmovieapp.presentation.components.GenericDialogInfo
@@ -51,7 +50,6 @@ private val DarkThemeColors = darkColors(
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
 //    isNetworkAvailable : Boolean,
-    displayProgressBar: Boolean,
     scaffoldState: ScaffoldState,
     dialogQueue: Queue<GenericDialogInfo>,
     content: @Composable () -> Unit,
@@ -71,7 +69,6 @@ fun AppTheme(
 //                ConnectivityMonitor(isNetworkAvailable = isNetworkAvailable)
                 content()
             }
-            CircularIndeterminateProgressBar(isDisplayed = displayProgressBar)
             DefaultSnackbar(
                 snackbarHostState = scaffoldState.snackbarHostState,
                 onDismiss = {

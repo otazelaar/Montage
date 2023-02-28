@@ -1,23 +1,17 @@
 package com.otaz.imdbmovieapp.presentation.components
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -25,7 +19,6 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.dp
@@ -42,11 +35,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun SearchAppBar(
     expression: String,
-    onExpressionChanged: (String) -> Unit,
+    onQueryChanged: (String) -> Unit,
     onExecuteSearch: () -> Unit,
     keyboardController: SoftwareKeyboardController?,
     focusRequester: FocusRequester,
     focusManager: FocusManager,
+    resetForNextSearch: () -> Unit,
+    keyboardIsVisible: Boolean,
     categoryScrollPosition: Int,
     selectedCategory: MovieCategory?,
     onSelectedCategoryChanged: (String) -> Unit,
@@ -75,35 +70,40 @@ fun SearchAppBar(
                     ),
                     value = expression,
                     onValueChange = { userInput ->
-                        onExpressionChanged(userInput)
+                        onQueryChanged(userInput)
                     },
                     label = {
                         Text(text = "Search Movies")
                     },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Search
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Search,
+                        ),
                     leadingIcon = {
-                        Icon(Icons.Filled.Search, "Search Icon")
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = "Search Icon",
+                            modifier = Modifier.clickable {
+                                resetForNextSearch()
+                                focusRequester.requestFocus()
+                            }
+                        )
                     },
                     keyboardActions = KeyboardActions(
                         onSearch = {
                             onExecuteSearch()
-                            keyboardController?.hide()
-                            focusRequester.freeFocus()
-                            focusManager.clearFocus(true)
+                            focusManager.clearFocus()
                         },
                         onDone = {
-//                            KeyboardActions.Default.onDone
-                            keyboardController?.hide()
-                            focusRequester.freeFocus()
-                            focusManager.clearFocus(true)
+                            // how do i know that this will only call once?
+                            if(!keyboardIsVisible){
+                                focusManager.clearFocus()
+                            }
                         }
                     ),
                     textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.onSurface),
-
-                    )
+                )
             }
 
             val scrollState = rememberScrollState()
@@ -130,6 +130,7 @@ fun SearchAppBar(
                         },
                         onExecuteSearch = {
                             onExecuteSearch()
+                            focusManager.clearFocus()
                         },
                     )
                 }

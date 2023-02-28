@@ -42,7 +42,7 @@ fun MovieListImageView(
                 contentDescription = "movie image",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(635.dp),
+                    .height(630.dp),
                 contentScale = ContentScale.Crop,
             )
         }

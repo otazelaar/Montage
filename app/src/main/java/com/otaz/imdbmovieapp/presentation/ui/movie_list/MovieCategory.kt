@@ -6,11 +6,10 @@ enum class MovieCategory(val value: String){
     GET_MOST_POPULAR_MOVIES("Popular"),
     GET_UPCOMING_MOVIES("Upcoming"),
     GET_TOP_RATED_MOVIES("Top Rated"),
-    MOVIE_TWO("Interstellar"),
 }
 
 fun getAllMovieCategories(): List<MovieCategory>{
-    return listOf(GET_MOST_POPULAR_MOVIES, GET_UPCOMING_MOVIES, GET_TOP_RATED_MOVIES, MOVIE_TWO)
+    return listOf(GET_MOST_POPULAR_MOVIES, GET_UPCOMING_MOVIES, GET_TOP_RATED_MOVIES)
 }
 
 fun getMovieCategory(value: String): MovieCategory? {

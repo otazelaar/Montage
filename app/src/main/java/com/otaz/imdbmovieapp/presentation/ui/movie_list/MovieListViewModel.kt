@@ -1,8 +1,12 @@
 package com.otaz.imdbmovieapp.presentation.ui.movie_list
 
 import android.util.Log
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.ime
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.otaz.imdbmovieapp.domain.model.ImageConfigs
@@ -79,6 +83,9 @@ class MovieListViewModel @Inject constructor(
         Log.d(TAG, "newSearch: query: ${query.value}, page: ${page.value}")
 
         resetSearchState()
+        // the following line of code did not work
+        // The on execute search has to be called twice it may be something with that
+//        checkIfSelectedCategoryIsCleared()
         searchMovies.execute(
             apikey = apiKey,
             query = query.value,
@@ -185,7 +192,9 @@ class MovieListViewModel @Inject constructor(
     }
 
     /**
-     * Called when a new search is executed
+     * Called when a new search is executed and when Icon in SearchAppBar is clicked
+     * This will reset search state. if this doesn't work then i need to make a separate function that
+     * at least will clear the search query
      */
     private fun resetSearchState(){
         movies.value = listOf()
@@ -215,24 +224,22 @@ class MovieListViewModel @Inject constructor(
     }
 
     private fun newSearchUseCasePicker(){
+//      textViewQuery is needed to determine if user is attempting to search for a movie after having
+//      searched using a MovieCategoryChip. If the textViewQuery changes but this is
+        val textViewQuery = query.value
         val movieCategorySelected = selectedCategory.value
         val getMostPopularMovies = getMovieCategory(MovieCategory.GET_MOST_POPULAR_MOVIES.value)
         val getUpcomingMovies = getMovieCategory(MovieCategory.GET_UPCOMING_MOVIES.value)
         val getTopRatedMovies = getMovieCategory(MovieCategory.GET_TOP_RATED_MOVIES.value)
 
-        when (movieCategorySelected) {
-            getMostPopularMovies -> {
-                getMostPopularMovies()
-            }
-            getUpcomingMovies -> {
-                getUpcomingMovies()
-            }
-            getTopRatedMovies -> {
-                getTopRatedMovies()
-            }
-            else -> {
-                newSearch()
-            }
+        if(movieCategorySelected == getMostPopularMovies && textViewQuery == movieCategorySelected?.value){
+            getMostPopularMovies()
+        } else if(movieCategorySelected == getUpcomingMovies && textViewQuery == movieCategorySelected?.value){
+            getUpcomingMovies()
+        } else if(movieCategorySelected == getTopRatedMovies && textViewQuery == movieCategorySelected?.value){
+            getTopRatedMovies()
+        } else if(textViewQuery != movieCategorySelected?.value){
+            newSearch()
         }
     }
 
@@ -250,5 +257,22 @@ class MovieListViewModel @Inject constructor(
 
     private fun setQuery(query: String){
         this.query.value = query
+    }
+
+    /**
+     * Called when Icon in SearchAppBar is clicked
+     * This will reset search state. if this doesn't work then i need to make a separate function that
+     * at least will clear the search query
+     */
+    fun resetForNextSearch(){
+        query.value = ""
+        movies.value = listOf()
+        page.value = 1
+        onChangeMovieScrollPosition(0)
+        // might need to reset index here as well
+
+//        not sure if this is working. I believe that query.value being changed is actually
+//        resulting in the category being unselected.
+        if(selectedCategory.value?.value != query.value) clearSelectedCategory()
     }
 }

@@ -23,7 +23,8 @@ fun MovieCategoryChip(
     onExecuteSearch: () -> Unit,
 ){
     Surface(
-        modifier = Modifier.padding(end = 8.dp),
+        modifier = Modifier
+            .padding(end = 8.dp),
         elevation = 8.dp,
         shape = RoundedCornerShape(20.dp),
         color = if(isSelected) Color.Transparent else MaterialTheme.colors.primary,
@@ -44,7 +45,6 @@ fun MovieCategoryChip(
                         //maybe put an if statement here to perform a different search for the specific chip... this might not be the best way though
                         onExecuteSearch()
                     }
-
                 )
         ) {
             Text(

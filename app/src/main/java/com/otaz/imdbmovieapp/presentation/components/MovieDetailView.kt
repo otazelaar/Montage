@@ -190,8 +190,8 @@ fun MovieDetailView(
             movieTmdb.overview.let { plot ->
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
                         .wrapContentWidth(Alignment.Start)
+                        .width(width = 400.dp)
                         .padding(vertical = 4.dp)
                         .padding(horizontal = 8.dp)
                 ) {
@@ -203,11 +203,23 @@ fun MovieDetailView(
                     }
                 }
             }
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp, top = 14.dp)
+            ) {
+                Text(
+                    text = "Reviews",
+                    style = MaterialTheme.typography.h3,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
             ReviewList(
                 loading = loading,
                 reviews = reviews,
                 onChangeReviewScrollPosition = onChangeReviewScrollPosition,
-                onTriggerNextPage = { onTriggerNextPage },
+                onTriggerNextPage = onTriggerNextPage,
                 page = page,
             )
         }

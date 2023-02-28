@@ -5,15 +5,13 @@ import android.util.Log
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.LocalTextInputService
-import androidx.compose.ui.text.input.TextInputService
 import com.otaz.imdbmovieapp.presentation.components.MovieList
 import com.otaz.imdbmovieapp.presentation.components.SearchAppBar
+import com.otaz.imdbmovieapp.presentation.components.keyboardListener
 import com.otaz.imdbmovieapp.presentation.theme.AppTheme
 import com.otaz.imdbmovieapp.util.TAG
 
@@ -28,7 +26,7 @@ fun MovieListScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val focusRequester = FocusRequester()
-    val f = LocalFocusManager.current
+    val focusManager = LocalFocusManager.current
 
     // Anytime [val movies: MutableState<List<Movie>>] from [MovieListFragment] changes, this value below
     // [movies] will be updated here and in any composable that uses this value.
@@ -47,7 +45,6 @@ fun MovieListScreen(
     val scaffoldState = rememberScaffoldState()
 
     AppTheme(
-        displayProgressBar = loading,
         scaffoldState = scaffoldState,
         dialogQueue = dialogQueue.queue.value
     ) {
@@ -55,11 +52,18 @@ fun MovieListScreen(
             topBar = {
                 SearchAppBar(
                     expression = viewModel.query.value,
-                    onExpressionChanged = viewModel::onQueryChanged,
-                    onExecuteSearch = { viewModel.onTriggerEvent(MovieListEvent.NewSearchEvent) },
+                    onQueryChanged = viewModel::onQueryChanged,
+                    onExecuteSearch = {
+                        // How do unselected the movie category chip when i re-enter the TextView so that it doesnt trigger the MovieCategoryChip search events with an improper query
+                        viewModel.onTriggerEvent(MovieListEvent.NewSearchEvent)
+                    },
                     keyboardController = keyboardController,
                     focusRequester = focusRequester,
-                    focusManager = f,
+                    focusManager = focusManager,
+                    resetForNextSearch = {
+                        viewModel.resetForNextSearch()
+                    },
+                    keyboardIsVisible = keyboardListener(),
                     categoryScrollPosition = viewModel.categoryScrollPosition,
                     selectedCategory = selectedCategory,
                     onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,

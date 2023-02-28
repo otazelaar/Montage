@@ -45,7 +45,6 @@ fun MovieDetailScreen(
         }
 
         AppTheme(
-            displayProgressBar = loading,
             scaffoldState = scaffoldState,
             dialogQueue = dialogQueue.queue.value,
         ) {
