@@ -18,8 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.SoftwareKeyboardController
+import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.dp
 import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieCategory
@@ -37,11 +36,9 @@ fun SearchAppBar(
     expression: String,
     onQueryChanged: (String) -> Unit,
     onExecuteSearch: () -> Unit,
-    keyboardController: SoftwareKeyboardController?,
     focusRequester: FocusRequester,
     focusManager: FocusManager,
     resetForNextSearch: () -> Unit,
-    keyboardIsVisible: Boolean,
     categoryScrollPosition: Int,
     selectedCategory: MovieCategory?,
     onSelectedCategoryChanged: (String) -> Unit,
@@ -63,16 +60,16 @@ fun SearchAppBar(
                         .fillMaxWidth()
                         .padding(top = 4.dp, bottom = 8.dp, start = 4.dp, end = 4.dp),
                     colors = TextFieldDefaults.textFieldColors(
-                        focusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedIndicatorColor = Transparent,
+                        disabledIndicatorColor = Transparent,
+                        unfocusedIndicatorColor = Transparent,
                         backgroundColor = MaterialTheme.colors.surface,
                     ),
                     value = expression,
                     onValueChange = { userInput ->
                         onQueryChanged(userInput)
                     },
-                    label = {
+                    placeholder = {
                         Text(text = "Search Movies")
                     },
                     keyboardOptions =
@@ -95,12 +92,6 @@ fun SearchAppBar(
                             onExecuteSearch()
                             focusManager.clearFocus()
                         },
-                        onDone = {
-                            // how do i know that this will only call once?
-                            if(!keyboardIsVisible){
-                                focusManager.clearFocus()
-                            }
-                        }
                     ),
                     textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.onSurface),
                 )

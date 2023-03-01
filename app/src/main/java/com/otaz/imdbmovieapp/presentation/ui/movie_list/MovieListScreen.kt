@@ -5,25 +5,20 @@ import android.util.Log
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.otaz.imdbmovieapp.presentation.components.MovieList
 import com.otaz.imdbmovieapp.presentation.components.SearchAppBar
-import com.otaz.imdbmovieapp.presentation.components.keyboardListener
 import com.otaz.imdbmovieapp.presentation.theme.AppTheme
 import com.otaz.imdbmovieapp.util.TAG
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MovieListScreen(
     onNavigateToMovieDetailScreen: (String) -> Unit,
     viewModel: MovieListViewModel,
 ){
     Log.d(TAG, "MovieListScreen: $viewModel")
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     val focusRequester = FocusRequester()
     val focusManager = LocalFocusManager.current
@@ -57,13 +52,11 @@ fun MovieListScreen(
                         // How do unselected the movie category chip when i re-enter the TextView so that it doesnt trigger the MovieCategoryChip search events with an improper query
                         viewModel.onTriggerEvent(MovieListEvent.NewSearchEvent)
                     },
-                    keyboardController = keyboardController,
                     focusRequester = focusRequester,
                     focusManager = focusManager,
                     resetForNextSearch = {
                         viewModel.resetForNextSearch()
                     },
-                    keyboardIsVisible = keyboardListener(),
                     categoryScrollPosition = viewModel.categoryScrollPosition,
                     selectedCategory = selectedCategory,
                     onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
