@@ -29,8 +29,6 @@ object Versions {
   const val glide = "4.14.2"
   const val retrofit = "2.9.0"
   const val okHttp = "4.10.0"
-  const val leak_canary = "2.5" // never seen this before
-  const val room =  "2.5.0"
   const val junit_jupiter = "5.7.0"
   const val datastore = "1.0.0-alpha06"
   const val splash = "1.0.0"
