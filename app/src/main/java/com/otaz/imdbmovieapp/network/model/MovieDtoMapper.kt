@@ -7,38 +7,37 @@ class MovieDtoMapper : DomainMapper<MovieDto, Movie> {
 
     override fun mapToDomainModel(model: MovieDto): Movie {
         return Movie(
-            crew = model.crew,
-            fullTitle = model.fullTitle,
+            adult = model.adult,
+            backdrop_path = model.backdrop_path,
             id = model.id,
-            imDbRating = model.imDbRating,
-            imDbRatingCount = model.imDbRatingCount,
-            image = model.image,
-            rank = model.rank,
+            original_language = model.original_language,
+            original_title = model.original_title,
+            overview = model.overview,
+            popularity = model.popularity,
+            poster_path = model.poster_path,
+            release_date = model.release_date,
             title = model.title,
-            year = model.year,
+            vote_count = model.vote_count
         )
     }
 
     override fun mapFromDomainModel(domainModel: Movie): MovieDto {
         return MovieDto(
-            crew = domainModel.crew,
-            fullTitle = domainModel.fullTitle,
+            adult = domainModel.adult,
+            backdrop_path = domainModel.backdrop_path,
             id = domainModel.id,
-            imDbRating = domainModel.imDbRating,
-            imDbRatingCount = domainModel.imDbRatingCount,
-            image = domainModel.image,
-            rank = domainModel.rank,
+            original_language = domainModel.original_language,
+            original_title = domainModel.original_title,
+            overview = domainModel.overview,
+            popularity = domainModel.popularity,
+            poster_path = domainModel.poster_path,
+            release_date = domainModel.release_date,
             title = domainModel.title,
-            year = domainModel.year,
+            vote_count = domainModel.vote_count
         )
     }
 
     fun toDomainList(initial: List<MovieDto>): List<Movie>{
         return initial.map { mapToDomainModel(it) }
     }
-
-    fun fromDomainList(initial: List<Movie>): List<MovieDto>{
-        return initial.map { mapFromDomainModel(it) }
-    }
-
 }

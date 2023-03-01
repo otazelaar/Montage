@@ -3,22 +3,15 @@ package com.otaz.imdbmovieapp.network.model
 import com.google.gson.annotations.SerializedName
 
 data class MovieDto(
-    @SerializedName("crew")
-    var crew: String? = null,
-    @SerializedName("fullTitle")
-    var fullTitle: String? = null,
-    @SerializedName("id")
-    var id: String? = null,
-    @SerializedName("imDbRating")
-    var imDbRating: String? = null,
-    @SerializedName("imDbRatingCount")
-    var imDbRatingCount: String? = null,
-    @SerializedName("image")
-    var image: String? = null,
-    @SerializedName("rank")
-    var rank: String? = null,
-    @SerializedName("title")
-    var title: String? = null,
-    @SerializedName("year")
-    var year: String? = null,
+    @SerializedName("adult") var adult: Boolean,
+    @SerializedName("backdrop_path") var backdrop_path: String?,
+    @SerializedName("id") var id: Int,
+    @SerializedName("original_language") var original_language: String,
+    @SerializedName("original_title") var original_title: String,
+    @SerializedName("overview") var overview: String,
+    @SerializedName("popularity") var popularity: Double,
+    @SerializedName("poster_path") var poster_path: String?,
+    @SerializedName("release_date") var release_date: String,
+    @SerializedName("title") var title: String,
+    @SerializedName("vote_count") var vote_count: Int,
 )

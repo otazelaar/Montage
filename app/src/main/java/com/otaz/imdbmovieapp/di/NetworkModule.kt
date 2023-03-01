@@ -1,7 +1,8 @@
 package com.otaz.imdbmovieapp.di
 
-import com.otaz.imdbmovieapp.network.MovieService
-import com.otaz.imdbmovieapp.network.model.MovieDtoMapper
+import com.otaz.imdbmovieapp.network.OmdbApiService
+import com.otaz.imdbmovieapp.network.TmdbApiService
+import com.otaz.imdbmovieapp.network.model.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,22 +26,66 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideMovieService(): MovieService {
-        val client = OkHttpClient.Builder()
-            .connectTimeout(100, TimeUnit.SECONDS)
-            .readTimeout(100, TimeUnit.SECONDS).build();
-        return Retrofit.Builder().baseUrl("https://imdb-api.com/en/API/")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(MovieService::class.java)
+    fun provideConfigurationMapper(): ConfigsDtoMapper {
+        return ConfigsDtoMapper()
     }
 
     @Singleton
     @Provides
-    @Named("api_key")
-    fun provideApiKey(): String{
-        return "k_ek2dl3yz"
+    fun provideTmdbMovieSpecsMapper(): TmdbMovieSpecsDtoMapper {
+        return TmdbMovieSpecsDtoMapper()
+    }
+
+    @Singleton
+    @Provides
+    fun provideOmdbMovieSpecsMapper(): OmdbMoviesSpecsDtoMapper {
+        return OmdbMoviesSpecsDtoMapper()
+    }
+
+    @Singleton
+    @Provides
+    fun provideMovieReviewsDtoMapper(): MovieReviewsDtoMapper {
+        return MovieReviewsDtoMapper()
+    }
+
+    @Singleton
+    @Provides
+    fun provideTmdbApiService(): TmdbApiService {
+        val client = OkHttpClient.Builder()
+            .connectTimeout(100, TimeUnit.SECONDS)
+            .readTimeout(100, TimeUnit.SECONDS).build();
+        return Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/")
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(TmdbApiService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideOmdbApiService(): OmdbApiService {
+        val client = OkHttpClient.Builder()
+            .connectTimeout(100, TimeUnit.SECONDS)
+            .readTimeout(100, TimeUnit.SECONDS).build();
+        return Retrofit.Builder().baseUrl("https://www.omdbapi.com/")
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(OmdbApiService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    @Named("omdb_apikey")
+    fun provideOmdbApiKey(): String{
+        return "f59dfd2c"
+    }
+
+    @Singleton
+    @Provides
+    @Named("tmdb_apikey")
+    fun provideTmdbApiKey(): String{
+        return "987919538d8b8520ab30e57e981971bf"
     }
 
 }
