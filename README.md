@@ -1,3 +1,4 @@
+# www.linkedin.com/in/owentazelaar
 # Movie Database App
 
 - Search movies by film title
@@ -48,5 +49,6 @@
 - Navigation Component
 
 # Intention
-- This app was developed in an attempt to gain real world experience in modern android app development
-- This app was inspired by a variety of different tutorials and learning resources online
+- To gain real world experience in modern android app development
+
+# www.linkedin.com/in/owentazelaar
