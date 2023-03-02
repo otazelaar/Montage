@@ -32,11 +32,6 @@
 - OMDB API https://www.omdbapi.com/
   - Allowed access to IMDB and Metacritic ratings, plot overview, and other useful data displayed on the MovieDetailScreen
 
-# Tests
-- Unit Testing using Junit
-
-- Junit 5 https://junit.org/junit5/docs/current/user-guide/
-
 # Dependencies
 - Kotlin Coroutines
 - Jetpack Compose
