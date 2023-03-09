@@ -1,6 +1,11 @@
 package com.otaz.imdbmovieapp.domain.model
 
-data class Movie (
+/**
+ * The following data class represents one movie in a list of movies
+ * It has been deserialized by this point and is ready to be accessed by the UI
+ */
+
+data class Movie(
     val adult: Boolean,
     val backdrop_path: String?,
     val id: Int,

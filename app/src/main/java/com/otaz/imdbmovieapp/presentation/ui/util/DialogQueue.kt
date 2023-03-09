@@ -7,16 +7,24 @@ import com.otaz.imdbmovieapp.presentation.components.GenericDialogInfo
 import com.otaz.imdbmovieapp.presentation.components.PositiveAction
 import java.util.*
 
+/**
+ * DialogQueue handles queue of errors in a "First-In-First-Out" order
+ */
+
 class DialogQueue {
 
-    // Queue for "First-In-First-Out" behavior
+    @SuppressLint("MutableCollectionMutableState")
     val queue: MutableState<Queue<GenericDialogInfo>> = mutableStateOf(LinkedList())
 
-    fun removeHeadMessage(){
+    private fun removeHeadMessage(){
         if (queue.value.isNotEmpty()) {
             val update = queue.value
-            update.remove() // remove first (oldest message)
-            queue.value = ArrayDeque() // this is here to force the list to recompose. update.remove() will update the list but it will not recompose the list. (this may be a bug?)
+            // The following line will remove the first (oldest message)
+            update.remove()
+            // The next line of code is used force the list to recompose.
+            // Calling update.remove() absent of the following code will update the list
+            // without causing it to recompose.
+            queue.value = ArrayDeque()
             queue.value = update
         }
     }

@@ -1,4 +1,4 @@
-package com.otaz.imdbmovieapp.presentation.components
+package com.otaz.imdbmovieapp.presentation.components.movie_list
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable

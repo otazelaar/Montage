@@ -1,4 +1,4 @@
-package com.otaz.imdbmovieapp.presentation.components
+package com.otaz.imdbmovieapp.presentation.components.movie_detail
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.otaz.imdbmovieapp.domain.model.MovieReview
+import com.otaz.imdbmovieapp.presentation.components.ShimmerMovieListCardItem
 import com.otaz.imdbmovieapp.util.MOVIE_PAGINATION_PAGE_SIZE
 
 @Composable

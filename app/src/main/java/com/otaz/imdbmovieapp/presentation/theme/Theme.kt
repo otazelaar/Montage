@@ -49,7 +49,6 @@ private val DarkThemeColors = darkColors(
 @Composable
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-//    isNetworkAvailable : Boolean,
     scaffoldState: ScaffoldState,
     dialogQueue: Queue<GenericDialogInfo>,
     content: @Composable () -> Unit,
@@ -66,7 +65,6 @@ fun AppTheme(
             Column(
                 modifier = Modifier.background(MaterialTheme.colors.background)
             ){
-//                ConnectivityMonitor(isNetworkAvailable = isNetworkAvailable)
                 content()
             }
             DefaultSnackbar(

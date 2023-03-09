@@ -1,5 +1,9 @@
 package com.otaz.imdbmovieapp.presentation.ui.movie_detail
 
+/**
+ * This class is used to trigger events related to the MovieDetails
+ */
+
 sealed class MovieEvent {
 
     data class GetTmdbMovieEvent(

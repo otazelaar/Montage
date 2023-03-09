@@ -7,8 +7,8 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
-import com.otaz.imdbmovieapp.presentation.components.MovieList
-import com.otaz.imdbmovieapp.presentation.components.SearchAppBar
+import com.otaz.imdbmovieapp.presentation.components.movie_list.MovieList
+import com.otaz.imdbmovieapp.presentation.components.movie_list.SearchAppBar
 import com.otaz.imdbmovieapp.presentation.theme.AppTheme
 import com.otaz.imdbmovieapp.util.TAG
 
@@ -48,15 +48,10 @@ fun MovieListScreen(
                 SearchAppBar(
                     expression = viewModel.query.value,
                     onQueryChanged = viewModel::onQueryChanged,
-                    onExecuteSearch = {
-                        // How do unselected the movie category chip when i re-enter the TextView so that it doesnt trigger the MovieCategoryChip search events with an improper query
-                        viewModel.onTriggerEvent(MovieListEvent.NewSearchEvent)
-                    },
+                    onExecuteSearch = { viewModel.onTriggerEvent(MovieListEvent.NewSearchEvent) },
                     focusRequester = focusRequester,
                     focusManager = focusManager,
-                    resetForNextSearch = {
-                        viewModel.resetForNextSearch()
-                    },
+                    resetForNextSearch = { viewModel.resetForNextSearch() },
                     categoryScrollPosition = viewModel.categoryScrollPosition,
                     selectedCategory = selectedCategory,
                     onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,

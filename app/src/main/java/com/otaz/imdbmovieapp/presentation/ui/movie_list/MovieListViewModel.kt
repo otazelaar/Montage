@@ -23,6 +23,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
+/**
+ * This ViewModel
+ */
+
 @HiltViewModel
 class MovieListViewModel @Inject constructor(
     private val searchMovies: SearchMovies,
@@ -60,9 +64,6 @@ class MovieListViewModel @Inject constructor(
             try {
                 when(event){
                     is NewSearchEvent -> {
-                        // The function below abstracts out the if statements for deciding which use case/api call to use for the search
-                        // for example if a category is picked that requires a different use case than the traditional search bar is using,
-                        // then it uses the selected category to tell the onTriggerEvent which UseCase to use.
                         newSearchUseCasePicker()
                     }
                     is NextPageEvent -> {
@@ -79,9 +80,6 @@ class MovieListViewModel @Inject constructor(
         Log.d(TAG, "newSearch: query: ${query.value}, page: ${page.value}")
 
         resetSearchState()
-        // the following line of code did not work
-        // The on execute search has to be called twice it may be something with that
-//        checkIfSelectedCategoryIsCleared()
         searchMovies.execute(
             apikey = apiKey,
             query = query.value,
@@ -168,10 +166,7 @@ class MovieListViewModel @Inject constructor(
     }
 
     /**
-     * Append new movies to the current list of movies. This may be inefficiently calling
-     * extra data and appending the desired data to the list. For Ex: if my page size = 10
-     * and i go to the second page, I may be calling the first 10 movies as well as the second 10
-     * and then appending only the second 10. I am not clear on if this is the case yet.
+     * Append new movies to the current list of movies.
      */
     private fun appendMovies(movies: List<Movie>){
         val currentList = ArrayList(this.movies.value)
@@ -219,9 +214,16 @@ class MovieListViewModel @Inject constructor(
         categoryScrollPosition = position
     }
 
+    /**
+     * The function below abstracts out the if statements for deciding which use case/api call to
+     * use for the search for example if a category is picked that requires a different use case
+     * than the traditional search bar is using, then it uses the selected category to tell the
+     * onTriggerEvent which UseCase to use.
+     *
+     * textViewQuery is needed to determine if user is attempting to search for a movie after having
+     * searched using a MovieCategoryChip.
+     */
     private fun newSearchUseCasePicker(){
-//      textViewQuery is needed to determine if user is attempting to search for a movie after having
-//      searched using a MovieCategoryChip. If the textViewQuery changes but this is
         val textViewQuery = query.value
         val movieCategorySelected = selectedCategory.value
         val getMostPopularMovies = getMovieCategory(MovieCategory.GET_MOST_POPULAR_MOVIES.value)

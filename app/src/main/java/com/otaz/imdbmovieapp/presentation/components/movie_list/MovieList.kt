@@ -1,4 +1,4 @@
-package com.otaz.imdbmovieapp.presentation.components
+package com.otaz.imdbmovieapp.presentation.components.movie_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.otaz.imdbmovieapp.domain.model.ImageConfigs
 import com.otaz.imdbmovieapp.domain.model.Movie
+import com.otaz.imdbmovieapp.presentation.components.ShimmerMovieListCardItem
 import com.otaz.imdbmovieapp.presentation.navigation.Screen
 import com.otaz.imdbmovieapp.util.MOVIE_PAGINATION_PAGE_SIZE
 

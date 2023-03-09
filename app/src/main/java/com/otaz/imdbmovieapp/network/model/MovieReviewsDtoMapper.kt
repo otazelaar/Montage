@@ -2,7 +2,6 @@ package com.otaz.imdbmovieapp.network.model
 
 import com.otaz.imdbmovieapp.domain.model.MovieReview
 import com.otaz.imdbmovieapp.domain.util.DomainMapper
-import com.otaz.imdbmovieapp.network.responses.MovieReviewDto
 
 class MovieReviewsDtoMapper : DomainMapper<MovieReviewDto, MovieReview> {
 

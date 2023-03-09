@@ -2,6 +2,18 @@ package com.otaz.imdbmovieapp.network.model
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * This data class contains necessary data to build the image URLs.
+ * Different sizes and styles of image are available for access.
+ *
+ * Three items of data are necessary to build a qualified URL:
+ *      1. base_url    Ex: https://image.tmdb.org/t/p/
+ *      2. size        Ex: w500/
+ *      3. file_path   Ex: 8uO0gUM8aNqYLs1OsTBQiXu0fEv.jpg
+ *
+ * Ex: https://image.tmdb.org/t/p/w500/8uO0gUM8aNqYLs1OsTBQiXu0fEv.jpg
+ */
+
 data class ImageConfigsDto(
     @SerializedName("backdrop_sizes") var backdrop_sizes: List<String>,
     @SerializedName("base_url") var base_url: String,

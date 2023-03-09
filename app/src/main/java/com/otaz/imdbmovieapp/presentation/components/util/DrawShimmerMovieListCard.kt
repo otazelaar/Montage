@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun DrawShimmerMovieListCard(
     imageHeight: Dp,
-    padding:Dp,
+    padding: Dp,
     background: Brush
 ) {
     Column(modifier = Modifier.padding(padding)) {

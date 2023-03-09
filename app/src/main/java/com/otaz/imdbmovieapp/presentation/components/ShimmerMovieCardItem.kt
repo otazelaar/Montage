@@ -13,6 +13,10 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+/**
+ * This Composable handles the animation of the shimmer effect across the ShimmerMovieCard
+ */
+
 @Composable
 fun ShimmerMovieCardItem(
     imageHeight: Dp,

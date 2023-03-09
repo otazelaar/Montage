@@ -15,6 +15,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.otaz.imdbmovieapp.presentation.components.util.DrawShimmerMovieListCard
 
+/**
+ *
+ */
+
 @Composable
 fun ShimmerMovieListCardItem(
     imageHeight: Dp,

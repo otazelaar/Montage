@@ -11,8 +11,7 @@ import kotlinx.coroutines.launch
  * the first one and show the second. Likewise with a third, fourth, ect...
  *
  * If a mechanism like this is not used, snackbar get added to the Scaffolds "queue", and will
- * show one after another. I don't like that.
- *
+ * show one after another.
  */
 @ExperimentalMaterialApi
 class SnackbarController

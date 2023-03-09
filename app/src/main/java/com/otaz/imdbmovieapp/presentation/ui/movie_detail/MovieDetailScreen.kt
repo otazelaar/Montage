@@ -8,9 +8,9 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.otaz.imdbmovieapp.presentation.components.MovieDetailView
 import com.otaz.imdbmovieapp.presentation.components.ShimmerMovieCardItem
 import com.otaz.imdbmovieapp.presentation.components.ShimmerMovieListCardItem
+import com.otaz.imdbmovieapp.presentation.components.movie_detail.MovieDetailView
 import com.otaz.imdbmovieapp.presentation.components.util.IMAGE_HEIGHT
 import com.otaz.imdbmovieapp.presentation.theme.AppTheme
 import com.otaz.imdbmovieapp.presentation.ui.movie_detail.MovieEvent.*

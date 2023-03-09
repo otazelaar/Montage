@@ -21,21 +21,24 @@ import com.otaz.imdbmovieapp.presentation.ui.splash_screen.SplashScreenViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+/**
+ * This application uses one single activity [MainActivity] with compose only navigation.
+ * The NavHostController is passed eventually to the MovieListView where it receives it's route.
+ * The route is a combination of the base string, defined in [Screen.MovieDetail], and the id of
+ * the specific movie which is clicked.
+ *
+ * Ex: "movieList/488439"
+ *
+ * This ID is specific to the TMDB API and is subsequently used to acquire
+ * movie specifications as a separate call to TMDB API which includes the movies respective IMDB ID.
+ * The IMDB ID is then used to retrieve further desired data from the OMDB API.
+ *
+ * Combining both APIs are necessary to retrieve the desired information as well as desired API
+ * features such as pagination, adult content filtering, language adjustment etc.
+ */
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
-//    @Inject
-//    lateinit var connectivityManager: ConnectivityManager
-//
-//    override fun onStart() {
-//        connectivityManager.registerConnectionObserver(this)
-//        super.onStart()
-//    }
-//
-//    override fun onDestroy() {
-//        connectivityManager.unregisterConnectionObserver(this)
-//        super.onDestroy()
-//    }
 
     @Inject
     lateinit var app: BaseApplication
@@ -53,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val navController = rememberNavController()
             NavHost(navController = navController, startDestination = Screen.MovieList.route) {
+
                 composable(
                     route = Screen.MovieList.route
                 ) {
@@ -62,6 +66,7 @@ class MainActivity : AppCompatActivity() {
                         viewModel = viewModel,
                     )
                 }
+
                 composable(
                     route = Screen.MovieDetail.route + "/{movieId}",
                     arguments = listOf(navArgument("movieId") {
@@ -74,6 +79,7 @@ class MainActivity : AppCompatActivity() {
                         viewModel = viewModel,
                     )
                 }
+
             }
         }
     }

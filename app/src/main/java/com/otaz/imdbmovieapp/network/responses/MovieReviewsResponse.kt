@@ -1,11 +1,12 @@
 package com.otaz.imdbmovieapp.network.responses
 
 import com.google.gson.annotations.SerializedName
+import com.otaz.imdbmovieapp.network.model.MovieReviewDto
+
+/**
+ * This response contains a list of movie reviews posted by users to the TMDB API
+ */
 
 data class MovieReviewsResponse(
-    @SerializedName("id") var id: Int,
-    @SerializedName("page") var page: Int,
     @SerializedName("results") var movieReviewDtos: List<MovieReviewDto>,
-    @SerializedName("total_pages") var total_pages: Int,
-    @SerializedName("total_results") var total_results: Int
 )

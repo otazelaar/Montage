@@ -1,4 +1,4 @@
-package com.otaz.imdbmovieapp.presentation.components
+package com.otaz.imdbmovieapp.presentation.components.movie_list
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

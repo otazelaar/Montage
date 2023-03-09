@@ -1,4 +1,4 @@
-package com.otaz.imdbmovieapp.presentation.components
+package com.otaz.imdbmovieapp.presentation.components.movie_detail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -19,6 +19,7 @@ import com.otaz.imdbmovieapp.domain.model.ImageConfigs
 import com.otaz.imdbmovieapp.domain.model.MovieReview
 import com.otaz.imdbmovieapp.domain.model.OmdbMovieSpecs
 import com.otaz.imdbmovieapp.domain.model.TmdbMovieSpecs
+import com.otaz.imdbmovieapp.presentation.components.movie_detail.ReviewList
 import com.otaz.imdbmovieapp.presentation.components.util.DEFAULT_MOVIE_IMAGE
 import com.otaz.imdbmovieapp.presentation.components.util.IMAGE_HEIGHT
 import com.otaz.imdbmovieapp.util.loadPicture
