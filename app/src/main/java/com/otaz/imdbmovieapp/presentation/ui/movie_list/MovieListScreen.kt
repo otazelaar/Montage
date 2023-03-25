@@ -3,17 +3,16 @@ package com.otaz.imdbmovieapp.presentation.ui.movie_list
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.unit.LayoutDirection.*
 import androidx.compose.ui.unit.dp
-import com.otaz.imdbmovieapp.presentation.components.saved_movies.SavedMoviesList
 import com.otaz.imdbmovieapp.presentation.components.movie_list.MovieList
 import com.otaz.imdbmovieapp.presentation.components.movie_list.SearchAppBar
+import com.otaz.imdbmovieapp.presentation.components.saved_movies.SavedMoviesList
 import com.otaz.imdbmovieapp.presentation.theme.AppTheme
 import com.otaz.imdbmovieapp.presentation.ui.saved_movie_list.SavedMovieListEvent
 import com.otaz.imdbmovieapp.presentation.ui.saved_movie_list.SavedMovieListViewModel
@@ -54,6 +53,7 @@ fun MovieListScreen(
     ) {
         Scaffold(
             drawerContent = {
+                // Cannot seem to figure out how to make the drawer come from the right side of the screen.
                 Text("Watch List", modifier = Modifier.padding(16.dp))
                 if (scaffoldState.drawerState.isOpen){
                     savedMovieListViewModel.onTriggerEvent(SavedMovieListEvent.UpdateSavedMoviesList)

@@ -55,6 +55,7 @@ class MovieListViewModel @Inject constructor(
 
     init {
         getConfigurations()
+        getMostPopularMovies()
     }
 
     fun onTriggerEvent(event: MovieListEvent){
