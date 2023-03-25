@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.otaz.imdbmovieapp.domain.model.ImageConfigs
 import com.otaz.imdbmovieapp.domain.model.Movie
 import com.otaz.imdbmovieapp.interactors.app.GetConfigurations
+import com.otaz.imdbmovieapp.interactors.app.GetSavedMovies
+import com.otaz.imdbmovieapp.interactors.app.SaveMovie
 import com.otaz.imdbmovieapp.interactors.movie_list.GetMostPopularMovies
 import com.otaz.imdbmovieapp.interactors.movie_list.GetTopRatedMovies
 import com.otaz.imdbmovieapp.interactors.movie_list.GetUpcomingMovies
@@ -23,12 +25,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
-/**
- * This ViewModel
- */
-
 @HiltViewModel
 class MovieListViewModel @Inject constructor(
+    private val saveMovie: SaveMovie,
     private val searchMovies: SearchMovies,
     private val getConfigurations: GetConfigurations,
     private val getMostPopularMovies: GetMostPopularMovies,
@@ -36,7 +35,6 @@ class MovieListViewModel @Inject constructor(
     private val getTopRatedMovies: GetTopRatedMovies,
     @Named("tmdb_apikey") private val apiKey: String,
 ): ViewModel() {
-
     val movies: MutableState<List<Movie>> = mutableStateOf(ArrayList())
     val configurations: MutableState<ImageConfigs> = mutableStateOf(GetConfigurations.EMPTY_CONFIGURATIONS)
 
@@ -69,15 +67,18 @@ class MovieListViewModel @Inject constructor(
                     is NextPageEvent -> {
                         nextPage()
                     }
+                    is SaveMovieEvent -> {
+                        saveMovie(movie = event.movie)
+                    }
                 }
             }catch (e: Exception){
-                Log.e(TAG, "onTriggerEvent: Exception ${e}, ${e.cause}")
+                Log.e(TAG, "MovieListViewModel: onTriggerEvent: Exception ${e}, ${e.cause}")
             }
         }
     }
 
     private fun newSearch(){
-        Log.d(TAG, "newSearch: query: ${query.value}, page: ${page.value}")
+        Log.d(TAG, "MovieListViewModel: newSearch: query: ${query.value}, page: ${page.value}")
 
         resetSearchState()
         searchMovies.execute(
@@ -87,12 +88,12 @@ class MovieListViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> movies.value = list }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("newSearch: Error:", error)}
+            dataState.error?.let { error -> dialogQueue.appendErrorMessage("MovieListViewModel: newSearch: Error:", error)}
         }.launchIn(viewModelScope)
     }
 
     private fun getMostPopularMovies(){
-        Log.d(TAG, "getMostPopularMovies: query: ${query.value}, page: ${page.value}")
+        Log.d(TAG, "MovieListViewModel: getMostPopularMovies: query: ${query.value}, page: ${page.value}")
 
         resetSearchState()
         getMostPopularMovies.execute(
@@ -102,12 +103,12 @@ class MovieListViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> movies.value = list }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("getMostPopularMovies: Error:", error)}
+            dataState.error?.let { error -> dialogQueue.appendErrorMessage("MovieListViewModel: getMostPopularMovies: Error:", error)}
         }.launchIn(viewModelScope)
     }
 
     private fun getUpcomingMovies(){
-        Log.d(TAG, "getUpcomingMovies: query: ${query.value}, page: ${page.value}")
+        Log.d(TAG, "MovieListViewModel: getUpcomingMovies: query: ${query.value}, page: ${page.value}")
 
         resetSearchState()
         getUpcomingMovies.execute(
@@ -116,12 +117,12 @@ class MovieListViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> movies.value = list }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("getUpcomingMovies: Error:", error)}
+            dataState.error?.let { error -> dialogQueue.appendErrorMessage("MovieListViewModel: getUpcomingMovies: Error:", error)}
         }.launchIn(viewModelScope)
     }
 
     private fun getTopRatedMovies(){
-        Log.d(TAG, "getTopRatedMovies: query: ${query.value}, page: ${page.value}")
+        Log.d(TAG, "MovieListViewModel: getTopRatedMovies: query: ${query.value}, page: ${page.value}")
 
         resetSearchState()
         getTopRatedMovies.execute(
@@ -130,14 +131,14 @@ class MovieListViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> movies.value = list }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("getTopRatedMovies: Error:", error)}
+            dataState.error?.let { error -> dialogQueue.appendErrorMessage("MovieListViewModel: getTopRatedMovies: Error:", error)}
         }.launchIn(viewModelScope)
     }
 
     private fun nextPage(){
         if((movieListScrollPosition + 1) >= (page.value * MOVIE_PAGINATION_PAGE_SIZE)){
             incrementPage()
-            Log.d(TAG, "nextPage: triggered: ${page.value}")
+            Log.d(TAG, "MovieListViewModel: nextPage: triggered: ${page.value}")
 
             if(page.value > 1){
                 searchMovies.execute(
@@ -147,22 +148,29 @@ class MovieListViewModel @Inject constructor(
                 ).onEach { dataState ->
                     loading.value = dataState.loading
                     dataState.data?.let { list -> appendMovies(list) }
-                    dataState.error?.let { error -> dialogQueue.appendErrorMessage("Error", error) }
+                    dataState.error?.let { error -> dialogQueue.appendErrorMessage("MovieListViewModel: Error", error) }
                 }.launchIn(viewModelScope)
             }
         }
     }
 
     private fun getConfigurations(){
-        Log.d(TAG, "getConfigurations running")
+        Log.d(TAG, "MovieListViewModel: getConfigurations running")
 
         getConfigurations.execute(
             apikey = apiKey,
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { value -> configurations.value = value }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("GetConfigurations Error", error)}
+            dataState.error?.let { error -> dialogQueue.appendErrorMessage("MovieListViewModel: GetConfigurations Error", error)}
         }.launchIn(viewModelScope)
+    }
+
+    private suspend fun saveMovie(movie: Movie){
+        Log.d(TAG, "MovieListViewModel: saveMovie running")
+        saveMovie.execute(
+            movie = movie
+        )
     }
 
     /**

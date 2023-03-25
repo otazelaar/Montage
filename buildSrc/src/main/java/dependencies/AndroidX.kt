@@ -27,6 +27,9 @@ object AndroidX {
 //  const val navigation_hilt = "androidx.hilt:hilt-navigation:${Versions.hilt_navigation}"
   const val navigation_hilt = "androidx.hilt:hilt-navigation-compose:${Versions.hilt_navigation}" // might not work
 
+  const val room_runtime = "androidx.room:room-runtime:${Versions.room}"
+  const val room_ktx = "androidx.room:room-ktx:${Versions.room}"
+
   const val datastore = "androidx.datastore:datastore-preferences:${Versions.datastore}"
 
   // Splash Screen

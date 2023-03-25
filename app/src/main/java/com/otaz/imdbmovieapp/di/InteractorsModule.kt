@@ -1,6 +1,10 @@
 package com.otaz.imdbmovieapp.di
 
+import com.otaz.imdbmovieapp.cache.model.MovieEntityMapper
+import com.otaz.imdbmovieapp.interactors.app.DeleteMovie
 import com.otaz.imdbmovieapp.interactors.app.GetConfigurations
+import com.otaz.imdbmovieapp.interactors.app.GetSavedMovies
+import com.otaz.imdbmovieapp.interactors.app.SaveMovie
 import com.otaz.imdbmovieapp.interactors.movie_detail.GetMovieReviews
 import com.otaz.imdbmovieapp.interactors.movie_detail.GetOmdbMovie
 import com.otaz.imdbmovieapp.interactors.movie_detail.GetTmdbMovie
@@ -114,6 +118,40 @@ object InteractorsModule {
         return GetMovieReviews(
             tmdbApiService = tmdbApiService,
             movieReviewsDtoMapper = movieReviewsDtoMapper,
+        )
+    }
+
+    @ViewModelScoped
+    @Provides
+    fun provideSaveMovie(
+        movieDao: MovieDao,
+        movieEntityMapper: MovieEntityMapper,
+    ): SaveMovie{
+        return SaveMovie(
+            movieDao = movieDao,
+            movieEntityMapper = movieEntityMapper,
+        )
+    }
+
+    @ViewModelScoped
+    @Provides
+    fun provideDeleteMovie(
+        movieDao: MovieDao,
+    ): DeleteMovie{
+        return DeleteMovie(
+            movieDao = movieDao,
+        )
+    }
+
+    @ViewModelScoped
+    @Provides
+    fun getSavedMovies(
+        movieDao: MovieDao,
+        movieEntityMapper: MovieEntityMapper,
+    ): GetSavedMovies{
+        return GetSavedMovies(
+            movieDao = movieDao,
+            movieEntityMapper = movieEntityMapper,
         )
     }
 }

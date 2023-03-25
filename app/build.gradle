@@ -71,6 +71,8 @@ dependencies {
     implementation AndroidX.compose_activity
     implementation AndroidX.navigation_compose
     implementation AndroidX.navigation_hilt
+    implementation AndroidX.room_runtime
+    implementation AndroidX.room_ktx
     implementation AndroidX.datastore
     implementation AndroidX.splash
 
@@ -87,6 +89,7 @@ dependencies {
 
     kapt AnnotationProcessing.hilt_compiler
     kapt AnnotationProcessing.glide_compiler
+    kapt AnnotationProcessing.room_compiler
 
     // TESTING
     testImplementation UnitTest.jupiter_api

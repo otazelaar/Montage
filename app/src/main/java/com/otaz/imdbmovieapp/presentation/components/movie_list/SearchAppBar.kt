@@ -29,7 +29,6 @@ import kotlinx.coroutines.launch
  * I chose to use state hoisting here to improve testability, unidirectional data flow, and reusability of Composables.
  */
 
-@OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun SearchAppBar(

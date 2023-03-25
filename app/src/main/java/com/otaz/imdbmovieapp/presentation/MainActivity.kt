@@ -17,6 +17,7 @@ import com.otaz.imdbmovieapp.presentation.ui.movie_detail.MovieDetailScreen
 import com.otaz.imdbmovieapp.presentation.ui.movie_detail.MovieDetailViewModel
 import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieListScreen
 import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieListViewModel
+import com.otaz.imdbmovieapp.presentation.ui.saved_movie_list.SavedMovieListViewModel
 import com.otaz.imdbmovieapp.presentation.ui.splash_screen.SplashScreenViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -60,10 +61,13 @@ class MainActivity : AppCompatActivity() {
                 composable(
                     route = Screen.MovieList.route
                 ) {
-                    val viewModel = hiltViewModel<MovieListViewModel>()
+                    val movieListViewModel = hiltViewModel<MovieListViewModel>()
+                    val savedMovieListViewModel = hiltViewModel<SavedMovieListViewModel>()
+
                     MovieListScreen(
                         onNavigateToMovieDetailScreen = navController::navigate,
-                        viewModel = viewModel,
+                        movieListViewModel = movieListViewModel,
+                        savedMovieListViewModel = savedMovieListViewModel,
                     )
                 }
 
