@@ -1,12 +1,14 @@
 package com.otaz.imdbmovieapp.presentation.components.movie_list
 
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,42 +30,48 @@ fun MovieListView(
             onClick = onClick,
         )
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 6.dp, bottom = 40.dp, start = 6.dp, end = 6.dp),
+            Modifier
+                .fillMaxHeight()
+                .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = movie.title,
+            Row(
                 modifier = Modifier
-                    .clickable(onClick = onClick)
-                    .fillMaxWidth(0.90f)
-                    .wrapContentWidth(Alignment.Start),
-                style = MaterialTheme.typography.h4
-            )
-            val year = movie.release_date
-            Text(
+                    .padding(end = 8.dp)
+                    .weight(.80f)
+            ) {
                 // the dates are formatted as yyyy-dd-mm
                 // All we want is the year which is the first 4 characters
-                text = year.take(4),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentWidth(Alignment.End)
-                    .align(Alignment.CenterVertically),
-                style = MaterialTheme.typography.h5,
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(6.dp),
-        ) {
-            Text(
-                modifier = Modifier
-                    .clickable { onMovieSaveClick(movie) },
-                text = "Save",
-                style = MaterialTheme.typography.h5,
-                color = Color.Red
-            )
+                val year = movie.release_date.take(4)
+                Text(
+                    text = "${movie.title} ($year)",
+                    modifier = Modifier
+                        .clickable(onClick = onClick),
+                    style = MaterialTheme.typography.h4,
+                )
+            }
+            Row{
+                val interactionSource = remember { MutableInteractionSource() }
+                val isPressed by interactionSource.collectIsPressedAsState()
+                Button(
+                    onClick = { onMovieSaveClick(movie) },
+                    interactionSource = interactionSource,
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = MaterialTheme.colors.primary
+                    ),
+                ) {
+                    Text(
+                        text = "Save",
+                        style = MaterialTheme.typography.h5,
+                        color = if (isPressed){
+                            Color.Red
+                        }else{
+                            Color.Black
+                        }
+                    )
+                }
+            }
         }
     }
 }

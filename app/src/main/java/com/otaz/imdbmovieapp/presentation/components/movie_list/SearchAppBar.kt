@@ -1,6 +1,9 @@
 package com.otaz.imdbmovieapp.presentation.components.movie_list
 
 import android.annotation.SuppressLint
+import android.graphics.drawable.Icon
+import android.view.Menu
+import androidx.appcompat.view.menu.MenuBuilder
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -12,6 +15,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -19,10 +23,14 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color.Companion.Transparent
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.input.*
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.otaz.imdbmovieapp.presentation.components.saved_movies.SavedMoviesList
 import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieCategory
 import com.otaz.imdbmovieapp.presentation.ui.movie_list.getAllMovieCategories
+import com.otaz.imdbmovieapp.presentation.ui.saved_movie_list.SavedMovieListEvent
 import kotlinx.coroutines.launch
 
 /**
