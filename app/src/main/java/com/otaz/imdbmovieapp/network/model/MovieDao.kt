@@ -21,6 +21,10 @@ interface MovieDao {
     @Query("DELETE FROM movies WHERE id = :primaryKey")
     suspend fun deleteMovie(primaryKey: String): Int
 
+    // GetRandomMovieByID
+    @Query("SELECT * FROM movies ORDER BY RANDOM() LIMIT 1")
+    suspend fun getRandomMovie(): MovieEntity?
+
     /**
      * Same as 'searchMovies' function, but no query.
      */

@@ -23,7 +23,7 @@ fun MovieList(
     onChangeMovieScrollPosition: (Int) -> Unit,
     onTriggerNextPage: () -> Unit,
     page: Int,
-    onNavigateToMovieDetailScreen: (String) -> Unit,
+    onNavigateToMovieDetailScreen: (Movie) -> Unit,
     saveMovie: (Movie) -> Unit,
 ){
     Box(
@@ -49,8 +49,7 @@ fun MovieList(
                         movie = movie,
                         configurations = configurations,
                         onClick = {
-                            val route = Screen.MovieDetail.route + "/${movie.id}"
-                            onNavigateToMovieDetailScreen(route)
+                            onNavigateToMovieDetailScreen(movie)
                         },
                         onMovieSaveClick = {
                             saveMovie(movie)

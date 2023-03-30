@@ -34,5 +34,4 @@ object CacheModule {
     fun provideCacheMovieMapper(): MovieEntityMapper {
         return MovieEntityMapper()
     }
-
 }

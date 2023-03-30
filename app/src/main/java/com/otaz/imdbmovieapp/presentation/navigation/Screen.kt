@@ -11,4 +11,5 @@ sealed class Screen(
 ){
     object MovieList: Screen("movieList")
     object MovieDetail: Screen("movieDetail")
+    object MovieGame: Screen("movieGame")
 }

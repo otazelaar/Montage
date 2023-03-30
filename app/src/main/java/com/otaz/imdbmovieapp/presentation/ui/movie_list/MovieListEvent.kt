@@ -10,4 +10,5 @@ sealed class MovieListEvent {
     object NewSearchEvent: MovieListEvent()
     object NextPageEvent: MovieListEvent()
     data class SaveMovieEvent(val movie: Movie): MovieListEvent()
+    data class NavigateEvent(val route: String): MovieListEvent()
 }

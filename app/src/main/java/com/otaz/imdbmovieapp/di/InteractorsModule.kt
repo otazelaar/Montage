@@ -8,6 +8,7 @@ import com.otaz.imdbmovieapp.interactors.app.SaveMovie
 import com.otaz.imdbmovieapp.interactors.movie_detail.GetMovieReviews
 import com.otaz.imdbmovieapp.interactors.movie_detail.GetOmdbMovie
 import com.otaz.imdbmovieapp.interactors.movie_detail.GetTmdbMovie
+import com.otaz.imdbmovieapp.interactors.movie_game.GetRandomTopRatedMovie
 import com.otaz.imdbmovieapp.interactors.movie_list.GetMostPopularMovies
 import com.otaz.imdbmovieapp.interactors.movie_list.GetTopRatedMovies
 import com.otaz.imdbmovieapp.interactors.movie_list.GetUpcomingMovies
@@ -150,6 +151,18 @@ object InteractorsModule {
         movieEntityMapper: MovieEntityMapper,
     ): GetSavedMovies{
         return GetSavedMovies(
+            movieDao = movieDao,
+            movieEntityMapper = movieEntityMapper,
+        )
+    }
+
+    @ViewModelScoped
+    @Provides
+    fun getRandomTopRatedMovie(
+        movieDao: MovieDao,
+        movieEntityMapper: MovieEntityMapper,
+    ): GetRandomTopRatedMovie{
+        return GetRandomTopRatedMovie(
             movieDao = movieDao,
             movieEntityMapper = movieEntityMapper,
         )

@@ -2,6 +2,7 @@ package com.otaz.imdbmovieapp.presentation.ui.movie_list
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -10,20 +11,29 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.LayoutDirection.*
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import com.otaz.imdbmovieapp.domain.model.Movie
 import com.otaz.imdbmovieapp.presentation.components.movie_list.MovieList
 import com.otaz.imdbmovieapp.presentation.components.movie_list.SearchAppBar
 import com.otaz.imdbmovieapp.presentation.components.saved_movies.SavedMoviesList
+import com.otaz.imdbmovieapp.presentation.navigation.Screen
 import com.otaz.imdbmovieapp.presentation.theme.AppTheme
+import com.otaz.imdbmovieapp.presentation.ui.movie_game.MovieGameViewModel
 import com.otaz.imdbmovieapp.presentation.ui.saved_movie_list.SavedMovieListEvent
 import com.otaz.imdbmovieapp.presentation.ui.saved_movie_list.SavedMovieListViewModel
 import com.otaz.imdbmovieapp.util.TAG
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MovieListScreen(
-    onNavigateToMovieDetailScreen: (String) -> Unit,
+    navController: NavController,
+    onNavigateToMovieDetailScreen: (Movie) -> Unit,
     movieListViewModel: MovieListViewModel,
     savedMovieListViewModel: SavedMovieListViewModel,
+    movieGameViewModel: MovieGameViewModel,
 ){
     Log.d(TAG, "MovieListScreen: $movieListViewModel")
 
@@ -35,6 +45,7 @@ fun MovieListScreen(
     val movies = movieListViewModel.movies.value
     val savedMovies = savedMovieListViewModel.savedMovies.value
     val configurations = movieListViewModel.configurations.value
+    val movie = movieGameViewModel.movie.value
 
     val selectedCategory = movieListViewModel.selectedCategory.value
 
@@ -43,6 +54,10 @@ fun MovieListScreen(
     val dialogQueue = movieListViewModel.dialogQueue
 
     val page = movieListViewModel.page.value
+
+    // Need to navigate using the following on this page. Not sure how
+
+    movieListViewModel.onMovieClicked(movie = movie)
 
     // rememberScaffoldState will create a scaffold state object and persist across recompositions
     val scaffoldState = rememberScaffoldState()
@@ -63,7 +78,7 @@ fun MovieListScreen(
                         onNavigateToMovieDetailScreen = onNavigateToMovieDetailScreen,
                         onClickDeleteMovie = {
                             savedMovieListViewModel.onTriggerEvent(SavedMovieListEvent.DeleteSavedMovie(id = it))
-                        }
+                        },
                     )
                 }
             },

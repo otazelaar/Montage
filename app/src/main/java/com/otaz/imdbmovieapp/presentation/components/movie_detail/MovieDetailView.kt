@@ -1,6 +1,7 @@
 package com.otaz.imdbmovieapp.presentation.components.movie_detail
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -22,6 +23,7 @@ import com.otaz.imdbmovieapp.domain.model.TmdbMovieSpecs
 import com.otaz.imdbmovieapp.presentation.components.movie_detail.ReviewList
 import com.otaz.imdbmovieapp.presentation.components.util.DEFAULT_MOVIE_IMAGE
 import com.otaz.imdbmovieapp.presentation.components.util.IMAGE_HEIGHT
+import com.otaz.imdbmovieapp.presentation.navigation.Screen
 import com.otaz.imdbmovieapp.util.loadPicture
 
 /**

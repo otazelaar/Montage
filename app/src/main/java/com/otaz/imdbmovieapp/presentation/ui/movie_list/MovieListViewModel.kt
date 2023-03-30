@@ -19,8 +19,12 @@ import com.otaz.imdbmovieapp.presentation.ui.util.DialogQueue
 import com.otaz.imdbmovieapp.util.MOVIE_PAGINATION_PAGE_SIZE
 import com.otaz.imdbmovieapp.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
@@ -35,7 +39,11 @@ class MovieListViewModel @Inject constructor(
     private val getTopRatedMovies: GetTopRatedMovies,
     @Named("tmdb_apikey") private val apiKey: String,
 ): ViewModel() {
+    private val _eventChannel = Channel<MovieListEvent>(capacity = UNLIMITED)
+    val _events: Flow<MovieListEvent> = _eventChannel.receiveAsFlow()
+
     val movies: MutableState<List<Movie>> = mutableStateOf(ArrayList())
+
     val configurations: MutableState<ImageConfigs> = mutableStateOf(GetConfigurations.EMPTY_CONFIGURATIONS)
 
     val query = mutableStateOf("")
@@ -62,15 +70,10 @@ class MovieListViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 when(event){
-                    is NewSearchEvent -> {
-                        newSearchUseCasePicker()
-                    }
-                    is NextPageEvent -> {
-                        nextPage()
-                    }
-                    is SaveMovieEvent -> {
-                        saveMovie(movie = event.movie)
-                    }
+                    is NewSearchEvent -> newSearchUseCasePicker()
+                    is NextPageEvent -> nextPage()
+                    is SaveMovieEvent -> saveMovie(movie = event.movie)
+                    is NavigateEvent -> {  }
                 }
             }catch (e: Exception){
                 Log.e(TAG, "MovieListViewModel: onTriggerEvent: Exception ${e}, ${e.cause}")
@@ -281,5 +284,11 @@ class MovieListViewModel @Inject constructor(
 //        not sure if this is working. I believe that query.value being changed is actually
 //        resulting in the category being unselected.
         if(selectedCategory.value?.value != query.value) clearSelectedCategory()
+    }
+
+    fun onMovieClicked(movie: Movie){
+        // create MovieDetailScreen route
+        val route = movie.id.toString()
+        _eventChannel.trySend(NavigateEvent(route = route))
     }
 }

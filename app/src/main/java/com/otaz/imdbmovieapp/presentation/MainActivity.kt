@@ -15,6 +15,8 @@ import com.otaz.imdbmovieapp.di.BaseApplication
 import com.otaz.imdbmovieapp.presentation.navigation.Screen
 import com.otaz.imdbmovieapp.presentation.ui.movie_detail.MovieDetailScreen
 import com.otaz.imdbmovieapp.presentation.ui.movie_detail.MovieDetailViewModel
+import com.otaz.imdbmovieapp.presentation.ui.movie_game.MovieGameScreen
+import com.otaz.imdbmovieapp.presentation.ui.movie_game.MovieGameViewModel
 import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieListScreen
 import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieListViewModel
 import com.otaz.imdbmovieapp.presentation.ui.saved_movie_list.SavedMovieListViewModel
@@ -49,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         installSplashScreen().apply {
-            setKeepOnScreenCondition() {
+            setKeepOnScreenCondition {
                 viewModel.isLoading.value
             }
         }
@@ -58,32 +60,44 @@ class MainActivity : AppCompatActivity() {
             val navController = rememberNavController()
             NavHost(navController = navController, startDestination = Screen.MovieList.route) {
 
+                // MovieListScreen
                 composable(
-                    route = Screen.MovieList.route
+                    route = Screen.MovieList.route,
                 ) {
                     val movieListViewModel = hiltViewModel<MovieListViewModel>()
                     val savedMovieListViewModel = hiltViewModel<SavedMovieListViewModel>()
 
                     MovieListScreen(
-                        onNavigateToMovieDetailScreen = navController::navigate,
+                        navController = navController,
+//                        onNavigateToMovieDetailScreen = navController::navigate,
                         movieListViewModel = movieListViewModel,
                         savedMovieListViewModel = savedMovieListViewModel,
                     )
                 }
 
+                // MovieListScreen
                 composable(
                     route = Screen.MovieDetail.route + "/{movieId}",
                     arguments = listOf(navArgument("movieId") {
                         type = NavType.IntType
                     })
                 ) { navBackStackEntry ->
-                    val viewModel = hiltViewModel<MovieDetailViewModel>()
+                    val movieDetailViewModel = hiltViewModel<MovieDetailViewModel>()
                     MovieDetailScreen(
                         movieId = navBackStackEntry.arguments?.getInt("movieId"),
-                        viewModel = viewModel,
+                        viewModel = movieDetailViewModel,
                     )
                 }
 
+                // MovieGameScreen
+                composable(
+                    route = Screen.MovieGame.route
+                ){
+                val movieGameViewModel = hiltViewModel<MovieGameViewModel>()
+                    MovieGameScreen(
+                        viewModel = movieGameViewModel,
+                    )
+                }
             }
         }
     }
