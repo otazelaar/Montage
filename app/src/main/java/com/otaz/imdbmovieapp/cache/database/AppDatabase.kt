@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.otaz.imdbmovieapp.cache.model.MovieEntity
 import com.otaz.imdbmovieapp.network.model.MovieDao
 
-@Database(entities = [MovieEntity::class], version = 1)
+@Database(entities = [MovieEntity::class], version = 2)
 abstract class AppDatabase: RoomDatabase(){
 
     abstract fun movieDao(): MovieDao

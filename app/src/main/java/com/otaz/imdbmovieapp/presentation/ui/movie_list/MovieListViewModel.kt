@@ -2,13 +2,13 @@ package com.otaz.imdbmovieapp.presentation.ui.movie_list
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.otaz.imdbmovieapp.domain.model.ImageConfigs
 import com.otaz.imdbmovieapp.domain.model.Movie
 import com.otaz.imdbmovieapp.interactors.app.GetConfigurations
-import com.otaz.imdbmovieapp.interactors.app.GetSavedMovies
 import com.otaz.imdbmovieapp.interactors.app.SaveMovie
 import com.otaz.imdbmovieapp.interactors.movie_list.GetMostPopularMovies
 import com.otaz.imdbmovieapp.interactors.movie_list.GetTopRatedMovies
@@ -62,15 +62,9 @@ class MovieListViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 when(event){
-                    is NewSearchEvent -> {
-                        newSearchUseCasePicker()
-                    }
-                    is NextPageEvent -> {
-                        nextPage()
-                    }
-                    is SaveMovieEvent -> {
-                        saveMovie(movie = event.movie)
-                    }
+                    is NewSearchEvent -> newSearchUseCasePicker()
+                    is NextPageEvent -> nextPage()
+                    is SaveMovieEvent -> saveMovie(movie = event.movie)
                 }
             }catch (e: Exception){
                 Log.e(TAG, "MovieListViewModel: onTriggerEvent: Exception ${e}, ${e.cause}")

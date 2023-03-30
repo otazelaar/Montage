@@ -8,6 +8,6 @@ data class MovieDto(
     @SerializedName("backdrop_path") var backdrop_path: String?,
     @SerializedName("overview") var overview: String,
     @SerializedName("poster_path") var poster_path: String?,
-    @SerializedName("release_date") var release_date: String,
+    @SerializedName("release_date") var release_date: String?,
     @SerializedName("title") var title: String,
 )

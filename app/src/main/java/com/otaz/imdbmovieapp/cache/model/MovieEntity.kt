@@ -24,7 +24,7 @@ data class MovieEntity(
     var poster_path: String?,
 
     @ColumnInfo(name = "releaseDate")
-    var release_date: String,
+    var release_date: String?,
 
     @ColumnInfo(name = "title")
     var title: String,

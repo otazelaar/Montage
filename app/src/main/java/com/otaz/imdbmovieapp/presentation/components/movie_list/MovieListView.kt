@@ -43,7 +43,7 @@ fun MovieListView(
             ) {
                 // the dates are formatted as yyyy-dd-mm
                 // All we want is the year which is the first 4 characters
-                val year = movie.release_date.take(4)
+                val year = movie.release_date?.take(4)
                 Text(
                     text = "${movie.title} ($year)",
                     modifier = Modifier
