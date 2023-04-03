@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.otaz.imdbmovieapp.network.model.MovieDto
 
 /**
- * This response contains a list of movies that
+ * This response contains a list of movies
  */
 
 data class MovieResponse(

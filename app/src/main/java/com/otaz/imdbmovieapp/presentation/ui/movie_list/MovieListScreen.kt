@@ -14,6 +14,7 @@ import com.otaz.imdbmovieapp.presentation.components.movie_list.MovieList
 import com.otaz.imdbmovieapp.presentation.components.movie_list.SearchAppBar
 import com.otaz.imdbmovieapp.presentation.components.saved_movies.SavedMoviesList
 import com.otaz.imdbmovieapp.presentation.theme.AppTheme
+import com.otaz.imdbmovieapp.presentation.ui.movie_list.MovieListEvent.*
 import com.otaz.imdbmovieapp.presentation.ui.saved_movie_list.SavedMovieListEvent
 import com.otaz.imdbmovieapp.presentation.ui.saved_movie_list.SavedMovieListViewModel
 import com.otaz.imdbmovieapp.util.TAG
@@ -72,7 +73,7 @@ fun MovieListScreen(
                 SearchAppBar(
                     expression = movieListViewModel.query.value,
                     onQueryChanged = movieListViewModel::onQueryChanged,
-                    onExecuteSearch = { movieListViewModel.onTriggerEvent(MovieListEvent.NewSearchEvent) },
+                    onExecuteSearch = { movieListViewModel.onTriggerEvent(NewSearchEvent) },
                     focusRequester = focusRequester,
                     focusManager = focusManager,
                     resetForNextSearch = { movieListViewModel.resetForNextSearch() },
@@ -91,10 +92,10 @@ fun MovieListScreen(
                 configurations = configurations,
                 onChangeMovieScrollPosition = movieListViewModel::onChangeMovieScrollPosition,
                 page = page,
-                onTriggerNextPage = { movieListViewModel.onTriggerEvent(MovieListEvent.NextPageEvent) },
+                onTriggerNextPage = { movieListViewModel.onTriggerEvent(NextPageEvent) },
                 onNavigateToMovieDetailScreen = onNavigateToMovieDetailScreen,
                 saveMovie = {
-                    movieListViewModel.onTriggerEvent(MovieListEvent.SaveMovieEvent(movie = it))
+                    movieListViewModel.onTriggerEvent(SaveMovieEvent(movie = it))
                 },
             )
         }

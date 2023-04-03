@@ -2,7 +2,6 @@ package com.otaz.imdbmovieapp.presentation.ui.movie_list
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -36,6 +35,7 @@ class MovieListViewModel @Inject constructor(
     @Named("tmdb_apikey") private val apiKey: String,
 ): ViewModel() {
     val movies: MutableState<List<Movie>> = mutableStateOf(ArrayList())
+
     val configurations: MutableState<ImageConfigs> = mutableStateOf(GetConfigurations.EMPTY_CONFIGURATIONS)
 
     val query = mutableStateOf("")
