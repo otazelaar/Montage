@@ -1,5 +1,5 @@
 # www.linkedin.com/in/owentazelaar
-# Movie Database App
+# Movie Database Application
 
 - Search movies by film title
 
@@ -42,6 +42,10 @@
 - Glide
 - Junit
 - Navigation Component
+
+# Attribution
+<img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_long_1-8ba2ac31f354005783fab473602c34c3f4fd207150182061e425d366e4f34596.svg" width="550" height="100">
+- This product uses the TMDB API but is not endorsed or certified by TMDB
 
 # Intention
 - To gain real world experience in modern android app development

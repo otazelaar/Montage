@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.IMDBMovieApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.Montage" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
         <item name="android:statusBarColor">@color/yellow_800</item>
 

@@ -4,6 +4,6 @@
         <item name="windowSplashScreenBackground">#FFFFFF</item>
 
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
-        <item name="postSplashScreenTheme">@style/Theme.IMDBMovieApp</item>
+        <item name="postSplashScreenTheme">@style/Theme.Montage</item>
     </style>
 </resources>

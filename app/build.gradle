@@ -17,11 +17,11 @@ plugins {
 }
 
 android {
-    namespace 'com.otaz.imdbmovieapp'
+    namespace 'com.otaz.montage'
     compileSdkVersion Versions.compileSdk
 
     defaultConfig {
-        applicationId "com.otaz.imdbmovieapp"
+        applicationId 'com.otaz.montage'
         minSdkVersion Versions.minSdk
         targetSdkVersion Versions.targetSdk
         versionCode Versions.versionCode
@@ -52,6 +52,7 @@ android {
     }
     buildFeatures {
         compose true
+        viewBinding=true
     }
 }
 
