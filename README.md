@@ -1,4 +1,3 @@
-# www.linkedin.com/in/owentazelaar
 # Movie Database Application
 
 - Search movies by film title
