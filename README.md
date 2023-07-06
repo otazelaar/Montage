@@ -26,7 +26,7 @@
 - Two different APIs were integrated using Retrofit
 
 - TMDB API https://www.themoviedb.org/
-  - Used to aquire database of movies for the MovieListScreen
+  - Used to acquire database of movies for the MovieListScreen
   - Associated IMDB movie ID was used with the OMDB database to aquire other desired data
 
 - OMDB API https://www.omdbapi.com/
