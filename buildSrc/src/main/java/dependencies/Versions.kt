@@ -12,7 +12,6 @@ object Versions {
   const val kotlin = "1.7.20"
   const val gradle = "7.3.1"
   const val hilt = "2.44"
-  const val junit5 = "1.8.2.1"
   const val kotlin_compiler_extension = "1.3.2"
 
   const val core_ktx = "1.9.0"
@@ -22,7 +21,6 @@ object Versions {
   const val androidx_ui = "1.0.0-alpha07"
   const val compose = "1.3.1"
   const val compose_activity = "1.6.1"
-  const val compose_tooling = "1.3.2"
   const val nav_component = "2.5.3"
   const val nav_compose = "2.4.0-beta02" // I did not have this previously. may cause an issue
   const val hilt_navigation = "1.0.0-alpha03"
@@ -30,7 +28,6 @@ object Versions {
   const val retrofit = "2.9.0"
   const val okHttp = "4.10.0"
   const val room =  "2.5.0"
-  const val junit_jupiter = "5.7.0"
   const val datastore = "1.0.0-alpha06"
   const val splash = "1.0.0"
 }

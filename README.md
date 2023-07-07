@@ -55,4 +55,6 @@ the overall architecture of this application
 - To gain real world experience in modern android app development
 - This product is intended to be placed on the google play store and will not make any revenue
 
+# Privacy Policy
+
 # www.linkedin.com/in/owentazelaar

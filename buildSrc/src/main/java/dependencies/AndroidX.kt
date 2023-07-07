@@ -18,20 +18,14 @@ object AndroidX {
   const val compose_icons_extended = "androidx.compose.material:material-icons-extended:${Versions.compose}"
   const val compose_activity = "androidx.activity:activity-compose:${Versions.compose_activity}"
 
-  const val compose_ui_preview_tooling = "androidx.compose.ui:ui-tooling:${Versions.compose_tooling}"
-  const val compose_ui_preview = "androidx.compose.ui:ui-tooling-preview:${Versions.compose_tooling}"
-
-
   const val navigation_compose = "androidx.navigation:navigation-compose:${Versions.nav_compose}"
 
-//  const val navigation_hilt = "androidx.hilt:hilt-navigation:${Versions.hilt_navigation}"
-  const val navigation_hilt = "androidx.hilt:hilt-navigation-compose:${Versions.hilt_navigation}" // might not work
+  const val navigation_hilt = "androidx.hilt:hilt-navigation-compose:${Versions.hilt_navigation}"
 
   const val room_runtime = "androidx.room:room-runtime:${Versions.room}"
   const val room_ktx = "androidx.room:room-ktx:${Versions.room}"
 
   const val datastore = "androidx.datastore:datastore-preferences:${Versions.datastore}"
 
-  // Splash Screen
   const val splash = "androidx.core:core-splashscreen:${Versions.splash}"
 }
