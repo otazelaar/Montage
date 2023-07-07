@@ -26,7 +26,6 @@ class SavedMovieListViewModel @Inject constructor(
 
     val loading = mutableStateOf(false)
 
-    // Error Handling
     private val dialogQueue = DialogQueue()
 
     init {

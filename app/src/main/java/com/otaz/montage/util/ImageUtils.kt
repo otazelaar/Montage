@@ -13,7 +13,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.otaz.montage.domain.model.ImageConfigs
 
-
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun loadPicture(
