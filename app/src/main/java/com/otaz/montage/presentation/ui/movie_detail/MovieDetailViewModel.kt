@@ -11,7 +11,6 @@ import com.otaz.montage.interactors.movie_detail.GetMovieReviews
 import com.otaz.montage.interactors.movie_detail.GetTmdbMovie
 import com.otaz.montage.interactors.movie_detail.GetOmdbMovie
 import com.otaz.montage.presentation.ui.movie_detail.MovieEvent.*
-import com.otaz.montage.presentation.ui.util.DialogQueue
 import com.otaz.montage.util.MOVIE_PAGINATION_PAGE_SIZE
 import com.otaz.montage.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,15 +37,11 @@ class MovieDetailViewModel @Inject constructor(
     val configurations: MutableState<ImageConfigs> = mutableStateOf(GetConfigurations.EMPTY_CONFIGURATIONS)
 
     val loading = mutableStateOf(false)
-    val dialogQueue = DialogQueue()
 
-    // Paging
     val page = mutableStateOf(1)
     var reviewListScrollPosition = 0
 
-    init {
-        getConfigurations()
-    }
+    init { getConfigurations() }
 
     fun onTriggerEvent(event: MovieEvent){
         viewModelScope.launch {
@@ -78,16 +73,14 @@ class MovieDetailViewModel @Inject constructor(
             dataState.data?.let {
                 data -> movieTmdb.value = data
 
-                // call for OMDB movie using imdb ID --> This gets us ratings for IMDB and Metacritic
                 data.imdb_id?.let { getOmdbMovie(it) }
                 Log.i(TAG, "getTmdbMovie: Success: ${data.id}")
 
-                // call for movie reviews
                 getMovieReviews(data.id)
                 Log.i(TAG, "getMovieReviews: Success: ${data.id} & ${reviews.value}")
 
             }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("getTmdbMovie: Error", error) }
+            dataState.error?.let { error -> Log.e("getTmdbMovie: Error", error) }
         }.launchIn(viewModelScope)
     }
 
@@ -97,11 +90,8 @@ class MovieDetailViewModel @Inject constructor(
             omdb_id = omdb_id,
         ).onEach { dataState ->
             loading.value = dataState.loading
-            dataState.data?.let {
-                data -> movieOmdb.value = data
-                Log.i(TAG, "getOmdbMovie: Success: ${data.id}")
-            }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("getOmdbMovie: Error", error) }
+            dataState.data?.let { data -> movieOmdb.value = data }
+            dataState.error?.let { error -> Log.e("getOmdbMovie: Error", error) }
         }.launchIn(viewModelScope)
     }
 
@@ -113,7 +103,7 @@ class MovieDetailViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { value -> configurations.value = value }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("GetConfigurations Error", error)}
+            dataState.error?.let { error -> Log.e("GetConfigurations Error", error)}
         }.launchIn(viewModelScope)
     }
 
@@ -128,14 +118,13 @@ class MovieDetailViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> reviews.value = list }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("getMovieReviews: Error:", error)}
+            dataState.error?.let { error -> Log.e("getMovieReviews: Error:", error)}
         }.launchIn(viewModelScope)
     }
 
     private fun nextPage(id: Int){
         if((reviewListScrollPosition + 1) >= (page.value * MOVIE_PAGINATION_PAGE_SIZE)){
             incrementPage()
-            Log.d(TAG, "nextPageReviews: triggered: ${page.value}")
 
             if(page.value > 1){
                 getMovieReviews.execute(
@@ -145,15 +134,12 @@ class MovieDetailViewModel @Inject constructor(
                 ).onEach { dataState ->
                     loading.value = dataState.loading
                     dataState.data?.let { list -> appendMovies(list) }
-                    dataState.error?.let { error -> dialogQueue.appendErrorMessage("Error", error) }
+                    dataState.error?.let { error -> Log.e("Error", error) }
                 }.launchIn(viewModelScope)
             }
         }
     }
 
-    /**
-     * Called when a getMovieReviews is executed
-     */
     private fun resetSearchState(){
         reviews.value = listOf()
         page.value = 1

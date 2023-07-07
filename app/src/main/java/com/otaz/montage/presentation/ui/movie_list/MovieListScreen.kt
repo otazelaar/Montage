@@ -41,17 +41,13 @@ fun MovieListScreen(
 
     val loading = movieListViewModel.loading.value
 
-    val dialogQueue = movieListViewModel.dialogQueue
 
     val page = movieListViewModel.page.value
 
     // rememberScaffoldState will create a scaffold state object and persist across recompositions
     val scaffoldState = rememberScaffoldState()
 
-    AppTheme(
-        scaffoldState = scaffoldState,
-        dialogQueue = dialogQueue.queue.value,
-    ) {
+    AppTheme{
         Scaffold(
             drawerContent = {
                 // Cannot seem to figure out how to make the drawer come from the right side of the screen.

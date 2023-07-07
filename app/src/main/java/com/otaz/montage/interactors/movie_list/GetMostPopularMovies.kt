@@ -32,8 +32,6 @@ class GetMostPopularMovies (
         }
     }
 
-    // This can throw an exception if there is no network connection
-    // This function gets Dto's from the network and converts them to Movie Objects
     private suspend fun getMostPopularMoviesFromNetwork(
         apikey: String,
         sortBy: String,

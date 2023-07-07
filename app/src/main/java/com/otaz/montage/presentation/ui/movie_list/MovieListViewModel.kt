@@ -1,5 +1,6 @@
 package com.otaz.montage.presentation.ui.movie_list
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -14,7 +15,6 @@ import com.otaz.montage.interactors.movie_list.GetTopRatedMovies
 import com.otaz.montage.interactors.movie_list.GetUpcomingMovies
 import com.otaz.montage.interactors.movie_list.SearchMovies
 import com.otaz.montage.presentation.ui.movie_list.MovieListEvent.*
-import com.otaz.montage.presentation.ui.util.DialogQueue
 import com.otaz.montage.util.MOVIE_PAGINATION_PAGE_SIZE
 import com.otaz.montage.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,12 +46,8 @@ class MovieListViewModel @Inject constructor(
 
     val loading = mutableStateOf(false)
 
-    // Pagination
     val page = mutableStateOf(1)
     var movieListScrollPosition = 0
-
-    // Error Handling
-    val dialogQueue = DialogQueue()
 
     init {
         getConfigurations()
@@ -73,8 +69,6 @@ class MovieListViewModel @Inject constructor(
     }
 
     private fun newSearch(){
-        Log.d(TAG, "MovieListViewModel: newSearch: query: ${query.value}, page: ${page.value}")
-
         resetSearchState()
         searchMovies.execute(
             apikey = apiKey,
@@ -83,13 +77,11 @@ class MovieListViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> movies.value = list }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("MovieListViewModel: newSearch: Error:", error)}
+            dataState.error?.let { error -> Log.e("newSearch: Error:", error)}
         }.launchIn(viewModelScope)
     }
 
     private fun getMostPopularMovies(){
-        Log.d(TAG, "MovieListViewModel: getMostPopularMovies: query: ${query.value}, page: ${page.value}")
-
         resetSearchState()
         getMostPopularMovies.execute(
             apikey = apiKey,
@@ -98,13 +90,11 @@ class MovieListViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> movies.value = list }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("MovieListViewModel: getMostPopularMovies: Error:", error)}
+            dataState.error?.let { error -> Log.e(TAG, error)}
         }.launchIn(viewModelScope)
     }
 
     private fun getUpcomingMovies(){
-        Log.d(TAG, "MovieListViewModel: getUpcomingMovies: query: ${query.value}, page: ${page.value}")
-
         resetSearchState()
         getUpcomingMovies.execute(
             apikey = apiKey,
@@ -112,13 +102,11 @@ class MovieListViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> movies.value = list }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("MovieListViewModel: getUpcomingMovies: Error:", error)}
+            dataState.error?.let { error -> Log.e(TAG, error)}
         }.launchIn(viewModelScope)
     }
 
     private fun getTopRatedMovies(){
-        Log.d(TAG, "MovieListViewModel: getTopRatedMovies: query: ${query.value}, page: ${page.value}")
-
         resetSearchState()
         getTopRatedMovies.execute(
             apikey = apiKey,
@@ -126,7 +114,7 @@ class MovieListViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> movies.value = list }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("MovieListViewModel: getTopRatedMovies: Error:", error)}
+            dataState.error?.let { error -> Log.e(TAG, error)}
         }.launchIn(viewModelScope)
     }
 
@@ -143,29 +131,24 @@ class MovieListViewModel @Inject constructor(
                 ).onEach { dataState ->
                     loading.value = dataState.loading
                     dataState.data?.let { list -> appendMovies(list) }
-                    dataState.error?.let { error -> dialogQueue.appendErrorMessage("MovieListViewModel: Error", error) }
+                    dataState.error?.let { error -> Log.e(TAG, error) }
                 }.launchIn(viewModelScope)
             }
         }
     }
 
     private fun getConfigurations(){
-        Log.d(TAG, "MovieListViewModel: getConfigurations running")
-
         getConfigurations.execute(
             apikey = apiKey,
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { value -> configurations.value = value }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("MovieListViewModel: GetConfigurations Error", error)}
+            dataState.error?.let { error -> Log.e(TAG, error)}
         }.launchIn(viewModelScope)
     }
 
     private suspend fun saveMovie(movie: Movie){
-        Log.d(TAG, "MovieListViewModel: saveMovie running")
-        saveMovie.execute(
-            movie = movie
-        )
+        saveMovie.execute(movie = movie)
     }
 
     /**
@@ -194,7 +177,6 @@ class MovieListViewModel @Inject constructor(
         movies.value = listOf()
         page.value = 1
         onChangeMovieScrollPosition(0)
-        // might need to reset index here as well
         if(selectedCategory.value?.value != query.value) clearSelectedCategory()
     }
 
@@ -270,10 +252,6 @@ class MovieListViewModel @Inject constructor(
         movies.value = listOf()
         page.value = 1
         onChangeMovieScrollPosition(0)
-        // might need to reset index here as well
-
-//        not sure if this is working. I believe that query.value being changed is actually
-//        resulting in the category being unselected.
         if(selectedCategory.value?.value != query.value) clearSelectedCategory()
     }
 }
