@@ -28,36 +28,26 @@ fun MovieDetailScreen(
             )
     } else {
         val scaffoldState = rememberScaffoldState()
-        val loading = viewModel.loading.value
         val movieTmdb = viewModel.movieTmdb.value
         val movieOmdb = viewModel.movieOmdb.value
         val reviews = viewModel.reviews.value
         val page = viewModel.page.value
         val configurations = viewModel.configurations.value
-        val onLoad = viewModel.onLoad.value
 
-        if (!onLoad) {
-            viewModel.onLoad.value = true
-            viewModel.onTriggerEvent(GetTmdbMovieEvent(movieId))
-        }
+        viewModel.onTriggerEvent(GetTmdbMovieEvent(movieId))
 
         AppTheme{
             Scaffold(
                 scaffoldState = scaffoldState,
-                snackbarHost = {
-                    scaffoldState.snackbarHostState
-                }
+                snackbarHost = { scaffoldState.snackbarHostState }
             ) {
                 Box(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    if (loading && movieTmdb == null && movieOmdb == null) {
+                    if (movieTmdb == null && movieOmdb == null) {
                         ShimmerMovieCardItem(imageHeight = IMAGE_HEIGHT.dp)
-                    } else if(!loading && movieTmdb == null && onLoad){
-//                        TODO("Show Invalid Movie")
-                    }else if(movieTmdb != null && movieOmdb != null) {
+                    } else if(movieTmdb != null && movieOmdb != null) {
                         MovieDetailView(
-                            loading = loading,
                             reviews = reviews,
                             onChangeReviewScrollPosition = viewModel::onChangeReviewScrollPosition,
                             onTriggerNextPage = { viewModel.onTriggerEvent( NextPageEvent) },

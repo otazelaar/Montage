@@ -30,7 +30,6 @@ class MovieDetailViewModel @Inject constructor(
     @Named("omdb_apikey") private val omdb_apiKey: String,
     ): ViewModel(){
 
-    val onLoad: MutableState<Boolean> = mutableStateOf(false)
     val movieTmdb: MutableState<TmdbMovieSpecs?> = mutableStateOf(null)
     val movieOmdb: MutableState<OmdbMovieSpecs?> = mutableStateOf(null)
     val reviews: MutableState<List<MovieReview>> = mutableStateOf(ArrayList())
@@ -41,7 +40,9 @@ class MovieDetailViewModel @Inject constructor(
     val page = mutableStateOf(1)
     var reviewListScrollPosition = 0
 
-    init { getConfigurations() }
+    init {
+        getConfigurations()
+    }
 
     fun onTriggerEvent(event: MovieEvent){
         viewModelScope.launch {

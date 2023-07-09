@@ -30,7 +30,6 @@ import com.otaz.montage.util.loadPicture
 @Composable
 fun MovieDetailView(
     reviews: List<MovieReview>,
-    loading: Boolean,
     onChangeReviewScrollPosition: (Int) -> Unit,
     onTriggerNextPage: () -> Unit,
     page: Int,
@@ -216,7 +215,6 @@ fun MovieDetailView(
                 )
             }
             ReviewList(
-                loading = loading,
                 reviews = reviews,
                 onChangeReviewScrollPosition = onChangeReviewScrollPosition,
                 onTriggerNextPage = onTriggerNextPage,

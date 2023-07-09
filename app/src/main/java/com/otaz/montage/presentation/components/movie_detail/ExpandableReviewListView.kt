@@ -2,6 +2,8 @@ package com.otaz.montage.presentation.components.movie_detail
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -25,7 +27,7 @@ fun ExpandableReviewListView(
     ) {
         Text(
             text = review.content,
-            maxLines = if(isExpanded) Int.MAX_VALUE else 5,
+            maxLines = if(isExpanded) Int.MAX_VALUE else 10,
             style = MaterialTheme.typography.h4,
             color = if(isExpanded) MaterialTheme.colors.onBackground else Color.DarkGray
         )
