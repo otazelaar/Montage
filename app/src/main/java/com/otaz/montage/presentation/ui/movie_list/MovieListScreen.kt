@@ -26,25 +26,16 @@ fun MovieListScreen(
     movieListViewModel: MovieListViewModel,
     savedMovieListViewModel: SavedMovieListViewModel,
 ){
-    Log.d(TAG, "MovieListScreen: $movieListViewModel")
-
     val focusRequester = FocusRequester()
     val focusManager = LocalFocusManager.current
 
-    // Anytime [val movies: MutableState<List<Movie>>] from [MovieListFragment] changes, this value below
-    // [movies] will be updated here and in any composable that uses this value.
     val movies = movieListViewModel.movies.value
     val savedMovies = savedMovieListViewModel.savedMovies.value
     val configurations = movieListViewModel.configurations.value
-
     val selectedCategory = movieListViewModel.selectedCategory.value
-
     val loading = movieListViewModel.loading.value
-
-
     val page = movieListViewModel.page.value
 
-    // rememberScaffoldState will create a scaffold state object and persist across recompositions
     val scaffoldState = rememberScaffoldState()
 
     AppTheme{

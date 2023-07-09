@@ -27,8 +27,6 @@ fun MovieDetailScreen(
                 padding = 8.dp
             )
     } else {
-        // The purpose of the following block is to make sure the movie is only called once.
-        // Before, this was being performed in the onCreate function but we are no longer using fragments.
         val scaffoldState = rememberScaffoldState()
         val loading = viewModel.loading.value
         val movieTmdb = viewModel.movieTmdb.value

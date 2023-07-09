@@ -1,6 +1,5 @@
 package com.otaz.montage.presentation.ui.movie_list
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -35,13 +34,12 @@ class MovieListViewModel @Inject constructor(
     @Named("tmdb_apikey") private val apiKey: String,
 ): ViewModel() {
     val movies: MutableState<List<Movie>> = mutableStateOf(ArrayList())
-
     val configurations: MutableState<ImageConfigs> = mutableStateOf(GetConfigurations.EMPTY_CONFIGURATIONS)
+    val selectedCategory: MutableState<MovieCategory?> = mutableStateOf(null)
 
     val query = mutableStateOf("")
     private val sortingParameterPopularityDescending = "popularity.desc"
 
-    val selectedCategory: MutableState<MovieCategory?> = mutableStateOf(null)
     var categoryScrollPosition: Int = 0
 
     val loading = mutableStateOf(false)
@@ -151,9 +149,7 @@ class MovieListViewModel @Inject constructor(
         saveMovie.execute(movie = movie)
     }
 
-    /**
-     * Append new movies to the current list of movies.
-     */
+    // Append new movies to the current list of movies.
     private fun appendMovies(movies: List<Movie>){
         val currentList = ArrayList(this.movies.value)
         currentList.addAll(movies)

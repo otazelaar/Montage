@@ -22,7 +22,6 @@ class SavedMovieListViewModel @Inject constructor(
     private val deleteMovie: DeleteMovie,
 ): ViewModel() {
     val savedMovies: MutableState<List<Movie>> = mutableStateOf(ArrayList())
-
     val loading = mutableStateOf(false)
 
     init { getSavedMovies() }
