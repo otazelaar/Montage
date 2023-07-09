@@ -45,7 +45,6 @@ class GetMostPopularMovies (
             ).movies
         ).filter {
             it.poster_path != null &&
-            it.backdrop_path != null &&
             !it.adult
         }
     }

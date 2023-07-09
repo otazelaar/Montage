@@ -8,7 +8,6 @@ class MovieEntityMapper : DomainMapper<MovieEntity, Movie> {
         return Movie(
             id = model.id,
             adult = model.adult,
-            backdrop_path = model.backdrop_path,
             overview = model.overview,
             poster_path = model.poster_path,
             release_date = model.release_date,
@@ -20,7 +19,6 @@ class MovieEntityMapper : DomainMapper<MovieEntity, Movie> {
         return MovieEntity(
             id = domainModel.id,
             adult = domainModel.adult,
-            backdrop_path = domainModel.backdrop_path,
             overview = domainModel.overview,
             poster_path = domainModel.poster_path,
             release_date = domainModel.release_date,

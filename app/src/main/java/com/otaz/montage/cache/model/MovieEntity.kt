@@ -14,9 +14,6 @@ data class MovieEntity(
     @ColumnInfo(name = "adult")
     var adult: Boolean,
 
-    @ColumnInfo(name = "backdropPath")
-    var backdrop_path: String?,
-
     @ColumnInfo(name = "overview")
     var overview: String,
 
