@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -40,16 +41,17 @@ fun MovieCategoryChip(
             modifier = Modifier
                 .toggleable(
                     value = isSelected,
+                    enabled = !isSelected,
                     onValueChange = {
                         onSelectedCategoryChanged(category)
-                        //maybe put an if statement here to perform a different search for the specific chip... this might not be the best way though
                         onExecuteSearch()
                     }
                 )
         ) {
             Text(
                 text = category,
-                style = MaterialTheme.typography.body2,
+                fontWeight = if(isSelected) FontWeight(500) else FontWeight(400),
+                style = MaterialTheme.typography.button,
                 color = if(isSelected) Color.White else Color.Black,
                 modifier = Modifier
                     .padding(8.dp)

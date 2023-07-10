@@ -40,12 +40,12 @@ class MovieListViewModel @Inject constructor(
     val query = mutableStateOf("")
     private val sortingParameterPopularityDescending = "popularity.desc"
 
-    var categoryScrollPosition: Int = 0
+    private var movieListScrollPosition: Int = 0
+    private var categoryScrollPosition: Int = 0
 
     val loading = mutableStateOf(false)
 
     val page = mutableStateOf(1)
-    var movieListScrollPosition = 0
 
     init {
         getConfigurations()
@@ -57,6 +57,7 @@ class MovieListViewModel @Inject constructor(
             try {
                 when(event){
                     is NewSearchEvent -> newSearchUseCasePicker()
+                    is NewCategorySearchEvent -> newSearchUseCasePicker()
                     is NextPageEvent -> nextPage()
                     is SaveMovieEvent -> saveMovie(movie = event.movie)
                 }

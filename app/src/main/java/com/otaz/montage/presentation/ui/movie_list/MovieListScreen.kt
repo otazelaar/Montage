@@ -41,7 +41,6 @@ fun MovieListScreen(
     AppTheme{
         Scaffold(
             drawerContent = {
-                // Cannot seem to figure out how to make the drawer come from the right side of the screen.
                 Text("Watch List", modifier = Modifier.padding(16.dp))
                 if (scaffoldState.drawerState.isOpen){
                     savedMovieListViewModel.onTriggerEvent(SavedMovieListEvent.UpdateSavedMoviesList)
@@ -64,10 +63,10 @@ fun MovieListScreen(
                     focusRequester = focusRequester,
                     focusManager = focusManager,
                     resetForNextSearch = { movieListViewModel.resetForNextSearch() },
-                    categoryScrollPosition = movieListViewModel.categoryScrollPosition,
                     selectedCategory = selectedCategory,
                     onSelectedCategoryChanged = movieListViewModel::onSelectedCategoryChanged,
                     onChangedCategoryScrollPosition = movieListViewModel::onChangedCategoryScrollPosition,
+                    newCategorySearchEvent = { movieListViewModel.onTriggerEvent(NewCategorySearchEvent) },
                 )
             },
             scaffoldState = scaffoldState,
