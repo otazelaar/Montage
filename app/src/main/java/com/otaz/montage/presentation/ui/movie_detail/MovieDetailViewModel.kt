@@ -11,7 +11,6 @@ import com.otaz.montage.interactors.movie_detail.GetMovieReviews
 import com.otaz.montage.interactors.movie_detail.GetTmdbMovie
 import com.otaz.montage.interactors.movie_detail.GetOmdbMovie
 import com.otaz.montage.presentation.ui.movie_detail.MovieEvent.*
-import com.otaz.montage.presentation.ui.util.DialogQueue
 import com.otaz.montage.util.MOVIE_PAGINATION_PAGE_SIZE
 import com.otaz.montage.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,7 +37,6 @@ class MovieDetailViewModel @Inject constructor(
     val configurations: MutableState<ImageConfigs> = mutableStateOf(GetConfigurations.EMPTY_CONFIGURATIONS)
 
     val loading = mutableStateOf(false)
-    val dialogQueue = DialogQueue()
 
     // Paging
     val page = mutableStateOf(1)
@@ -87,7 +85,7 @@ class MovieDetailViewModel @Inject constructor(
                 Log.i(TAG, "getMovieReviews: Success: ${data.id} & ${reviews.value}")
 
             }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("getTmdbMovie: Error", error) }
+            dataState.error?.let { error -> Log.e(TAG,"getTmdbMovie: Error") }
         }.launchIn(viewModelScope)
     }
 
@@ -101,7 +99,7 @@ class MovieDetailViewModel @Inject constructor(
                 data -> movieOmdb.value = data
                 Log.i(TAG, "getOmdbMovie: Success: ${data.id}")
             }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("getOmdbMovie: Error", error) }
+            dataState.error?.let { error -> Log.e(TAG,"getOmdbMovie: Error") }
         }.launchIn(viewModelScope)
     }
 
@@ -113,7 +111,7 @@ class MovieDetailViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { value -> configurations.value = value }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("GetConfigurations Error", error)}
+            dataState.error?.let { error -> Log.e(TAG,"GetConfigurations Error")}
         }.launchIn(viewModelScope)
     }
 
@@ -128,7 +126,7 @@ class MovieDetailViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> reviews.value = list }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("getMovieReviews: Error:", error)}
+            dataState.error?.let { error -> Log.e(TAG,"getMovieReviews: Error:")}
         }.launchIn(viewModelScope)
     }
 
@@ -145,7 +143,7 @@ class MovieDetailViewModel @Inject constructor(
                 ).onEach { dataState ->
                     loading.value = dataState.loading
                     dataState.data?.let { list -> appendMovies(list) }
-                    dataState.error?.let { error -> dialogQueue.appendErrorMessage("Error", error) }
+                    dataState.error?.let { error -> Log.e(TAG,"Error") }
                 }.launchIn(viewModelScope)
             }
         }

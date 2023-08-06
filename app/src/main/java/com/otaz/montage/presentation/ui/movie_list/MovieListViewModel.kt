@@ -14,7 +14,6 @@ import com.otaz.montage.interactors.movie_list.GetTopRatedMovies
 import com.otaz.montage.interactors.movie_list.GetUpcomingMovies
 import com.otaz.montage.interactors.movie_list.SearchMovies
 import com.otaz.montage.presentation.ui.movie_list.MovieListEvent.*
-import com.otaz.montage.presentation.ui.util.DialogQueue
 import com.otaz.montage.util.MOVIE_PAGINATION_PAGE_SIZE
 import com.otaz.montage.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -50,9 +49,6 @@ class MovieListViewModel @Inject constructor(
     val page = mutableStateOf(1)
     var movieListScrollPosition = 0
 
-    // Error Handling
-    val dialogQueue = DialogQueue()
-
     init {
         getConfigurations()
         getMostPopularMovies()
@@ -83,7 +79,7 @@ class MovieListViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> movies.value = list }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("MovieListViewModel: newSearch: Error:", error)}
+            dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: newSearch: Error:")}
         }.launchIn(viewModelScope)
     }
 
@@ -98,7 +94,7 @@ class MovieListViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> movies.value = list }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("MovieListViewModel: getMostPopularMovies: Error:", error)}
+            dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: getMostPopularMovies: Error:")}
         }.launchIn(viewModelScope)
     }
 
@@ -112,7 +108,7 @@ class MovieListViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> movies.value = list }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("MovieListViewModel: getUpcomingMovies: Error:", error)}
+            dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: getUpcomingMovies: Error:")}
         }.launchIn(viewModelScope)
     }
 
@@ -126,7 +122,7 @@ class MovieListViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> movies.value = list }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("MovieListViewModel: getTopRatedMovies: Error:", error)}
+            dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: getTopRatedMovies: Error:")}
         }.launchIn(viewModelScope)
     }
 
@@ -143,7 +139,7 @@ class MovieListViewModel @Inject constructor(
                 ).onEach { dataState ->
                     loading.value = dataState.loading
                     dataState.data?.let { list -> appendMovies(list) }
-                    dataState.error?.let { error -> dialogQueue.appendErrorMessage("MovieListViewModel: Error", error) }
+                    dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: Error") }
                 }.launchIn(viewModelScope)
             }
         }
@@ -157,7 +153,7 @@ class MovieListViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { value -> configurations.value = value }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("MovieListViewModel: GetConfigurations Error", error)}
+            dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: GetConfigurations Error")}
         }.launchIn(viewModelScope)
     }
 

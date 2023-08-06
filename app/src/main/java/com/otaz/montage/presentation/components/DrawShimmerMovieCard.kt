@@ -10,10 +10,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-/**
- * This Composable defines the view of the ShimmerMovieCard
- */
-
 @Composable
 fun DrawShimmerMovieCard(
     imageHeight: Dp,

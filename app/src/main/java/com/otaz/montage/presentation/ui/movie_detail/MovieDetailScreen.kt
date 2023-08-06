@@ -36,7 +36,6 @@ fun MovieDetailScreen(
         val reviews = viewModel.reviews.value
         val page = viewModel.page.value
         val configurations = viewModel.configurations.value
-        val dialogQueue = viewModel.dialogQueue
         val onLoad = viewModel.onLoad.value
 
         if (!onLoad) {
@@ -46,7 +45,6 @@ fun MovieDetailScreen(
 
         AppTheme(
             scaffoldState = scaffoldState,
-            dialogQueue = dialogQueue.queue.value,
         ) {
             Scaffold(
                 scaffoldState = scaffoldState,

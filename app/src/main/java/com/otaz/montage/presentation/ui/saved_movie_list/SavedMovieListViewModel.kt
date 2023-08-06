@@ -9,7 +9,6 @@ import com.otaz.montage.domain.model.Movie
 import com.otaz.montage.interactors.app.DeleteMovie
 import com.otaz.montage.interactors.app.GetSavedMovies
 import com.otaz.montage.presentation.ui.saved_movie_list.SavedMovieListEvent.*
-import com.otaz.montage.presentation.ui.util.DialogQueue
 import com.otaz.montage.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -26,13 +25,8 @@ class SavedMovieListViewModel @Inject constructor(
 
     val loading = mutableStateOf(false)
 
-    private val dialogQueue = DialogQueue()
-
     init {
         getSavedMovies()
-//        the list of save movies only updates when the app is closed and reopened
-//        placing the getSaveMovies() below as a MovieListEvent results in the list not being updated until
-//        clicking on a new movie to save
     }
 
     fun onTriggerEvent(event: SavedMovieListEvent){
@@ -58,19 +52,14 @@ class SavedMovieListViewModel @Inject constructor(
         getSavedMovies.execute().onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { list -> savedMovies.value = list }
-            dataState.error?.let { error -> dialogQueue.appendErrorMessage("SavedMoviesListViewModel: getSavedMovies: Error:", error)}
+            dataState.error?.let { error -> Log.e(TAG,"SavedMoviesListViewModel: getSavedMovies: Error:")}
         }.launchIn(viewModelScope)
     }
 
     private suspend fun deleteSavedMovie(id: String){
-        Log.d(TAG, "SavedMoviesListViewModel: deleteSavedMovie:$id running")
-
         deleteMovie.execute(
             id = id
         )
-
-        // Update saved movies list - I think this should do that. Otherwise might need to
-        // update list from UI when movie is deleted clicked. this might not be the spot to do that
         getSavedMovies()
     }
 }

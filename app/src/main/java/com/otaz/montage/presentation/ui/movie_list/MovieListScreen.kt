@@ -41,8 +41,6 @@ fun MovieListScreen(
 
     val loading = movieListViewModel.loading.value
 
-    val dialogQueue = movieListViewModel.dialogQueue
-
     val page = movieListViewModel.page.value
 
     // rememberScaffoldState will create a scaffold state object and persist across recompositions
@@ -50,7 +48,6 @@ fun MovieListScreen(
 
     AppTheme(
         scaffoldState = scaffoldState,
-        dialogQueue = dialogQueue.queue.value,
     ) {
         Scaffold(
             drawerContent = {

@@ -14,9 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.otaz.montage.presentation.components.DefaultSnackbar
-import com.otaz.montage.presentation.components.GenericDialog
-import com.otaz.montage.presentation.components.GenericDialogInfo
-import java.util.*
 
 private val LightThemeColors = lightColors(
     primary = Yellow600,
@@ -50,7 +47,6 @@ private val DarkThemeColors = darkColors(
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     scaffoldState: ScaffoldState,
-    dialogQueue: Queue<GenericDialogInfo>,
     content: @Composable () -> Unit,
 ) {
     MaterialTheme(
@@ -76,22 +72,6 @@ fun AppTheme(
                     alignment = Alignment.BottomCenter
                 )
             )
-            ProcessDialogQueue(dialogQueue = dialogQueue)
         }
-    }
-}
-
-@Composable
-fun ProcessDialogQueue(
-    dialogQueue: Queue<GenericDialogInfo>?,
-) {
-    dialogQueue?.peek()?.let { dialogInfo ->
-        GenericDialog(
-            onDismiss = dialogInfo.onDismiss,
-            title = dialogInfo.title,
-            description = dialogInfo.description,
-            positiveAction = dialogInfo.positiveAction,
-            negativeAction = dialogInfo.negativeAction
-        )
     }
 }
