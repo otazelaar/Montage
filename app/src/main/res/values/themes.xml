@@ -1,8 +1,5 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+<resources>
     <style name="Theme.Montage" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-
         <item name="android:statusBarColor">@color/yellow_800</item>
-
     </style>
 </resources>

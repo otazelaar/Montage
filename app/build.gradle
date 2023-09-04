@@ -1,8 +1,6 @@
 import dependencies.AnnotationProcessing
-import dependencies.InstrumentationTest
 import dependencies.Jetbrains
 import dependencies.Square
-import dependencies.UnitTest
 import dependencies.Versions
 import dependencies.AndroidX
 import dependencies.Google
@@ -13,7 +11,6 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
-    id 'de.mannodermaus.android-junit5'
 }
 
 android {
@@ -29,11 +26,24 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    buildTypes {
+    signingConfigs {
         release {
-            // make sure to turn the following line of code to true when I release it
+            keyAlias 'upload'
+            keyPassword 'ft9QmzpCEUo9jtXrgQmj'
+            storePassword 'ft9QmzpCEUo9jtXrgQmj'
+            storeFile file('/Users/owentazelaar/keystores/upload-keystore.jks')
+        }
+    }
+    buildTypes {
+        debug {
+            debuggable true
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        release {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable false
+            minifyEnabled true
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -91,18 +101,4 @@ dependencies {
     kapt AnnotationProcessing.hilt_compiler
     kapt AnnotationProcessing.glide_compiler
     kapt AnnotationProcessing.room_compiler
-
-    // TESTING
-    testImplementation UnitTest.jupiter_api
-    testImplementation UnitTest.jupiter_params
-    testRuntimeOnly UnitTest.jupiter_engine
-
-    // Mock web server
-    testImplementation UnitTest.mock_web_server
-    testImplementation UnitTest.okHttp
-
-    // compose testing
-    implementation InstrumentationTest.compose_ui
-    implementation AndroidX.compose_ui_preview
-    debugImplementation AndroidX.compose_ui_preview_tooling
 }

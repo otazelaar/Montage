@@ -24,7 +24,7 @@ object Versions {
   const val compose_activity = "1.6.1"
   const val compose_tooling = "1.3.2"
   const val nav_component = "2.5.3"
-  const val nav_compose = "2.4.0-beta02" // I did not have this previously. may cause an issue
+  const val nav_compose = "2.4.0-beta02"
   const val hilt_navigation = "1.0.0-alpha03"
   const val glide = "4.14.2"
   const val retrofit = "2.9.0"
