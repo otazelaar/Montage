@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# The following three lines of code keep all the data classes that would otherwise be removed by R8
+-keep class com.otaz.montage.network.model.*
+-keep class com.otaz.montage.network.responses.*
+-keep class com.otaz.montage.domain.model.*

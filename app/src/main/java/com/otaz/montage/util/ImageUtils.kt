@@ -22,6 +22,7 @@ fun loadPicture(
 ): MutableState<Bitmap?>{
 
     val bitmapState: MutableState<Bitmap?> = mutableStateOf(null)
+    val adjustedUrl = configurations.secure_base_url + "original" + url
 
     // show default image while image loads
     Glide.with(LocalContext.current)
@@ -38,7 +39,7 @@ fun loadPicture(
     // get network image
     Glide.with(LocalContext.current)
         .asBitmap()
-        .load(configurations.secure_base_url + "original" + url)
+        .load(adjustedUrl)
         .into(object: CustomTarget<Bitmap>(){
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                 bitmapState.value = resource
