@@ -6,7 +6,7 @@ object Versions {
   const val minSdk = 21
   const val targetSdk = 33
   const val versionCode = 2 // this is version code 2 due to the original signed bundle not being UTD
-  const val versionName = "1.0"
+  const val versionName = "2.0"
   const val jvmTarget = "1.8"
 
   const val kotlin = "1.7.20"
