@@ -5,6 +5,9 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.List
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -60,15 +63,24 @@ fun MovieListView(
                         backgroundColor = MaterialTheme.colors.primary
                     ),
                 ) {
-                    Text(
-                        text = "Save",
-                        style = MaterialTheme.typography.h5,
-                        color = if (isPressed){
+                    Icon(
+                        imageVector = Icons.Outlined.Add,
+                        contentDescription = "Add movie to watch list",
+                        tint = if (isPressed){
                             Color.Red
                         }else{
                             Color.Black
                         }
                     )
+//                    Text(
+//                        text = "Save",
+//                        style = MaterialTheme.typography.h5,
+//                        color = if (isPressed){
+//                            Color.Red
+//                        }else{
+//                            Color.Black
+//                        }
+//                    )
                 }
             }
         }

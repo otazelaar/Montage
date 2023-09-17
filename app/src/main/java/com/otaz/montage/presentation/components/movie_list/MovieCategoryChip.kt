@@ -40,9 +40,9 @@ fun MovieCategoryChip(
             modifier = Modifier
                 .toggleable(
                     value = isSelected,
+                    enabled = !isSelected,
                     onValueChange = {
                         onSelectedCategoryChanged(category)
-                        //maybe put an if statement here to perform a different search for the specific chip... this might not be the best way though
                         onExecuteSearch()
                     }
                 )

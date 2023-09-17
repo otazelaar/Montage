@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
@@ -18,6 +19,7 @@ import com.otaz.montage.presentation.ui.movie_list.MovieListEvent.*
 import com.otaz.montage.presentation.ui.saved_movie_list.SavedMovieListEvent
 import com.otaz.montage.presentation.ui.saved_movie_list.SavedMovieListViewModel
 import com.otaz.montage.util.TAG
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -45,27 +47,12 @@ fun MovieListScreen(
 
     // rememberScaffoldState will create a scaffold state object and persist across recompositions
     val scaffoldState = rememberScaffoldState()
+    val scope = rememberCoroutineScope()
 
     AppTheme(
         scaffoldState = scaffoldState,
     ) {
         Scaffold(
-            drawerContent = {
-                // Cannot seem to figure out how to make the drawer come from the right side of the screen.
-                Text("Watch List", modifier = Modifier.padding(16.dp))
-                if (scaffoldState.drawerState.isOpen){
-                    savedMovieListViewModel.onTriggerEvent(SavedMovieListEvent.UpdateSavedMoviesList)
-
-                    SavedMoviesList(
-                        savedMovies = savedMovies,
-                        onNavigateToMovieDetailScreen = onNavigateToMovieDetailScreen,
-                        onClickDeleteMovie = {
-                            savedMovieListViewModel.onTriggerEvent(SavedMovieListEvent.DeleteSavedMovie(id = it))
-                        }
-                    )
-                }
-            },
-            drawerGesturesEnabled = true,
             topBar = {
                 SearchAppBar(
                     expression = movieListViewModel.query.value,
@@ -78,8 +65,23 @@ fun MovieListScreen(
                     selectedCategory = selectedCategory,
                     onSelectedCategoryChanged = movieListViewModel::onSelectedCategoryChanged,
                     onChangedCategoryScrollPosition = movieListViewModel::onChangedCategoryScrollPosition,
+                    onSavedMoviesIconClicked = { scope.launch { scaffoldState.drawerState.open() } }
                 )
             },
+            drawerContent = {
+                Text("Watch List", modifier = Modifier.padding(16.dp))
+
+                savedMovieListViewModel.onTriggerEvent(SavedMovieListEvent.UpdateSavedMoviesList)
+
+                SavedMoviesList(
+                    savedMovies = savedMovies,
+                    onNavigateToMovieDetailScreen = onNavigateToMovieDetailScreen,
+                    onClickDeleteMovie = {
+                        savedMovieListViewModel.onTriggerEvent(SavedMovieListEvent.DeleteSavedMovie(id = it))
+                    }
+                )
+            },
+            drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
             scaffoldState = scaffoldState,
             snackbarHost = { scaffoldState.snackbarHostState },
         ){

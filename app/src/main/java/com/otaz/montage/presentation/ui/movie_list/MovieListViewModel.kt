@@ -87,6 +87,12 @@ class MovieListViewModel @Inject constructor(
         Log.d(TAG, "MovieListViewModel: getMostPopularMovies: query: ${query.value}, page: ${page.value}")
 
         resetSearchState()
+
+        // Makes the "Popular" category chip selected upon launching the application
+        if(selectedCategory.value != MovieCategory.GET_MOST_POPULAR_MOVIES){
+            selectedCategory.value = MovieCategory.GET_MOST_POPULAR_MOVIES
+        }
+
         getMostPopularMovies.execute(
             apikey = apiKey,
             sortBy = sortingParameterPopularityDescending,

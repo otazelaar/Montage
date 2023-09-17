@@ -11,6 +11,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.List
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -41,6 +43,7 @@ fun SearchAppBar(
     selectedCategory: MovieCategory?,
     onSelectedCategoryChanged: (String) -> Unit,
     onChangedCategoryScrollPosition: (Int) -> Unit,
+    onSavedMoviesIconClicked: () -> Unit,
 ){
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -92,6 +95,14 @@ fun SearchAppBar(
                         },
                     ),
                     textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.onSurface),
+                    trailingIcon = {
+                        IconButton(onClick = onSavedMoviesIconClicked) {
+                            Icon(
+                                imageVector = Icons.Outlined.List,
+                                contentDescription = "Toggle drawer"
+                            )
+                        }
+                    }
                 )
             }
 
