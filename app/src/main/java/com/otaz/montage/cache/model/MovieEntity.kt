@@ -30,3 +30,19 @@ data class MovieEntity(
     @ColumnInfo(name = "title")
     var title: String,
 )
+
+fun MovieEntity.toMovie(): Movie {
+    return Movie(
+        id = id,
+        adult = adult,
+        backdrop_path = backdrop_path,
+        overview = overview,
+        poster_path = poster_path,
+        release_date = release_date,
+        title = title,
+    )
+}
+
+fun entitiesToMovie(movieEntities: List<MovieEntity>): List<Movie> {
+    return movieEntities.map { it.toMovie() }
+}

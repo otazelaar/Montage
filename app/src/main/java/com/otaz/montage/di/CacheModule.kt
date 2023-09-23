@@ -2,7 +2,6 @@ package com.otaz.montage.di
 
 import androidx.room.Room
 import com.otaz.montage.cache.database.AppDatabase
-import com.otaz.montage.cache.model.MovieEntityMapper
 import com.otaz.montage.network.model.MovieDao
 import dagger.Module
 import dagger.Provides
@@ -27,12 +26,6 @@ object CacheModule {
     @Provides
     fun provideMovieDao(app: AppDatabase): MovieDao {
         return app.movieDao()
-    }
-
-    @Singleton
-    @Provides
-    fun provideCacheMovieMapper(): MovieEntityMapper {
-        return MovieEntityMapper()
     }
 
 }

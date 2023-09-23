@@ -1,6 +1,5 @@
 package com.otaz.montage.di
 
-import com.otaz.montage.cache.model.MovieEntityMapper
 import com.otaz.montage.interactors.app.DeleteMovie
 import com.otaz.montage.interactors.app.GetConfigurations
 import com.otaz.montage.interactors.app.GetSavedMovies
@@ -129,11 +128,9 @@ object InteractorsModule {
     @Provides
     fun getSavedMovies(
         movieDao: MovieDao,
-        movieEntityMapper: MovieEntityMapper,
     ): GetSavedMovies{
         return GetSavedMovies(
             movieDao = movieDao,
-            movieEntityMapper = movieEntityMapper,
         )
     }
 }

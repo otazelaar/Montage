@@ -1,7 +1,7 @@
 package com.otaz.montage.interactors.app
 
 import android.util.Log
-import com.otaz.montage.cache.model.MovieEntityMapper
+import com.otaz.montage.cache.model.entitiesToMovie
 import com.otaz.montage.domain.data.DataState
 import com.otaz.montage.domain.model.Movie
 import com.otaz.montage.network.model.MovieDao
@@ -11,14 +11,13 @@ import kotlinx.coroutines.flow.flow
 
 class GetSavedMovies(
     private val movieDao: MovieDao,
-    private val movieEntityMapper: MovieEntityMapper,
 ) {
     fun execute(): Flow<DataState<List<Movie>>> = flow {
         try {
             emit(DataState.loading())
 
-            val savedMovies = movieDao.getAllMovies()
-            val cachedMovies = movieEntityMapper.fromEntityList(savedMovies)
+            val listOfMovieEntity = movieDao.getAllMovies()
+            val cachedMovies = entitiesToMovie(listOfMovieEntity)
 
             emit(DataState.success(cachedMovies))
             Log.i(TAG, "GetSavedMovies UseCase Success: $cachedMovies")
