@@ -12,9 +12,7 @@ class DeleteMovie(
     ) {
         try {
             movieDao.deleteMovie(id)
-
             Log.i(TAG, "DeleteMovieUseCase Success: $id")
-
         } catch (e: Exception) {
             Log.e(TAG, "DeleteMovieUseCase UseCase Error: $e")
         }

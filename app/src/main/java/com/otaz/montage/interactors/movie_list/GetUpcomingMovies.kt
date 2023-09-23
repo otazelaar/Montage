@@ -3,45 +3,42 @@ package com.otaz.montage.interactors.movie_list
 import com.otaz.montage.domain.data.DataState
 import com.otaz.montage.domain.model.Movie
 import com.otaz.montage.network.TmdbApiService
-import com.otaz.montage.network.model.MovieDtoMapper
+import com.otaz.montage.network.model.toMovie
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class GetUpcomingMovies(
     private val tmdbApiService: TmdbApiService,
-    private val dtoMapper: MovieDtoMapper,
-){
+) {
     fun execute(
         apikey: String,
         page: Int,
     ): Flow<DataState<List<Movie>>> = flow {
-        try {
-            emit(DataState.loading())
+        emit(DataState.loading())
 
-            val movies = getMoviesFromNetwork(
-                apikey = apikey,
-                page = page,
-            )
+        // may need db caching
+        // handle errors more deeply
 
-            emit(DataState.success(movies))
-
-        }catch (e: Exception){
-            emit(DataState.error(e.message ?: "GetUpcomingMovies: Unknown error"))
+        val statusResult = runCatching {
+            getMoviesFromNetwork(apikey, page)
+        }.onSuccess { status ->
+            emit(DataState.success(status))
+        }.onFailure { error: Throwable ->
+            emit(DataState.error(error.message.toString()))
+            println("Go network error: ${error.message}")
         }
+
+        println("StatusResult is: $statusResult")
     }
 
-    // This can throw an exception if there is no network connection
-    // This function gets Dto's from the network and converts them to Movie Objects
     private suspend fun getMoviesFromNetwork(
         apikey: String,
         page: Int,
-    ): List<Movie>{
-        return dtoMapper.toDomainList(
-            tmdbApiService.getUpcomingMovies(
-                apikey = apikey,
-                page = page,
-            ).movies
-        ).filter {
+    ): List<Movie> {
+        return tmdbApiService.getUpcomingMovies(
+            apikey = apikey,
+            page = page,
+        ).moviesDto.map { it.toMovie() }.filter {
             it.poster_path != null &&
             it.backdrop_path != null &&
             !it.adult

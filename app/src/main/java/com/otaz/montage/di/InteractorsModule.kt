@@ -29,11 +29,9 @@ object InteractorsModule {
     @Provides
     fun provideSearchMovie(
         tmdbApiService: TmdbApiService,
-        movieDtoMapper: MovieDtoMapper,
     ): SearchMovies{
         return SearchMovies(
             tmdbApiService = tmdbApiService,
-            dtoMapper = movieDtoMapper,
         )
     }
 
@@ -41,11 +39,9 @@ object InteractorsModule {
     @Provides
     fun provideGetMostPopularMovies(
         tmdbApiService: TmdbApiService,
-        movieDtoMapper: MovieDtoMapper,
     ): GetMostPopularMovies{
         return GetMostPopularMovies(
             tmdbApiService = tmdbApiService,
-            dtoMapper = movieDtoMapper,
         )
     }
 
@@ -53,11 +49,9 @@ object InteractorsModule {
     @Provides
     fun provideGetUpcomingMovies(
         tmdbApiService: TmdbApiService,
-        movieDtoMapper: MovieDtoMapper,
     ): GetUpcomingMovies{
         return GetUpcomingMovies(
             tmdbApiService = tmdbApiService,
-            dtoMapper = movieDtoMapper,
         )
     }
 
@@ -65,11 +59,9 @@ object InteractorsModule {
     @Provides
     fun provideGetTopRatedMovies(
         tmdbApiService: TmdbApiService,
-        movieDtoMapper: MovieDtoMapper,
     ): GetTopRatedMovies{
         return GetTopRatedMovies(
             tmdbApiService = tmdbApiService,
-            dtoMapper = movieDtoMapper,
         )
     }
 
@@ -77,11 +69,9 @@ object InteractorsModule {
     @Provides
     fun provideConfigurations(
         tmdbApiService: TmdbApiService,
-        configurationsDtoMapper: ConfigsDtoMapper,
     ): GetConfigurations {
         return GetConfigurations(
             tmdbApiService = tmdbApiService,
-            configurationsDtoMapper = configurationsDtoMapper,
         )
     }
 
@@ -89,11 +79,9 @@ object InteractorsModule {
     @Provides
     fun provideGetTmdbMovie(
         tmdbApiService: TmdbApiService,
-        tmdbMovieSpecsDtoMapper: TmdbMovieSpecsDtoMapper,
     ): GetTmdbMovie {
         return GetTmdbMovie(
             tmdbApiService = tmdbApiService,
-            tmdbMovieSpecDtoMapper = tmdbMovieSpecsDtoMapper,
         )
     }
 
@@ -101,11 +89,9 @@ object InteractorsModule {
     @Provides
     fun provideGetOmdbMovie(
         omdbApiService: OmdbApiService,
-        omdbMoviesSpecsDtoMapper: OmdbMoviesSpecsDtoMapper,
     ): GetOmdbMovie {
         return GetOmdbMovie(
             omdbApiService = omdbApiService,
-            omdbMovieSpecDtoMapper = omdbMoviesSpecsDtoMapper,
         )
     }
 
@@ -113,11 +99,9 @@ object InteractorsModule {
     @Provides
     fun provideGetMovieReviews(
         tmdbApiService: TmdbApiService,
-        movieReviewsDtoMapper: MovieReviewsDtoMapper,
     ): GetMovieReviews{
         return GetMovieReviews(
             tmdbApiService = tmdbApiService,
-            movieReviewsDtoMapper = movieReviewsDtoMapper,
         )
     }
 
@@ -125,11 +109,9 @@ object InteractorsModule {
     @Provides
     fun provideSaveMovie(
         movieDao: MovieDao,
-        movieEntityMapper: MovieEntityMapper,
     ): SaveMovie{
         return SaveMovie(
             movieDao = movieDao,
-            movieEntityMapper = movieEntityMapper,
         )
     }
 

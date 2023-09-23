@@ -1,7 +1,7 @@
 package com.otaz.montage.cache.model
 
+import com.otaz.montage.domain.DomainMapper
 import com.otaz.montage.domain.model.Movie
-import com.otaz.montage.domain.util.DomainMapper
 
 class MovieEntityMapper : DomainMapper<MovieEntity, Movie> {
     override fun mapToDomainModel(model: MovieEntity): Movie {

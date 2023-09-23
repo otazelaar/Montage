@@ -3,41 +3,61 @@ package com.otaz.montage.interactors.app
 import com.otaz.montage.domain.data.DataState
 import com.otaz.montage.domain.model.ImageConfigs
 import com.otaz.montage.network.TmdbApiService
-import com.otaz.montage.network.model.ConfigsDtoMapper
+import com.otaz.montage.network.model.toImageConfigs
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class GetConfigurations(
     private val tmdbApiService: TmdbApiService,
-    private val configurationsDtoMapper: ConfigsDtoMapper,
-){
+) {
     fun execute(
         apikey: String,
     ): Flow<DataState<ImageConfigs>> = flow {
-        try {
-            emit(DataState.loading())
+        emit(DataState.loading())
 
-            val configurations = getConfigurationsFromNetwork(
-                apikey = apikey,
-            )
+        // may need db caching
+        // handle errors more deeply
 
-            emit(DataState.success(configurations))
-
-        }catch (e: Exception){
-            emit(DataState.error(e.message ?: "GetConfigurations: Unknown error"))
+        val statusResult = runCatching {
+            getConfigurationsFromNetwork(apikey)
+        }.onSuccess { status ->
+            emit(DataState.success(status))
+        }.onFailure { error: Throwable ->
+            emit(DataState.error(error.message.toString()))
+            println("Go network error: ${error.message}")
         }
+
+        println("StatusResult is: $statusResult")
+
+
+//        kotlin.runCatching {
+//            result.onSuccess {
+//                emit(DataState.success(it.imageConfigsDto.toImageConfigs()))
+//                Log.i("GetConfigurationsUC", it.imageConfigsDto.toImageConfigs().base_url)
+//            }
+//
+//            result.onFailure {
+//                Log.e("GetConfigurationsUC", it.message.orEmpty())
+//                Log.e("GetConfigurationsUC", it.localizedMessage.orEmpty())
+//                Log.e("GetConfigurationsUC", it.cause.toString())
+//                Log.e("GetConfigurationsUC", it.stackTrace.toString())
+//                Log.e("GetConfigurationsUC", it.suppressed.toString())
+//
+//                emit(
+//                    DataState.error(
+//                        it.message.toString()
+//                    )
+//                )
+//            }
+//        }
     }
 
-    // This can throw an exception if there is no network connection
-    // This function gets Dto's from the network and converts them to Movie Objects
     private suspend fun getConfigurationsFromNetwork(
         apikey: String,
-    ): ImageConfigs{
-        return configurationsDtoMapper.mapToDomainModel(
-            tmdbApiService.configuration(
-                apikey = apikey,
-            ).imageConfigurations
-        )
+    ): ImageConfigs {
+        return tmdbApiService.configuration(
+            apikey = apikey,
+        ).imageConfigsDto.toImageConfigs()
     }
 
     companion object {

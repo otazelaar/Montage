@@ -3,44 +3,41 @@ package com.otaz.montage.interactors.movie_detail
 import com.otaz.montage.domain.data.DataState
 import com.otaz.montage.domain.model.TmdbMovieSpecs
 import com.otaz.montage.network.TmdbApiService
-import com.otaz.montage.network.model.TmdbMovieSpecsDtoMapper
+import com.otaz.montage.network.model.toTmdbMovieSpecs
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class GetTmdbMovie(
     private val tmdbApiService: TmdbApiService,
-    private val tmdbMovieSpecDtoMapper: TmdbMovieSpecsDtoMapper,
-    ){
+) {
     fun execute(
         tmdb_apikey: String,
         id: Int,
     ): Flow<DataState<TmdbMovieSpecs>> = flow {
-        try {
-            emit(DataState.loading())
+        emit(DataState.loading())
 
-            val movieSpecs = getTmdbMovieSpecsFromNetwork(
-                tmdb_apikey = tmdb_apikey,
-                tmdb_id = id,
-            )
+        // may need db caching
+        // handle errors more deeply
 
-            emit(DataState.success(movieSpecs))
-
-        }catch (e: Exception){
-            emit(DataState.error(e.message ?: "GetTmdbMovie: Unknown error"))
+        val statusResult = runCatching {
+            getTmdbMovieSpecsFromNetwork(tmdb_apikey, id)
+        }.onSuccess { status ->
+            emit(DataState.success(status))
+        }.onFailure { error: Throwable ->
+            emit(DataState.error(error.message.toString()))
+            println("Go network error: ${error.message}")
         }
+
+        println("StatusResult is: $statusResult")
     }
 
-    // This can throw an exception if there is no network connection
-    // This function gets Dto's from the network and converts them to MovieSpec Objects
     private suspend fun getTmdbMovieSpecsFromNetwork(
         tmdb_apikey: String,
         tmdb_id: Int,
-    ): TmdbMovieSpecs{
-        return tmdbMovieSpecDtoMapper.mapToDomainModel(
-            tmdbApiService.getMovieSpecs(
-                apikey = tmdb_apikey,
-                id = tmdb_id,
-            )
-        )
+    ): TmdbMovieSpecs {
+        return tmdbApiService.getMovieSpecs(
+            apikey = tmdb_apikey,
+            id = tmdb_id,
+        ).toTmdbMovieSpecs()
     }
 }

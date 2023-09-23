@@ -1,4 +1,4 @@
-package com.otaz.montage.domain.util
+package com.otaz.montage.domain
 
 interface DomainMapper <T, DomainModel>{
 

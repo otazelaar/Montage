@@ -3,44 +3,44 @@ package com.otaz.montage.interactors.movie_detail
 import com.otaz.montage.domain.data.DataState
 import com.otaz.montage.domain.model.OmdbMovieSpecs
 import com.otaz.montage.network.OmdbApiService
-import com.otaz.montage.network.model.OmdbMoviesSpecsDtoMapper
+import com.otaz.montage.network.model.toOmdbMovieSpecs
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class GetOmdbMovie(
     private val omdbApiService: OmdbApiService,
-    private val omdbMovieSpecDtoMapper: OmdbMoviesSpecsDtoMapper,
-){
+) {
     fun execute(
         omdb_apikey: String,
         omdb_id: String,
     ): Flow<DataState<OmdbMovieSpecs>> = flow {
-        try {
-            emit(DataState.loading())
+        emit(DataState.loading())
 
-            val omdbMovieSpecs = getOmdbMovieSpecsFromNetwork(
-                omdb_apikey = omdb_apikey,
-                omdb_id = omdb_id,
-            )
+//         may need db caching to be offline first. remember this api is critical for allowing other
+//         api to function
 
-            emit(DataState.success(omdbMovieSpecs))
+        // may need db caching
+        // handle errors more deeply
 
-        }catch (e: Exception){
-            emit(DataState.error(e.message ?: "GetOmdbMovie: Unknown error"))
+        val statusResult = runCatching {
+            getOmdbMovieSpecsFromNetwork(omdb_apikey, omdb_id)
+        }.onSuccess { status ->
+            emit(DataState.success(status))
+        }.onFailure { error: Throwable ->
+            emit(DataState.error(error.message.toString()))
+            println("Go network error: ${error.message}")
         }
+
+        println("StatusResult is: $statusResult")
     }
 
-    // This can throw an exception if there is no network connection
-    // This function gets Dto's from the network and converts them to MovieSpec Objects
     private suspend fun getOmdbMovieSpecsFromNetwork(
         omdb_apikey: String,
         omdb_id: String,
     ): OmdbMovieSpecs {
-        return omdbMovieSpecDtoMapper.mapToDomainModel(
-            omdbApiService.get(
-                apikey = omdb_apikey,
-                id = omdb_id,
-            )
-        )
+        return omdbApiService.get(
+            apikey = omdb_apikey,
+            id = omdb_id,
+        ).toOmdbMovieSpecs()
     }
 }

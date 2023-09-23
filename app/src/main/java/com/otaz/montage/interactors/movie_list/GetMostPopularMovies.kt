@@ -3,49 +3,48 @@ package com.otaz.montage.interactors.movie_list
 import com.otaz.montage.domain.data.DataState
 import com.otaz.montage.domain.model.Movie
 import com.otaz.montage.network.TmdbApiService
-import com.otaz.montage.network.model.MovieDtoMapper
+import com.otaz.montage.network.model.toMovie
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class GetMostPopularMovies (
+class GetMostPopularMovies(
     private val tmdbApiService: TmdbApiService,
-    private val dtoMapper: MovieDtoMapper,
-){
+) {
     fun execute(
         apikey: String,
         sortBy: String,
         page: Int,
     ): Flow<DataState<List<Movie>>> = flow {
-        try {
-            emit(DataState.loading())
+        emit(DataState.loading())
 
-            val movies = getMostPopularMoviesFromNetwork(
-                apikey = apikey,
-                sortBy = sortBy,
-                page = page,
-            )
+        // still need to check database first and call network if the movies are not already there
+        // then cache new books in database once the network is called
+        // aside from the above two lines of code, this should work for now
 
-            emit(DataState.success(movies))
-
-        }catch (e: Exception){
-            emit(DataState.error(e.message ?: "GetMostPopularMovies: Unknown error"))
+        val statusResult = runCatching {
+            getMostPopularMoviesFromNetwork(apikey, sortBy, page)
+        }.onSuccess { status ->
+            emit(DataState.success(status))
+        }.onFailure { error: Throwable ->
+            emit(DataState.error(error.message.toString()))
+            println("Go network error: ${error.message}")
         }
-    }
 
-    // This can throw an exception if there is no network connection
-    // This function gets Dto's from the network and converts them to Movie Objects
+        println("StatusResult is: $statusResult")
+
+    }
     private suspend fun getMostPopularMoviesFromNetwork(
         apikey: String,
         sortBy: String,
         page: Int,
     ): List<Movie>{
-        return dtoMapper.toDomainList(
-            tmdbApiService.getMostPopularMovies(
+        return tmdbApiService.getMostPopularMovies(
                 apikey = apikey,
                 sortBy = sortBy,
                 page = page,
-            ).movies
-        ).filter {
+            ).moviesDto.map {
+                it.toMovie()
+        }.filter {
             it.poster_path != null &&
             it.backdrop_path != null &&
             !it.adult

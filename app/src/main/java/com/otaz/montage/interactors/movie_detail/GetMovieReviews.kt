@@ -3,48 +3,44 @@ package com.otaz.montage.interactors.movie_detail
 import com.otaz.montage.domain.data.DataState
 import com.otaz.montage.domain.model.MovieReview
 import com.otaz.montage.network.TmdbApiService
-import com.otaz.montage.network.model.MovieReviewsDtoMapper
+import com.otaz.montage.network.model.toMovieReview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class GetMovieReviews(
     private val tmdbApiService: TmdbApiService,
-    private val movieReviewsDtoMapper: MovieReviewsDtoMapper,
-){
+) {
     fun execute(
         id: Int,
         apikey: String,
         page: Int,
     ): Flow<DataState<List<MovieReview>>> = flow {
-        try {
-            emit(DataState.loading())
+        emit(DataState.loading())
 
-            val movies = getMovieReviewsFromNetwork(
-                id = id,
-                apikey = apikey,
-                page = page,
-            )
+        // may need db caching
+        // handle errors more deeply
 
-            emit(DataState.success(movies))
-
-        }catch (e: Exception){
-            emit(DataState.error(e.message ?: "GetMovieReviews: Unknown error"))
+        val statusResult = runCatching {
+            getMovieReviewsFromNetwork(id, apikey, page)
+        }.onSuccess { status ->
+            emit(DataState.success(status))
+        }.onFailure { error: Throwable ->
+            emit(DataState.error(error.message.toString()))
+            println("Go network error: ${error.message}")
         }
+
+        println("StatusResult is: $statusResult")
     }
 
-    // This can throw an exception if there is no network connection
-    // This function gets Dto's from the network and converts them to Movie Objects
     private suspend fun getMovieReviewsFromNetwork(
         id: Int,
         apikey: String,
         page: Int,
-    ): List<MovieReview>{
-        return movieReviewsDtoMapper.toDomainList(
-            tmdbApiService.getMovieReviews(
-                id = id,
-                apikey = apikey,
-                page = page,
-            ).movieReviewDtos
-        )
+    ): List<MovieReview> {
+        return tmdbApiService.getMovieReviews(
+            id = id,
+            apikey = apikey,
+            page = page,
+        ).movieReviewDtos.map { it.toMovieReview() }
     }
 }

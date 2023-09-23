@@ -1,6 +1,6 @@
 package com.otaz.montage.network
 
-import com.otaz.montage.network.model.OmdbMovieSpecDto
+import com.otaz.montage.network.model.OmdbMovieSpecsDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -20,5 +20,5 @@ interface OmdbApiService {
     suspend fun get(
         @Query("apikey") apikey: String,
         @Query("i") id: String,
-    ): OmdbMovieSpecDto
+    ): OmdbMovieSpecsDto
 }

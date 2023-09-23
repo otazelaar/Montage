@@ -1,6 +1,7 @@
 package com.otaz.montage.network.model
 
 import com.google.gson.annotations.SerializedName
+import com.otaz.montage.domain.model.ImageConfigs
 
 /**
  * This data class contains necessary data to build the image URLs.
@@ -23,3 +24,15 @@ data class ImageConfigsDto(
     @SerializedName("secure_base_url") var secure_base_url: String,
     @SerializedName("still_sizes") var still_sizes: List<String>
 )
+
+fun ImageConfigsDto.toImageConfigs(): ImageConfigs {
+    return ImageConfigs(
+        backdrop_sizes = backdrop_sizes,
+        base_url = base_url,
+        logo_sizes = logo_sizes,
+        poster_sizes = poster_sizes,
+        profile_sizes = profile_sizes,
+        secure_base_url = secure_base_url,
+        still_sizes = still_sizes,
+    )
+}

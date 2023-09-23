@@ -1,8 +1,9 @@
 package com.otaz.montage.network.model
 
 import com.google.gson.annotations.SerializedName
+import com.otaz.montage.domain.model.OmdbMovieSpecs
 
-data class OmdbMovieSpecDto(
+data class OmdbMovieSpecsDto(
     @SerializedName("Actors") var actors: String?,
     @SerializedName("Awards") var awards: String?,
     @SerializedName("BoxOffice") var boxOffice: String?,
@@ -28,3 +29,32 @@ data class OmdbMovieSpecDto(
     @SerializedName("imdbRating") var imdbRating: String?,
     @SerializedName("imdbVotes") var imdbVotes: String?,
 )
+
+fun OmdbMovieSpecsDto.toOmdbMovieSpecs(): OmdbMovieSpecs {
+    return OmdbMovieSpecs(
+        id = imdbID,
+        actors = actors,
+        awards = awards,
+        boxOffice = boxOffice,
+        country = country,
+        dvd = dvd,
+        director = director,
+        genre = genre,
+        language = language,
+        metascore = metascore,
+        plot = plot,
+        poster = poster,
+        production = production,
+        rated = rated,
+        released = released,
+        response = response,
+        runtime = runtime,
+        title = title,
+        type = type,
+        website = website,
+        writer = writer,
+        year = year,
+        imdbRating = imdbRating,
+        imdbVotes = imdbVotes,
+    )
+}

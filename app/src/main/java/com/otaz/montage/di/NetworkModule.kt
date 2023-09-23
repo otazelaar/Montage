@@ -20,36 +20,6 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideMovieMapper(): MovieDtoMapper {
-        return MovieDtoMapper()
-    }
-
-    @Singleton
-    @Provides
-    fun provideConfigurationMapper(): ConfigsDtoMapper {
-        return ConfigsDtoMapper()
-    }
-
-    @Singleton
-    @Provides
-    fun provideTmdbMovieSpecsMapper(): TmdbMovieSpecsDtoMapper {
-        return TmdbMovieSpecsDtoMapper()
-    }
-
-    @Singleton
-    @Provides
-    fun provideOmdbMovieSpecsMapper(): OmdbMoviesSpecsDtoMapper {
-        return OmdbMoviesSpecsDtoMapper()
-    }
-
-    @Singleton
-    @Provides
-    fun provideMovieReviewsDtoMapper(): MovieReviewsDtoMapper {
-        return MovieReviewsDtoMapper()
-    }
-
-    @Singleton
-    @Provides
     fun provideTmdbApiService(): TmdbApiService {
         val client = OkHttpClient.Builder()
             .connectTimeout(100, TimeUnit.SECONDS)

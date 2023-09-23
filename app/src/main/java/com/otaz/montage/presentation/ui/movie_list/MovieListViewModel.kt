@@ -159,7 +159,7 @@ class MovieListViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { value -> configurations.value = value }
-            dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: GetConfigurations Error")}
+            dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: GetConfigurations: Error")}
         }.launchIn(viewModelScope)
     }
 
