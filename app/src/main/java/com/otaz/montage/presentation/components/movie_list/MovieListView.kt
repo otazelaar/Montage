@@ -56,11 +56,23 @@ fun MovieListView(
             Row{
                 val interactionSource = remember { MutableInteractionSource() }
                 val isPressed by interactionSource.collectIsPressedAsState()
+
+//                 Make animation of clicking this button.
+//                 Make button look different once saved and store this in DB so that every time
+//                 the app opens, a movie that is in your watchlist is reflected by a
+//                 checkmark and a change of color on the button below.
+//                 The isPressed way of doing things only knows when the button is actively being
+//                 pressed.
+
                 Button(
                     onClick = { onMovieSaveClick(movie) },
                     interactionSource = interactionSource,
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colors.primary
+                        backgroundColor = if (isPressed){
+                            Color.Red
+                        }else{
+                            MaterialTheme.colors.primary
+                        }
                     ),
                 ) {
                     Icon(

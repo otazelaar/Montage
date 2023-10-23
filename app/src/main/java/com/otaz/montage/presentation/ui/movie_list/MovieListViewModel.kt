@@ -1,8 +1,7 @@
 package com.otaz.montage.presentation.ui.movie_list
 
 import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.otaz.montage.domain.model.ImageConfigs
@@ -17,8 +16,7 @@ import com.otaz.montage.presentation.ui.movie_list.MovieListEvent.*
 import com.otaz.montage.util.MOVIE_PAGINATION_PAGE_SIZE
 import com.otaz.montage.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
@@ -34,6 +32,13 @@ class MovieListViewModel @Inject constructor(
     @Named("tmdb_apikey") private val apiKey: String,
 ): ViewModel() {
     val movies: MutableState<List<Movie>> = mutableStateOf(ArrayList())
+
+//    private var _configurationsState = MutableStateFlow(EMPTY_CONFIGURATIONS)
+//    val configurationsState: StateFlow<ImageConfigs> = _configurationsState.asStateFlow()
+
+    // Attempting Jetpack compose UI State
+//    var configurationsState by mutableStateOf(GetConfigurations.EMPTY_CONFIGURATIONS)
+//        private set
 
     val configurations: MutableState<ImageConfigs> = mutableStateOf(GetConfigurations.EMPTY_CONFIGURATIONS)
 
@@ -58,9 +63,9 @@ class MovieListViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 when(event){
-                    is NewSearchEvent -> newSearchUseCasePicker()
-                    is NextPageEvent -> nextPage()
-                    is SaveMovieEvent -> saveMovie(movie = event.movie)
+                    is NewSearch -> newSearchUseCasePicker()
+                    is NextPage -> nextPage()
+                    is MovieListEvent.SaveMovie -> saveMovie(movie = event.movie)
                 }
             }catch (e: Exception){
                 Log.e(TAG, "MovieListViewModel: onTriggerEvent: Exception ${e}, ${e.cause}")
@@ -159,7 +164,11 @@ class MovieListViewModel @Inject constructor(
         ).onEach { dataState ->
             loading.value = dataState.loading
             dataState.data?.let { value -> configurations.value = value }
-            dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: GetConfigurations: Error")}
+            dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: GetConfigurations: $error")}
+        }.catch {
+            // This is an example of how to catch errors off of the suspend function.
+            // Should we handle errors in the use case or here?
+            cause ->  Log.e(TAG, "$cause")
         }.launchIn(viewModelScope)
     }
 

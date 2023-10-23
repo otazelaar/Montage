@@ -37,6 +37,7 @@ fun MovieListScreen(
     // [movies] will be updated here and in any composable that uses this value.
     val movies = movieListViewModel.movies.value
     val savedMovies = savedMovieListViewModel.savedMovies.value
+//    val configurationsUIState = movieListViewModel.configurationsState.collectAsState()
     val configurations = movieListViewModel.configurations.value
 
     val selectedCategory = movieListViewModel.selectedCategory.value
@@ -57,7 +58,7 @@ fun MovieListScreen(
                 SearchAppBar(
                     expression = movieListViewModel.query.value,
                     onQueryChanged = movieListViewModel::onQueryChanged,
-                    onExecuteSearch = { movieListViewModel.onTriggerEvent(NewSearchEvent) },
+                    onExecuteSearch = { movieListViewModel.onTriggerEvent(NewSearch) },
                     focusRequester = focusRequester,
                     focusManager = focusManager,
                     resetForNextSearch = { movieListViewModel.resetForNextSearch() },
@@ -91,10 +92,10 @@ fun MovieListScreen(
                 configurations = configurations,
                 onChangeMovieScrollPosition = movieListViewModel::onChangeMovieScrollPosition,
                 page = page,
-                onTriggerNextPage = { movieListViewModel.onTriggerEvent(NextPageEvent) },
+                onTriggerNextPage = { movieListViewModel.onTriggerEvent(NextPage) },
                 onNavigateToMovieDetailScreen = onNavigateToMovieDetailScreen,
                 saveMovie = {
-                    movieListViewModel.onTriggerEvent(SaveMovieEvent(movie = it))
+                    movieListViewModel.onTriggerEvent(SaveMovie(movie = it))
                 },
             )
         }

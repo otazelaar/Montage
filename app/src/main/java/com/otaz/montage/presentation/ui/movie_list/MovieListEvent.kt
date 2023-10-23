@@ -7,7 +7,7 @@ import com.otaz.montage.domain.model.Movie
  */
 
 sealed class MovieListEvent {
-    object NewSearchEvent: MovieListEvent()
-    object NextPageEvent: MovieListEvent()
-    data class SaveMovieEvent(val movie: Movie): MovieListEvent()
+    object NewSearch: MovieListEvent()
+    object NextPage: MovieListEvent()
+    data class SaveMovie(val movie: Movie): MovieListEvent()
 }
