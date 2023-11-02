@@ -10,17 +10,19 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.otaz.montage.presentation.ui.movie_list.MovieListActions
 
 @Composable
 fun MovieCategoryChip(
     category: String,
     isSelected: Boolean = false,
-    onSelectedCategoryChanged: (String) -> Unit,
-    onExecuteSearch: () -> Unit,
+    actions: (MovieListActions) -> Unit,
+    focusManager: FocusManager,
 ){
     Surface(
         modifier = Modifier
@@ -42,8 +44,9 @@ fun MovieCategoryChip(
                     value = isSelected,
                     enabled = !isSelected,
                     onValueChange = {
-                        onSelectedCategoryChanged(category)
-                        onExecuteSearch()
+                        actions(MovieListActions.CategoryChanged(category))
+                        actions(MovieListActions.NewSearch)
+                        focusManager.clearFocus()
                     }
                 )
         ) {

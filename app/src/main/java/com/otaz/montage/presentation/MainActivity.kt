@@ -68,8 +68,8 @@ class MainActivity : AppCompatActivity() {
                         onNavigateToMovieDetailScreen = navController::navigate,
                         movieListViewModel = viewModel,
                         savedMovieListViewModel = savedMovieListViewModel,
-                        movieListUIState = viewModel.state.value,
-                        events = viewModel::onTriggerEvent
+                        movieListState = viewModel.state.value,
+                        actions = viewModel::actions
                     )
                 }
 

@@ -11,7 +11,7 @@ import com.otaz.montage.interactors.movie_list.GetMostPopularMovies
 import com.otaz.montage.interactors.movie_list.GetTopRatedMovies
 import com.otaz.montage.interactors.movie_list.GetUpcomingMovies
 import com.otaz.montage.interactors.movie_list.SearchMovies
-import com.otaz.montage.presentation.ui.movie_list.MovieListEvents.*
+import com.otaz.montage.presentation.ui.movie_list.MovieListActions.*
 import com.otaz.montage.util.MOVIE_PAGINATION_PAGE_SIZE
 import com.otaz.montage.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,18 +30,15 @@ class MovieListViewModel @Inject constructor(
     private val getTopRatedMovies: GetTopRatedMovies,
     @Named("tmdb_apikey") private val apiKey: String,
     ): ViewModel() {
-    val state: MutableState<MovieListUIState> = mutableStateOf(MovieListUIState())
+    val state: MutableState<MovieListState> = mutableStateOf(MovieListState())
 
     val query = mutableStateOf("")
     private val sortingParameterPopularityDescending = "popularity.desc"
 
-    val selectedCategory: MutableState<MovieCategory?> = mutableStateOf(null)
-    var categoryScrollPosition: Int = 0
-
     val loading = mutableStateOf(false)
 
     // Pagination
-    val page = mutableStateOf(1)
+//    val page = mutableStateOf(1)
     var movieListScrollPosition = 0
 
     init {
@@ -49,13 +46,17 @@ class MovieListViewModel @Inject constructor(
         getMostPopularMovies()
     }
 
-    fun onTriggerEvent(event: MovieListEvents){
+    fun actions(action: MovieListActions){
         viewModelScope.launch {
             try {
-                when(event){
+                when(action){
                     is NewSearch -> newSearchUseCasePicker()
                     is NextPage -> nextPage()
-                    is MovieListEvents.SaveMovie -> saveMovie(movie = event.movie)
+                    is MovieListActions.SaveMovie -> saveMovie(movie = action.movie)
+                    is ResetForNewSearch -> resetForNewSearch()
+                    is CategoryChanged -> onSelectedCategoryChanged(category = action.category)
+                    is QueryChanged -> onQueryChanged(query = action.query)
+                    is MovieScrollPositionChanged -> onChangeMovieScrollPosition(position = action.position)
                 }
             }catch (e: Exception){
                 Log.e(TAG, "MovieListViewModel: onTriggerEvent: Exception ${e}, ${e.cause}")
@@ -64,92 +65,79 @@ class MovieListViewModel @Inject constructor(
     }
 
     private fun newSearch(){
-        Log.d(TAG, "MovieListViewModel: newSearch: query: ${query.value}, page: ${page.value}")
+        Log.d(TAG, "MovieListViewModel: newSearch: query: ${query.value}, page: ${state.value.page.value}")
 
         resetSearchState()
         searchMovies.execute(
             apikey = apiKey,
             query = query.value,
-            page = page.value
+            page = state.value.page.value
         ).onEach { dataState ->
             loading.value = dataState.loading
-//            dataState.data?.let { list -> state.value.movie = list }
-            dataState.data?.let { list ->
-//                state.value.movie = list
-                state.value = state.value.copy(movie = list)
-            }
+            dataState.data?.let { list -> state.value = state.value.copy(movie = list) }
             dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: newSearch: Error:")}
         }.launchIn(viewModelScope)
     }
 
     private fun getMostPopularMovies(){
-        Log.d(TAG, "MovieListViewModel: getMostPopularMovies: query: ${query.value}, page: ${page.value}")
+        Log.d(TAG, "MovieListViewModel: getMostPopularMovies: query: ${query.value}, page: ${state.value.page.value}")
 
         resetSearchState()
 
         // Makes the "Popular" category chip selected upon launching the application
-        if(selectedCategory.value != MovieCategory.GET_MOST_POPULAR_MOVIES){
-            selectedCategory.value = MovieCategory.GET_MOST_POPULAR_MOVIES
+        if(state.value.selectedCategory.value != MovieCategory.GET_MOST_POPULAR_MOVIES){
+            state.value.selectedCategory.value = MovieCategory.GET_MOST_POPULAR_MOVIES
         }
 
         getMostPopularMovies.execute(
             apikey = apiKey,
             sortBy = sortingParameterPopularityDescending,
-            page = page.value
+            page = state.value.page.value
         ).onEach { dataState ->
             loading.value = dataState.loading
-            dataState.data?.let { list ->
-//                state.value.movie = list
-                state.value = state.value.copy(movie = list)
-            }
+            dataState.data?.let { list -> state.value = state.value.copy(movie = list) }
             dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: getMostPopularMovies: Error:")}
         }.launchIn(viewModelScope)
     }
 
     private fun getUpcomingMovies(){
-        Log.d(TAG, "MovieListViewModel: getUpcomingMovies: query: ${query.value}, page: ${page.value}")
+        Log.d(TAG, "MovieListViewModel: getUpcomingMovies: query: ${query.value}, page: ${state.value.page.value}")
 
         resetSearchState()
         getUpcomingMovies.execute(
             apikey = apiKey,
-            page = page.value
+            page = state.value.page.value
         ).onEach { dataState ->
             loading.value = dataState.loading
-            dataState.data?.let { list ->
-//                state.value.movie = list
-                state.value = state.value.copy(movie = list)
-            }
+            dataState.data?.let { list -> state.value = state.value.copy(movie = list) }
             dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: getUpcomingMovies: Error:")}
         }.launchIn(viewModelScope)
     }
 
     private fun getTopRatedMovies(){
-        Log.d(TAG, "MovieListViewModel: getTopRatedMovies: query: ${query.value}, page: ${page.value}")
+        Log.d(TAG, "MovieListViewModel: getTopRatedMovies: query: ${query.value}, page: ${state.value.page.value}")
 
         resetSearchState()
         getTopRatedMovies.execute(
             apikey = apiKey,
-            page = page.value
+            page = state.value.page.value
         ).onEach { dataState ->
             loading.value = dataState.loading
-            dataState.data?.let { list ->
-//                state.value.movie = list
-                state.value = state.value.copy(movie = list)
-            }
+            dataState.data?.let { list -> state.value = state.value.copy(movie = list) }
             dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: getTopRatedMovies: Error:")}
         }.launchIn(viewModelScope)
     }
 
     private fun nextPage(){
-        if((movieListScrollPosition + 1) >= (page.value * MOVIE_PAGINATION_PAGE_SIZE)){
+        if((movieListScrollPosition + 1) >= (state.value.page.value * MOVIE_PAGINATION_PAGE_SIZE)){
             incrementPage()
-            Log.d(TAG, "MovieListViewModel: nextPage: triggered: ${page.value}")
+            Log.d(TAG, "MovieListViewModel: nextPage: triggered: ${state.value.page.value}")
 
-            if(page.value > 1){
+            if(state.value.page.value > 1){
                 searchMovies.execute(
                     apikey = apiKey,
                     query = query.value,
-                    page = page.value,
+                    page = state.value.page.value,
                 ).onEach { dataState ->
                     loading.value = dataState.loading
                     dataState.data?.let { list -> appendMovies(list) }
@@ -166,15 +154,7 @@ class MovieListViewModel @Inject constructor(
             apikey = apiKey,
         ).onEach { dataState ->
             loading.value = dataState.loading
-            // The way I am populating configurations is not working...
-//            dataState.data?.let { imageConfigs -> state.value.copy(configurations = imageConfigs) }
-            dataState.data?.let { imageConfigs ->
-//                state.value.configurations = imageConfigs
-                state.value = state.value.copy(configurations = imageConfigs)
-
-            println("configz: ${state.value.configurations}")
-
-            }
+            dataState.data?.let { imageConfigs -> state.value = state.value.copy(configurations = imageConfigs) }
             dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: GetConfigurations: $error")}
         }.catch {
             // This is an example of how to catch errors off of the suspend function.
@@ -194,18 +174,16 @@ class MovieListViewModel @Inject constructor(
      * Append new movies to the current list of movies.
      */
     private fun appendMovies(movies: List<Movie>){
-        val currentList = this.state.value.movie.let { ArrayList(it) }
+        val currentList = state.value.movie.let { ArrayList(it) }
         currentList.addAll(movies)
-        this.state.value.copy(movie = currentList)
-//        this.state.value.copy(movie = currentList)
-//        this.state.value.copy(movie = currentList)
+        state.value = state.value.copy(movie = currentList)
     }
 
     private fun incrementPage(){
-        setPage(page.value + 1)
+        setPage(state.value.page.value + 1)
     }
 
-    fun onChangeMovieScrollPosition(position: Int){
+    private fun onChangeMovieScrollPosition(position: Int){
         setListScrollPosition(position = position)
     }
 
@@ -215,31 +193,27 @@ class MovieListViewModel @Inject constructor(
      * at least will clear the search query
      */
     private fun resetSearchState(){
-//        state.value.movie = listOf()
-        state.value.copy(movie = listOf())
-        page.value = 1
+        // make sure to set state.value.copy = to state.value to assign the state the new copied value
+        state.value = state.value.copy(movie = listOf())
+        state.value.page.value = 1
         onChangeMovieScrollPosition(0)
         // might need to reset index here as well
-        if(selectedCategory.value?.value != query.value) clearSelectedCategory()
+        if(state.value.selectedCategory.value?.value != query.value) clearSelectedCategory()
     }
 
     private fun clearSelectedCategory(){
         setSelectedCategory(null)
-        selectedCategory.value = null
+        state.value.selectedCategory.value = null
     }
 
-    fun onQueryChanged(query: String){
+    private fun onQueryChanged(query: String){
         setQuery(query)
     }
 
-    fun onSelectedCategoryChanged(category: String){
+    private fun onSelectedCategoryChanged(category: String){
         val newCategory = getMovieCategory(category)
         setSelectedCategory(newCategory)
         onQueryChanged(category)
-    }
-
-    fun onChangedCategoryScrollPosition(position: Int){
-        categoryScrollPosition = position
     }
 
     /**
@@ -253,7 +227,7 @@ class MovieListViewModel @Inject constructor(
      */
     private fun newSearchUseCasePicker(){
         val textViewQuery = query.value
-        val movieCategorySelected = selectedCategory.value
+        val movieCategorySelected = state.value.selectedCategory.value
         val getMostPopularMovies = getMovieCategory(MovieCategory.GET_MOST_POPULAR_MOVIES.value)
         val getUpcomingMovies = getMovieCategory(MovieCategory.GET_UPCOMING_MOVIES.value)
         val getTopRatedMovies = getMovieCategory(MovieCategory.GET_TOP_RATED_MOVIES.value)
@@ -274,11 +248,11 @@ class MovieListViewModel @Inject constructor(
     }
 
     private fun setPage(page: Int){
-        this.page.value = page
+        this.state.value.page.value = page
     }
 
     private fun setSelectedCategory(category: MovieCategory?){
-        selectedCategory.value = category
+        state.value.selectedCategory.value = category
     }
 
     private fun setQuery(query: String){
@@ -290,16 +264,17 @@ class MovieListViewModel @Inject constructor(
      * This will reset search state. if this doesn't work then i need to make a separate function that
      * at least will clear the search query
      */
-    fun resetForNextSearch(){
+    private fun resetForNewSearch(){
         query.value = ""
-//        state.value.movie = listOf()
-        state.value.copy(movie = listOf())
-        page.value = 1
+        state.value = state.value.copy(movie = listOf())
+
+        // I may need to use copy on the following line of code as I should not have mutable values in my UI state
+        state.value.page.value = 1
         onChangeMovieScrollPosition(0)
         // might need to reset index here as well
 
 //        not sure if this is working. I believe that query.value being changed is actually
 //        resulting in the category being unselected.
-        if(selectedCategory.value?.value != query.value) clearSelectedCategory()
+        if(state.value.selectedCategory.value?.value != query.value) clearSelectedCategory()
     }
 }
