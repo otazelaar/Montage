@@ -4,12 +4,12 @@ package com.otaz.montage.presentation.ui.movie_detail
  * This class is used to trigger events related to the MovieDetails
  */
 
-sealed class MovieEvent {
+sealed class MovieDetailEvent {
 
-    data class GetTmdbMovieEvent(
+    data class GetTmdbMovieDetailEvent(
         val tmdb_id: Int,
-    ): MovieEvent()
+    ): MovieDetailEvent()
 
-    object NextPageEvent: MovieEvent()
+    object NextPageDetailEvent: MovieDetailEvent()
 
 }

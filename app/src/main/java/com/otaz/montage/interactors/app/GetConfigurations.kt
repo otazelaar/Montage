@@ -7,6 +7,8 @@ import com.otaz.montage.network.model.toImageConfigs
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
+// make execute function a suspend function instead
+
 class GetConfigurations(
     private val tmdbApiService: TmdbApiService,
 ) {

@@ -3,6 +3,7 @@ package com.otaz.montage.presentation.ui.movie_detail
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.otaz.montage.domain.model.*
@@ -10,7 +11,7 @@ import com.otaz.montage.interactors.app.GetConfigurations
 import com.otaz.montage.interactors.movie_detail.GetMovieReviews
 import com.otaz.montage.interactors.movie_detail.GetTmdbMovie
 import com.otaz.montage.interactors.movie_detail.GetOmdbMovie
-import com.otaz.montage.presentation.ui.movie_detail.MovieEvent.*
+import com.otaz.montage.presentation.ui.movie_detail.MovieDetailEvent.*
 import com.otaz.montage.util.MOVIE_PAGINATION_PAGE_SIZE
 import com.otaz.montage.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,6 +29,7 @@ class MovieDetailViewModel @Inject constructor(
     private val getConfigurations: GetConfigurations,
     @Named("tmdb_apikey") private val tmdb_apiKey: String,
     @Named("omdb_apikey") private val omdb_apiKey: String,
+    private val savedStateHandle: SavedStateHandle,
     ): ViewModel(){
 
     val onLoad: MutableState<Boolean> = mutableStateOf(false)
@@ -43,19 +45,22 @@ class MovieDetailViewModel @Inject constructor(
     var reviewListScrollPosition = 0
 
     init {
+        savedStateHandle.get<Int>("movieId")?.let { movieId ->
+            onTriggerEvent(GetTmdbMovieDetailEvent(movieId))
+        }
         getConfigurations()
     }
 
-    fun onTriggerEvent(event: MovieEvent){
+    fun onTriggerEvent(event: MovieDetailEvent){
         viewModelScope.launch {
             try {
                 when(event){
-                    is GetTmdbMovieEvent -> {
+                    is GetTmdbMovieDetailEvent -> {
                         if(movieTmdb.value == null){
                             this@MovieDetailViewModel.getTmdbMovie(event.tmdb_id)
                         }
                     }
-                    is NextPageEvent -> {
+                    is NextPageDetailEvent -> {
                         // This can be called here because the id is already gotten by the time we get to the next page
                         movieTmdb.value?.let { nextPage(it.id) }
                     }

@@ -8,7 +8,20 @@ data class ImageConfigs(
     val profile_sizes: List<String>,
     val secure_base_url: String,
     val still_sizes: List<String>
-)
+){
+    companion object {
+        val EMPTY_CONFIGURATIONS = ImageConfigs(
+            backdrop_sizes = emptyList(),
+            base_url = String(),
+            logo_sizes = emptyList(),
+            poster_sizes = emptyList(),
+            profile_sizes = emptyList(),
+            secure_base_url = String(),
+            still_sizes = emptyList(),
+        )
+    }
+}
+
 
 //fun ImageConfigs.toImageConfigsEntity(): ImageConfigsEntity {
 //    return ImageConfigsEntity(

@@ -15,7 +15,7 @@ import com.otaz.montage.presentation.components.movie_list.MovieList
 import com.otaz.montage.presentation.components.movie_list.SearchAppBar
 import com.otaz.montage.presentation.components.saved_movies.SavedMoviesList
 import com.otaz.montage.presentation.theme.AppTheme
-import com.otaz.montage.presentation.ui.movie_list.MovieListEvent.*
+import com.otaz.montage.presentation.ui.movie_list.MovieListEvents.*
 import com.otaz.montage.presentation.ui.saved_movie_list.SavedMovieListEvent
 import com.otaz.montage.presentation.ui.saved_movie_list.SavedMovieListViewModel
 import com.otaz.montage.util.TAG
@@ -27,18 +27,22 @@ fun MovieListScreen(
     onNavigateToMovieDetailScreen: (String) -> Unit,
     movieListViewModel: MovieListViewModel,
     savedMovieListViewModel: SavedMovieListViewModel,
+    movieListUIState: MovieListUIState,
+    events: (MovieListEvents) -> Unit,
 ){
     Log.d(TAG, "MovieListScreen: $movieListViewModel")
+    Log.d(TAG, "MovieListScreen: moviez ${movieListUIState.movie}")
+    Log.d(TAG, "MovieListScreen: configz ${movieListUIState.configurations}")
 
     val focusRequester = FocusRequester()
     val focusManager = LocalFocusManager.current
 
-    // Anytime [val movies: MutableState<List<Movie>>] from [MovieListFragment] changes, this value below
-    // [movies] will be updated here and in any composable that uses this value.
-    val movies = movieListViewModel.movies.value
+//    val movies = movieListUIState.movie
+//    val configurations = movieListUIState.configurations
+
     val savedMovies = savedMovieListViewModel.savedMovies.value
 //    val configurationsUIState = movieListViewModel.configurationsState.collectAsState()
-    val configurations = movieListViewModel.configurations.value
+//    val configurations = movieListViewModel.configurations.value
 
     val selectedCategory = movieListViewModel.selectedCategory.value
 
@@ -58,7 +62,7 @@ fun MovieListScreen(
                 SearchAppBar(
                     expression = movieListViewModel.query.value,
                     onQueryChanged = movieListViewModel::onQueryChanged,
-                    onExecuteSearch = { movieListViewModel.onTriggerEvent(NewSearch) },
+                    onExecuteSearch = { events(NewSearch) },
                     focusRequester = focusRequester,
                     focusManager = focusManager,
                     resetForNextSearch = { movieListViewModel.resetForNextSearch() },
@@ -86,18 +90,17 @@ fun MovieListScreen(
             scaffoldState = scaffoldState,
             snackbarHost = { scaffoldState.snackbarHostState },
         ){
-            MovieList(
-                loading = loading,
-                movies = movies,
-                configurations = configurations,
-                onChangeMovieScrollPosition = movieListViewModel::onChangeMovieScrollPosition,
-                page = page,
-                onTriggerNextPage = { movieListViewModel.onTriggerEvent(NextPage) },
-                onNavigateToMovieDetailScreen = onNavigateToMovieDetailScreen,
-                saveMovie = {
-                    movieListViewModel.onTriggerEvent(SaveMovie(movie = it))
-                },
-            )
+                MovieList(
+                    loading = loading,
+                    movieListUiState = movieListUIState,
+                    onChangeMovieScrollPosition = movieListViewModel::onChangeMovieScrollPosition,
+                    page = page,
+                    onTriggerNextPage = { events(NextPage) },
+                    onNavigateToMovieDetailScreen = onNavigateToMovieDetailScreen,
+                    saveMovie = { movieName ->
+                        events(SaveMovie(movieName))
+                    },
+                )
+            }
         }
     }
-}

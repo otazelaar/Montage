@@ -13,13 +13,13 @@ import com.otaz.montage.domain.model.ImageConfigs
 import com.otaz.montage.domain.model.Movie
 import com.otaz.montage.presentation.components.ShimmerMovieListCardItem
 import com.otaz.montage.presentation.navigation.Screen
+import com.otaz.montage.presentation.ui.movie_list.MovieListUIState
 import com.otaz.montage.util.MOVIE_PAGINATION_PAGE_SIZE
 
 @Composable
 fun MovieList(
     loading: Boolean,
-    movies: List<Movie>,
-    configurations: ImageConfigs,
+    movieListUiState: MovieListUIState,
     onChangeMovieScrollPosition: (Int) -> Unit,
     onTriggerNextPage: () -> Unit,
     page: Int,
@@ -31,7 +31,7 @@ fun MovieList(
             .fillMaxSize()
             .background(color = MaterialTheme.colors.background)
     ) {
-        if (loading && movies.isEmpty()) {
+        if (loading && movieListUiState.movie.isEmpty()) {
             ShimmerMovieListCardItem(
                 imageHeight = 250.dp,
                 padding = 8.dp
@@ -39,7 +39,7 @@ fun MovieList(
         } else {
             LazyColumn {
                 itemsIndexed(
-                    items = movies
+                    items = movieListUiState.movie
                 ){ index, movie ->
                     onChangeMovieScrollPosition(index)
                     if((index + 1) >= (page * MOVIE_PAGINATION_PAGE_SIZE) && !loading){
@@ -47,7 +47,7 @@ fun MovieList(
                     }
                     MovieListView(
                         movie = movie,
-                        configurations = configurations,
+                        configurations = movieListUiState.configurations,
                         onClick = {
                             val route = Screen.MovieDetail.route + "/${movie.id}"
                             onNavigateToMovieDetailScreen(route)

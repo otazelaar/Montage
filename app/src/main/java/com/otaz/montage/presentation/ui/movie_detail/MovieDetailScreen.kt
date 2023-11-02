@@ -13,20 +13,19 @@ import com.otaz.montage.presentation.components.ShimmerMovieListCardItem
 import com.otaz.montage.presentation.components.movie_detail.MovieDetailView
 import com.otaz.montage.presentation.components.util.IMAGE_HEIGHT
 import com.otaz.montage.presentation.theme.AppTheme
-import com.otaz.montage.presentation.ui.movie_detail.MovieEvent.*
+import com.otaz.montage.presentation.ui.movie_detail.MovieDetailEvent.*
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MovieDetailScreen(
     viewModel: MovieDetailViewModel,
-    movieId: Int?,
 ) {
-    if(movieId == null){
-        ShimmerMovieListCardItem(
-                imageHeight = 250.dp,
-                padding = 8.dp
-            )
-    } else {
+//    if(movieId == null){
+//        ShimmerMovieListCardItem(
+//                imageHeight = 250.dp,
+//                padding = 8.dp
+//            )
+//    } else {
         // The purpose of the following block is to make sure the movie is only called once.
         // Before, this was being performed in the onCreate function but we are no longer using fragments.
         val scaffoldState = rememberScaffoldState()
@@ -38,10 +37,10 @@ fun MovieDetailScreen(
         val configurations = viewModel.configurations.value
         val onLoad = viewModel.onLoad.value
 
-        if (!onLoad) {
-            viewModel.onLoad.value = true
-            viewModel.onTriggerEvent(GetTmdbMovieEvent(movieId))
-        }
+//        if (!onLoad) {
+//            viewModel.onLoad.value = true
+//            viewModel.onTriggerEvent(GetTmdbMovieDetailEvent(movieId))
+//        }
 
         AppTheme(
             scaffoldState = scaffoldState,
@@ -64,7 +63,7 @@ fun MovieDetailScreen(
                             loading = loading,
                             reviews = reviews,
                             onChangeReviewScrollPosition = viewModel::onChangeReviewScrollPosition,
-                            onTriggerNextPage = { viewModel.onTriggerEvent( NextPageEvent) },
+                            onTriggerNextPage = { viewModel.onTriggerEvent( NextPageDetailEvent) },
                             page = page,
                             configurations = configurations,
                             movieTmdb = movieTmdb,
@@ -75,4 +74,4 @@ fun MovieDetailScreen(
             }
         }
     }
-}
+//}

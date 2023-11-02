@@ -61,13 +61,15 @@ class MainActivity : AppCompatActivity() {
                 composable(
                     route = Screen.MovieList.route
                 ) {
-                    val movieListViewModel = hiltViewModel<MovieListViewModel>()
+                    val viewModel = hiltViewModel<MovieListViewModel>()
                     val savedMovieListViewModel = hiltViewModel<SavedMovieListViewModel>()
 
                     MovieListScreen(
                         onNavigateToMovieDetailScreen = navController::navigate,
-                        movieListViewModel = movieListViewModel,
+                        movieListViewModel = viewModel,
                         savedMovieListViewModel = savedMovieListViewModel,
+                        movieListUIState = viewModel.state.value,
+                        events = viewModel::onTriggerEvent
                     )
                 }
 
@@ -76,10 +78,9 @@ class MainActivity : AppCompatActivity() {
                     arguments = listOf(navArgument("movieId") {
                         type = NavType.IntType
                     })
-                ) { navBackStackEntry ->
+                ) {
                     val viewModel = hiltViewModel<MovieDetailViewModel>()
                     MovieDetailScreen(
-                        movieId = navBackStackEntry.arguments?.getInt("movieId"),
                         viewModel = viewModel,
                     )
                 }

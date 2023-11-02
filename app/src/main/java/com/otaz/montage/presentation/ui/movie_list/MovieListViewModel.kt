@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.otaz.montage.domain.model.ImageConfigs
 import com.otaz.montage.domain.model.Movie
 import com.otaz.montage.interactors.app.GetConfigurations
 import com.otaz.montage.interactors.app.SaveMovie
@@ -12,7 +11,7 @@ import com.otaz.montage.interactors.movie_list.GetMostPopularMovies
 import com.otaz.montage.interactors.movie_list.GetTopRatedMovies
 import com.otaz.montage.interactors.movie_list.GetUpcomingMovies
 import com.otaz.montage.interactors.movie_list.SearchMovies
-import com.otaz.montage.presentation.ui.movie_list.MovieListEvent.*
+import com.otaz.montage.presentation.ui.movie_list.MovieListEvents.*
 import com.otaz.montage.util.MOVIE_PAGINATION_PAGE_SIZE
 import com.otaz.montage.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,17 +29,8 @@ class MovieListViewModel @Inject constructor(
     private val getUpcomingMovies: GetUpcomingMovies,
     private val getTopRatedMovies: GetTopRatedMovies,
     @Named("tmdb_apikey") private val apiKey: String,
-): ViewModel() {
-    val movies: MutableState<List<Movie>> = mutableStateOf(ArrayList())
-
-//    private var _configurationsState = MutableStateFlow(EMPTY_CONFIGURATIONS)
-//    val configurationsState: StateFlow<ImageConfigs> = _configurationsState.asStateFlow()
-
-    // Attempting Jetpack compose UI State
-//    var configurationsState by mutableStateOf(GetConfigurations.EMPTY_CONFIGURATIONS)
-//        private set
-
-    val configurations: MutableState<ImageConfigs> = mutableStateOf(GetConfigurations.EMPTY_CONFIGURATIONS)
+    ): ViewModel() {
+    val state: MutableState<MovieListUIState> = mutableStateOf(MovieListUIState())
 
     val query = mutableStateOf("")
     private val sortingParameterPopularityDescending = "popularity.desc"
@@ -59,13 +49,13 @@ class MovieListViewModel @Inject constructor(
         getMostPopularMovies()
     }
 
-    fun onTriggerEvent(event: MovieListEvent){
+    fun onTriggerEvent(event: MovieListEvents){
         viewModelScope.launch {
             try {
                 when(event){
                     is NewSearch -> newSearchUseCasePicker()
                     is NextPage -> nextPage()
-                    is MovieListEvent.SaveMovie -> saveMovie(movie = event.movie)
+                    is MovieListEvents.SaveMovie -> saveMovie(movie = event.movie)
                 }
             }catch (e: Exception){
                 Log.e(TAG, "MovieListViewModel: onTriggerEvent: Exception ${e}, ${e.cause}")
@@ -83,7 +73,11 @@ class MovieListViewModel @Inject constructor(
             page = page.value
         ).onEach { dataState ->
             loading.value = dataState.loading
-            dataState.data?.let { list -> movies.value = list }
+//            dataState.data?.let { list -> state.value.movie = list }
+            dataState.data?.let { list ->
+//                state.value.movie = list
+                state.value = state.value.copy(movie = list)
+            }
             dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: newSearch: Error:")}
         }.launchIn(viewModelScope)
     }
@@ -104,7 +98,10 @@ class MovieListViewModel @Inject constructor(
             page = page.value
         ).onEach { dataState ->
             loading.value = dataState.loading
-            dataState.data?.let { list -> movies.value = list }
+            dataState.data?.let { list ->
+//                state.value.movie = list
+                state.value = state.value.copy(movie = list)
+            }
             dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: getMostPopularMovies: Error:")}
         }.launchIn(viewModelScope)
     }
@@ -118,7 +115,10 @@ class MovieListViewModel @Inject constructor(
             page = page.value
         ).onEach { dataState ->
             loading.value = dataState.loading
-            dataState.data?.let { list -> movies.value = list }
+            dataState.data?.let { list ->
+//                state.value.movie = list
+                state.value = state.value.copy(movie = list)
+            }
             dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: getUpcomingMovies: Error:")}
         }.launchIn(viewModelScope)
     }
@@ -132,7 +132,10 @@ class MovieListViewModel @Inject constructor(
             page = page.value
         ).onEach { dataState ->
             loading.value = dataState.loading
-            dataState.data?.let { list -> movies.value = list }
+            dataState.data?.let { list ->
+//                state.value.movie = list
+                state.value = state.value.copy(movie = list)
+            }
             dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: getTopRatedMovies: Error:")}
         }.launchIn(viewModelScope)
     }
@@ -163,7 +166,15 @@ class MovieListViewModel @Inject constructor(
             apikey = apiKey,
         ).onEach { dataState ->
             loading.value = dataState.loading
-            dataState.data?.let { value -> configurations.value = value }
+            // The way I am populating configurations is not working...
+//            dataState.data?.let { imageConfigs -> state.value.copy(configurations = imageConfigs) }
+            dataState.data?.let { imageConfigs ->
+//                state.value.configurations = imageConfigs
+                state.value = state.value.copy(configurations = imageConfigs)
+
+            println("configz: ${state.value.configurations}")
+
+            }
             dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: GetConfigurations: $error")}
         }.catch {
             // This is an example of how to catch errors off of the suspend function.
@@ -183,9 +194,11 @@ class MovieListViewModel @Inject constructor(
      * Append new movies to the current list of movies.
      */
     private fun appendMovies(movies: List<Movie>){
-        val currentList = ArrayList(this.movies.value)
+        val currentList = this.state.value.movie.let { ArrayList(it) }
         currentList.addAll(movies)
-        this.movies.value = currentList
+        this.state.value.copy(movie = currentList)
+//        this.state.value.copy(movie = currentList)
+//        this.state.value.copy(movie = currentList)
     }
 
     private fun incrementPage(){
@@ -202,7 +215,8 @@ class MovieListViewModel @Inject constructor(
      * at least will clear the search query
      */
     private fun resetSearchState(){
-        movies.value = listOf()
+//        state.value.movie = listOf()
+        state.value.copy(movie = listOf())
         page.value = 1
         onChangeMovieScrollPosition(0)
         // might need to reset index here as well
@@ -278,7 +292,8 @@ class MovieListViewModel @Inject constructor(
      */
     fun resetForNextSearch(){
         query.value = ""
-        movies.value = listOf()
+//        state.value.movie = listOf()
+        state.value.copy(movie = listOf())
         page.value = 1
         onChangeMovieScrollPosition(0)
         // might need to reset index here as well
