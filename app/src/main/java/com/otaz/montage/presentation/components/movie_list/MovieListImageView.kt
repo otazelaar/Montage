@@ -11,16 +11,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import com.otaz.montage.domain.model.ImageConfigs
 import com.otaz.montage.domain.model.Movie
 import com.otaz.montage.presentation.components.util.DEFAULT_MOVIE_IMAGE
+import com.otaz.montage.presentation.ui.movie_list.MovieListState
 import com.otaz.montage.util.loadPicture
 
 @Composable
 fun MovieListImageView(
-    movie: Movie,
-    configurations: ImageConfigs,
+    movieItem: Movie,
     onClick: () -> Unit,
+    state: MovieListState,
 ){
     Card(
         shape = MaterialTheme.shapes.small,
@@ -28,9 +28,9 @@ fun MovieListImageView(
             .fillMaxWidth()
             .clickable(onClick = onClick),
     ) {
-        val image = movie.poster_path?.let {
+        val image = movieItem.poster_path?.let {
             loadPicture(
-                configurations = configurations,
+                configurations = state.configurations,
                 url = it,
                 defaultImage = DEFAULT_MOVIE_IMAGE,
             ).value

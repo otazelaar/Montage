@@ -1,7 +1,6 @@
 package com.otaz.montage.presentation.ui.movie_list
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -16,9 +15,6 @@ import com.otaz.montage.presentation.components.movie_list.SearchAppBar
 import com.otaz.montage.presentation.components.saved_movies.SavedMoviesList
 import com.otaz.montage.presentation.theme.AppTheme
 import com.otaz.montage.presentation.ui.movie_list.MovieListActions.*
-import com.otaz.montage.presentation.ui.saved_movie_list.SavedMovieListEvent
-import com.otaz.montage.presentation.ui.saved_movie_list.SavedMovieListViewModel
-import com.otaz.montage.util.TAG
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -26,21 +22,11 @@ import kotlinx.coroutines.launch
 fun MovieListScreen(
     onNavigateToMovieDetailScreen: (String) -> Unit,
     movieListViewModel: MovieListViewModel,
-    savedMovieListViewModel: SavedMovieListViewModel,
-    movieListState: MovieListState,
+    state: MovieListState,
     actions: (MovieListActions) -> Unit,
-){
-    Log.d(TAG, "MovieListScreen: $movieListViewModel")
-    Log.d(TAG, "MovieListScreen: moviez ${movieListState.movie}")
-    Log.d(TAG, "MovieListScreen: configz ${movieListState.configurations}")
-
+) {
     val focusRequester = FocusRequester()
     val focusManager = LocalFocusManager.current
-    val savedMovies = savedMovieListViewModel.savedMovies.value
-    val loading = movieListViewModel.loading.value
-//    val page = movieListViewModel.page.value
-
-    // rememberScaffoldState will create a scaffold state object and persist across recompositions
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
@@ -53,38 +39,28 @@ fun MovieListScreen(
                     expression = movieListViewModel.query.value,
                     focusRequester = focusRequester,
                     focusManager = focusManager,
-                    state = movieListState,
-                    onSavedMoviesIconClicked = { scope.launch { scaffoldState.drawerState.open() } },
+                    state = state,
+                    onClickOpenWatchListDrawer = { scope.launch { scaffoldState.drawerState.open() } },
                     actions = actions,
                 )
             },
             drawerContent = {
                 Text("Watch List", modifier = Modifier.padding(16.dp))
-
-                savedMovieListViewModel.onTriggerEvent(SavedMovieListEvent.UpdateSavedMoviesList)
-
                 SavedMoviesList(
-                    savedMovies = savedMovies,
+                    state = state,
+                    actions = actions,
                     onNavigateToMovieDetailScreen = onNavigateToMovieDetailScreen,
-                    onClickDeleteMovie = {
-                        savedMovieListViewModel.onTriggerEvent(SavedMovieListEvent.DeleteSavedMovie(id = it))
-                    }
                 )
             },
             drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
             scaffoldState = scaffoldState,
             snackbarHost = { scaffoldState.snackbarHostState },
-        ){
-                MovieList(
-                    loading = loading,
-                    onTriggerNextPage = { actions(NextPage) },
-                    onNavigateToMovieDetailScreen = onNavigateToMovieDetailScreen,
-                    saveMovie = { movieName ->
-                        actions(SaveMovie(movieName))
-                    },
-                    actions = actions,
-                    state = movieListState,
-                )
-            }
+        ) {
+            MovieList(
+                onNavigateToMovieDetailScreen = onNavigateToMovieDetailScreen,
+                actions = actions,
+                state = state,
+            )
         }
     }
+}

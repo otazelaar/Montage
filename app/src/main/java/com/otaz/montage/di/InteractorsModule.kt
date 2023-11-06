@@ -28,9 +28,11 @@ object InteractorsModule {
     @Provides
     fun provideSearchMovie(
         tmdbApiService: TmdbApiService,
+        movieDao: MovieDao,
     ): SearchMovies{
         return SearchMovies(
             tmdbApiService = tmdbApiService,
+            movieDao = movieDao,
         )
     }
 

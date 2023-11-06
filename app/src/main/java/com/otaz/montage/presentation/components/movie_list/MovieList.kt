@@ -9,7 +9,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.otaz.montage.domain.model.Movie
 import com.otaz.montage.presentation.components.ShimmerMovieListCardItem
 import com.otaz.montage.presentation.navigation.Screen
 import com.otaz.montage.presentation.ui.movie_list.MovieListActions
@@ -18,10 +17,7 @@ import com.otaz.montage.util.MOVIE_PAGINATION_PAGE_SIZE
 
 @Composable
 fun MovieList(
-    loading: Boolean,
-    onTriggerNextPage: () -> Unit,
     onNavigateToMovieDetailScreen: (String) -> Unit,
-    saveMovie: (Movie) -> Unit,
     actions: (MovieListActions) -> Unit,
     state: MovieListState,
 ){
@@ -30,7 +26,7 @@ fun MovieList(
             .fillMaxSize()
             .background(color = MaterialTheme.colors.background)
     ) {
-        if (loading && state.movie.isEmpty()) {
+        if (state.loading.value && state.movie.isEmpty()) {
             ShimmerMovieListCardItem(
                 imageHeight = 250.dp,
                 padding = 8.dp
@@ -39,22 +35,21 @@ fun MovieList(
             LazyColumn {
                 itemsIndexed(
                     items = state.movie
-                ){ index, movie ->
-//                    onChangeMovieScrollPosition(index)
+                ){ index, movieItem ->
                     actions(MovieListActions.MovieScrollPositionChanged(index))
-                    if((index + 1) >= (state.page.value * MOVIE_PAGINATION_PAGE_SIZE) && !loading){
-                        onTriggerNextPage()
+
+                    if((index + 1) >= (state.page.value * MOVIE_PAGINATION_PAGE_SIZE) && !state.loading.value){
+                        actions(MovieListActions.NextPage)
                     }
+
                     MovieListView(
-                        movie = movie,
-                        configurations = state.configurations,
+                        movieItem = movieItem,
                         onClick = {
-                            val route = Screen.MovieDetail.route + "/${movie.id}"
+                            val route = Screen.MovieDetail.route + "/${movieItem.id}"
                             onNavigateToMovieDetailScreen(route)
                         },
-                        onMovieSaveClick = {
-                            saveMovie(movie)
-                        }
+                        state = state,
+                        actions = actions,
                     )
                 }
             }

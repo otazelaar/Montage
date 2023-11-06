@@ -29,7 +29,7 @@ fun SearchAppBar(
     focusRequester: FocusRequester,
     focusManager: FocusManager,
     state: MovieListState,
-    onSavedMoviesIconClicked: () -> Unit,
+    onClickOpenWatchListDrawer: () -> Unit,
     actions: (MovieListActions) -> Unit,
 ){
     Surface(
@@ -83,7 +83,7 @@ fun SearchAppBar(
                     ),
                     textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.onSurface),
                     trailingIcon = {
-                        IconButton(onClick = onSavedMoviesIconClicked) {
+                        IconButton(onClick = onClickOpenWatchListDrawer) {
                             Icon(
                                 imageVector = Icons.Outlined.List,
                                 contentDescription = "Toggle drawer"

@@ -7,8 +7,9 @@ import com.otaz.montage.domain.model.Movie
 
 data class MovieListState(
     val movie: List<Movie> = listOf(),
+    val savedMovies: List<Movie> = listOf(),
     val configurations: ImageConfigs = ImageConfigs.EMPTY_CONFIGURATIONS,
     val selectedCategory: MutableState<MovieCategory?> = mutableStateOf(null),
     val page: MutableState<Int> = mutableStateOf(1),
-
+    val loading: MutableState<Boolean> = mutableStateOf(false)
 )

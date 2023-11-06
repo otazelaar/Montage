@@ -17,7 +17,6 @@ import com.otaz.montage.presentation.ui.movie_detail.MovieDetailScreen
 import com.otaz.montage.presentation.ui.movie_detail.MovieDetailViewModel
 import com.otaz.montage.presentation.ui.movie_list.MovieListScreen
 import com.otaz.montage.presentation.ui.movie_list.MovieListViewModel
-import com.otaz.montage.presentation.ui.saved_movie_list.SavedMovieListViewModel
 import com.otaz.montage.presentation.ui.splash_screen.SplashScreenViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -43,6 +42,20 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var app: BaseApplication
+
+    @Inject
+    lateinit var connectivityManager: ConnectivityManager
+
+    override fun onStart() {
+        connectivityManager.registerConnectionObserver(this)
+        super.onStart()
+    }
+
+    override fun onDestroy() {
+        connectivityManager.unregisterConnectionObserver(this)
+        super.onDestroy()
+    }
+
     private val viewModel: SplashScreenViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,13 +75,11 @@ class MainActivity : AppCompatActivity() {
                     route = Screen.MovieList.route
                 ) {
                     val viewModel = hiltViewModel<MovieListViewModel>()
-                    val savedMovieListViewModel = hiltViewModel<SavedMovieListViewModel>()
 
                     MovieListScreen(
                         onNavigateToMovieDetailScreen = navController::navigate,
                         movieListViewModel = viewModel,
-                        savedMovieListViewModel = savedMovieListViewModel,
-                        movieListState = viewModel.state.value,
+                        state = viewModel.state.value,
                         actions = viewModel::actions
                     )
                 }

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.List
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -15,21 +14,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.otaz.montage.domain.model.ImageConfigs
 import com.otaz.montage.domain.model.Movie
+import com.otaz.montage.presentation.ui.movie_list.MovieListActions
+import com.otaz.montage.presentation.ui.movie_list.MovieListState
 
 @Composable
 fun MovieListView(
-    movie: Movie,
-    configurations: ImageConfigs,
+    movieItem: Movie,
     onClick: () -> Unit,
-    onMovieSaveClick: (Movie) -> Unit,
+    state: MovieListState,
+    actions: (MovieListActions) -> Unit,
 ){
     Column {
         MovieListImageView(
-            movie = movie,
-            configurations = configurations,
+            movieItem = movieItem,
             onClick = onClick,
+            state = state,
         )
         Row(
             Modifier
@@ -45,9 +45,9 @@ fun MovieListView(
             ) {
                 // the dates are formatted as yyyy-dd-mm
                 // All we want is the year which is the first 4 characters
-                val year = movie.release_date?.take(4)
+                val year = movieItem.release_date?.take(4)
                 Text(
-                    text = "${movie.title} ($year)",
+                    text = "${movieItem.title} ($year)",
                     modifier = Modifier
                         .clickable(onClick = onClick),
                     style = MaterialTheme.typography.h4,
@@ -65,7 +65,9 @@ fun MovieListView(
 //                 pressed.
 
                 Button(
-                    onClick = { onMovieSaveClick(movie) },
+                    onClick = {
+                        actions(MovieListActions.SaveMovieAction(movieItem))
+                    },
                     interactionSource = interactionSource,
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = if (isPressed){
@@ -84,15 +86,6 @@ fun MovieListView(
                             Color.Black
                         }
                     )
-//                    Text(
-//                        text = "Save",
-//                        style = MaterialTheme.typography.h5,
-//                        color = if (isPressed){
-//                            Color.Red
-//                        }else{
-//                            Color.Black
-//                        }
-//                    )
                 }
             }
         }

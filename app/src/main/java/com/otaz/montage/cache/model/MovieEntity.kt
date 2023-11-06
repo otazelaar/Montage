@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.otaz.montage.domain.model.Movie
+import com.otaz.montage.domain.model.toMovieEntity
 
 @Entity(tableName = "movies")
 data class MovieEntity(
@@ -45,4 +46,9 @@ fun MovieEntity.toMovie(): Movie {
 
 fun entitiesToMovie(movieEntities: List<MovieEntity>): List<Movie> {
     return movieEntities.map { it.toMovie() }
+}
+
+//This may not be correct because toMovieEntity is taking a single movie and turning it into a movie entity and not a list
+fun moviesToEntities(movies: List<Movie>): List<MovieEntity> {
+    return movies.map { it.toMovieEntity() }
 }

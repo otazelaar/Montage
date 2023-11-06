@@ -1,16 +1,21 @@
 package com.otaz.montage.presentation.ui.movie_list
 
+import android.net.ConnectivityManager.*
+import android.net.NetworkCapabilities.*
 import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.otaz.montage.domain.model.Movie
+import com.otaz.montage.interactors.app.DeleteMovie
 import com.otaz.montage.interactors.app.GetConfigurations
+import com.otaz.montage.interactors.app.GetSavedMovies
 import com.otaz.montage.interactors.app.SaveMovie
 import com.otaz.montage.interactors.movie_list.GetMostPopularMovies
 import com.otaz.montage.interactors.movie_list.GetTopRatedMovies
 import com.otaz.montage.interactors.movie_list.GetUpcomingMovies
 import com.otaz.montage.interactors.movie_list.SearchMovies
+import com.otaz.montage.presentation.ConnectivityManager
 import com.otaz.montage.presentation.ui.movie_list.MovieListActions.*
 import com.otaz.montage.util.MOVIE_PAGINATION_PAGE_SIZE
 import com.otaz.montage.util.TAG
@@ -28,18 +33,15 @@ class MovieListViewModel @Inject constructor(
     private val getMostPopularMovies: GetMostPopularMovies,
     private val getUpcomingMovies: GetUpcomingMovies,
     private val getTopRatedMovies: GetTopRatedMovies,
+    private val getSavedMovies: GetSavedMovies,
+    private val deleteMovie: DeleteMovie,
+    private val connectivityManager: ConnectivityManager,
     @Named("tmdb_apikey") private val apiKey: String,
     ): ViewModel() {
     val state: MutableState<MovieListState> = mutableStateOf(MovieListState())
-
     val query = mutableStateOf("")
     private val sortingParameterPopularityDescending = "popularity.desc"
-
-    val loading = mutableStateOf(false)
-
-    // Pagination
-//    val page = mutableStateOf(1)
-    var movieListScrollPosition = 0
+    private var movieListScrollPosition = 0
 
     init {
         getConfigurations()
@@ -52,11 +54,15 @@ class MovieListViewModel @Inject constructor(
                 when(action){
                     is NewSearch -> newSearchUseCasePicker()
                     is NextPage -> nextPage()
-                    is MovieListActions.SaveMovie -> saveMovie(movie = action.movie)
+                    is SaveMovieAction-> {
+                        saveMovie(movie = action.movie)
+                        getSavedMovies()
+                    }
                     is ResetForNewSearch -> resetForNewSearch()
                     is CategoryChanged -> onSelectedCategoryChanged(category = action.category)
                     is QueryChanged -> onQueryChanged(query = action.query)
                     is MovieScrollPositionChanged -> onChangeMovieScrollPosition(position = action.position)
+                    is DeleteSavedMovie -> deleteSavedMovie(action.id)
                 }
             }catch (e: Exception){
                 Log.e(TAG, "MovieListViewModel: onTriggerEvent: Exception ${e}, ${e.cause}")
@@ -69,11 +75,9 @@ class MovieListViewModel @Inject constructor(
 
         resetSearchState()
         searchMovies.execute(
-            apikey = apiKey,
-            query = query.value,
-            page = state.value.page.value
+            connectivityManager, apiKey, query.value, state.value.page.value
         ).onEach { dataState ->
-            loading.value = dataState.loading
+            state.value.loading.value = dataState.loading
             dataState.data?.let { list -> state.value = state.value.copy(movie = list) }
             dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: newSearch: Error:")}
         }.launchIn(viewModelScope)
@@ -90,13 +94,11 @@ class MovieListViewModel @Inject constructor(
         }
 
         getMostPopularMovies.execute(
-            apikey = apiKey,
-            sortBy = sortingParameterPopularityDescending,
-            page = state.value.page.value
+            apiKey, sortingParameterPopularityDescending, state.value.page.value
         ).onEach { dataState ->
-            loading.value = dataState.loading
+            state.value.loading.value = dataState.loading
             dataState.data?.let { list -> state.value = state.value.copy(movie = list) }
-            dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: getMostPopularMovies: Error:")}
+            dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: getMostPopularMovies: $error:")}
         }.launchIn(viewModelScope)
     }
 
@@ -105,10 +107,9 @@ class MovieListViewModel @Inject constructor(
 
         resetSearchState()
         getUpcomingMovies.execute(
-            apikey = apiKey,
-            page = state.value.page.value
+            apiKey, state.value.page.value
         ).onEach { dataState ->
-            loading.value = dataState.loading
+            state.value.loading.value = dataState.loading
             dataState.data?.let { list -> state.value = state.value.copy(movie = list) }
             dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: getUpcomingMovies: Error:")}
         }.launchIn(viewModelScope)
@@ -119,10 +120,9 @@ class MovieListViewModel @Inject constructor(
 
         resetSearchState()
         getTopRatedMovies.execute(
-            apikey = apiKey,
-            page = state.value.page.value
+            apiKey, state.value.page.value
         ).onEach { dataState ->
-            loading.value = dataState.loading
+            state.value.loading.value = dataState.loading
             dataState.data?.let { list -> state.value = state.value.copy(movie = list) }
             dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: getTopRatedMovies: Error:")}
         }.launchIn(viewModelScope)
@@ -135,11 +135,9 @@ class MovieListViewModel @Inject constructor(
 
             if(state.value.page.value > 1){
                 searchMovies.execute(
-                    apikey = apiKey,
-                    query = query.value,
-                    page = state.value.page.value,
+                    connectivityManager, apiKey, query.value, state.value.page.value,
                 ).onEach { dataState ->
-                    loading.value = dataState.loading
+                    state.value.loading.value = dataState.loading
                     dataState.data?.let { list -> appendMovies(list) }
                     dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: Error") }
                 }.launchIn(viewModelScope)
@@ -151,14 +149,16 @@ class MovieListViewModel @Inject constructor(
         Log.d(TAG, "MovieListViewModel: getConfigurations running")
 
         getConfigurations.execute(
-            apikey = apiKey,
+            apiKey,
         ).onEach { dataState ->
-            loading.value = dataState.loading
+            state.value.loading.value = dataState.loading
             dataState.data?.let { imageConfigs -> state.value = state.value.copy(configurations = imageConfigs) }
             dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: GetConfigurations: $error")}
         }.catch {
             // This is an example of how to catch errors off of the suspend function.
-            // Should we handle errors in the use case or here?
+            // Should we handle errors in the use case or here? Maybe bc we could then have VM
+            // events to show a different screen or something like that. If it is in the UC then we
+            // would not be able ot return those events
             cause ->  Log.e(TAG, "$cause")
         }.launchIn(viewModelScope)
     }
@@ -168,6 +168,24 @@ class MovieListViewModel @Inject constructor(
         saveMovie.execute(
             movie = movie
         )
+    }
+
+    private fun getSavedMovies(){
+        Log.d(TAG, "SavedMoviesListViewModel: getSavedMovies: running")
+
+        getSavedMovies.execute().onEach { dataState ->
+            state.value.loading.value = dataState.loading
+//            dataState.data?.let { list -> state.value.savedMovies.value = list }
+            dataState.data?.let { list -> state.value = state.value.copy(savedMovies = list) }
+            dataState.error?.let { error -> Log.e(TAG,"SavedMoviesListViewModel: getSavedMovies: Error:")}
+        }.launchIn(viewModelScope)
+    }
+
+    private suspend fun deleteSavedMovie(id: String){
+        deleteMovie.execute(
+            id = id
+        )
+        getSavedMovies()
     }
 
     /**

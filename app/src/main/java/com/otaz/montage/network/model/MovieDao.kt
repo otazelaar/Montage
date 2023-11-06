@@ -17,21 +17,36 @@ interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMovie(movie: MovieEntity): Long
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertMovies(movies: List<MovieEntity>): LongArray
+
+    // DB version of the SearchMovies API call
+    // pageSize is 4
+    @Query("""
+        SELECT * FROM movies 
+        WHERE title LIKE '%' || :query || '%'
+        LIMIT :paginationSize OFFSET ((:page -1) * :paginationSize)
+        """)
+    suspend fun getMoviesByQuery(
+        query: String,
+        paginationSize: Int,
+        page: Int,
+    ): List<MovieEntity>
+
+
     @Query("DELETE FROM movies WHERE id = :primaryKey")
     suspend fun deleteMovie(primaryKey: String): Int
 
-    /**
-     * Same as 'searchMovies' function, but no query.
-     */
+    // Same as 'searchMovies' function, but no query.
     @Query(" SELECT * FROM movies ")
     suspend fun getAllMovies(): List<MovieEntity>
 
-    @Query("SELECT * FROM movies WHERE id = :id")
-    suspend fun getMovieById(id: String): MovieEntity?
+//    @Query("SELECT * FROM movies WHERE id = :id")
+//    suspend fun getMovieById(id: String): MovieEntity?
 
-    @Query("DELETE FROM movies WHERE id IN (:ids)")
-    suspend fun deleteMovies(ids: List<String>): Int
+//    @Query("DELETE FROM movies WHERE id IN (:ids)")
+//    suspend fun deleteMovies(ids: List<String>): Int
 
-    @Query("DELETE FROM movies")
-    suspend fun deleteAllMovies()
+//    @Query("DELETE FROM movies")
+//    suspend fun deleteAllMovies()
 }

@@ -8,14 +8,15 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.otaz.montage.domain.model.Movie
 import com.otaz.montage.presentation.navigation.Screen
+import com.otaz.montage.presentation.ui.movie_list.MovieListActions
+import com.otaz.montage.presentation.ui.movie_list.MovieListState
 
 @Composable
 fun SavedMoviesList(
-    savedMovies: List<Movie>,
+    state: MovieListState,
+    actions: (MovieListActions) -> Unit,
     onNavigateToMovieDetailScreen: (String) -> Unit,
-    onClickDeleteMovie: (String) -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -24,18 +25,12 @@ fun SavedMoviesList(
     ) {
         LazyColumn {
             itemsIndexed(
-                items = savedMovies
-            ) { index, movie ->
+                items = state.savedMovies
+            ) { index, movieItem ->
                 SavedMoviesListView(
-                    movie = movie,
-                    onClick = {
-                        val route = Screen.MovieDetail.route + "/${movie.id}"
-                        onNavigateToMovieDetailScreen(route)
-                    },
-                    onClickDeleteMovie = {
-                        val clickedMovieIDToBeDeleted = it.id.toString()
-                        onClickDeleteMovie(clickedMovieIDToBeDeleted)
-                    },
+                    movieItem = movieItem,
+                    onNavigateToMovieDetailScreen = onNavigateToMovieDetailScreen,
+                    actions = actions,
                 )
             }
         }
