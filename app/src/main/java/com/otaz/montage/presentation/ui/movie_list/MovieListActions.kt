@@ -9,6 +9,8 @@ sealed class MovieListActions {
     data class QueryChanged(val query: String): MovieListActions()
     object NextPage: MovieListActions()
     data class MovieScrollPositionChanged(val position: Int): MovieListActions()
-    data class SaveMovieAction(val movie: Movie): MovieListActions()
+    data class CacheMovieAction(val movie: Movie): MovieListActions()
     data class DeleteSavedMovie(val id: String): MovieListActions()
+    object GetAllSavedMovies: MovieListActions()
+    data class SaveMovie(val movie: Movie): MovieListActions()
 }

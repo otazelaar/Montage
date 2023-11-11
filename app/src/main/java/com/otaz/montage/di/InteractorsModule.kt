@@ -1,9 +1,7 @@
 package com.otaz.montage.di
 
-import com.otaz.montage.interactors.app.DeleteMovie
-import com.otaz.montage.interactors.app.GetConfigurations
-import com.otaz.montage.interactors.app.GetSavedMovies
-import com.otaz.montage.interactors.app.SaveMovie
+import com.otaz.montage.cache.MovieDao
+import com.otaz.montage.interactors.app.*
 import com.otaz.montage.interactors.movie_detail.GetMovieReviews
 import com.otaz.montage.interactors.movie_detail.GetOmdbMovie
 import com.otaz.montage.interactors.movie_detail.GetTmdbMovie
@@ -108,10 +106,20 @@ object InteractorsModule {
 
     @ViewModelScoped
     @Provides
-    fun provideSaveMovie(
+    fun provideCacheMovie(
         movieDao: MovieDao,
-    ): SaveMovie{
-        return SaveMovie(
+    ): CacheMovie{
+        return CacheMovie(
+            movieDao = movieDao,
+        )
+    }
+
+    @ViewModelScoped
+    @Provides
+    fun provideAddMovieToWatchList(
+        movieDao: MovieDao,
+    ): AddMovieToWatchList{
+        return AddMovieToWatchList(
             movieDao = movieDao,
         )
     }

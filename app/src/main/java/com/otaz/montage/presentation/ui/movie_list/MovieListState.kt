@@ -7,6 +7,7 @@ import com.otaz.montage.domain.model.Movie
 
 data class MovieListState(
     val movie: List<Movie> = listOf(),
+//    val cachedMovies: List<Movie> = listOf(), //this is for offline app functionality
     val savedMovies: List<Movie> = listOf(),
     val configurations: ImageConfigs = ImageConfigs.EMPTY_CONFIGURATIONS,
     val selectedCategory: MutableState<MovieCategory?> = mutableStateOf(null),

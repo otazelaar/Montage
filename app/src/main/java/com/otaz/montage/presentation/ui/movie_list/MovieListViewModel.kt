@@ -7,10 +7,7 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.otaz.montage.domain.model.Movie
-import com.otaz.montage.interactors.app.DeleteMovie
-import com.otaz.montage.interactors.app.GetConfigurations
-import com.otaz.montage.interactors.app.GetSavedMovies
-import com.otaz.montage.interactors.app.SaveMovie
+import com.otaz.montage.interactors.app.*
 import com.otaz.montage.interactors.movie_list.GetMostPopularMovies
 import com.otaz.montage.interactors.movie_list.GetTopRatedMovies
 import com.otaz.montage.interactors.movie_list.GetUpcomingMovies
@@ -27,7 +24,7 @@ import javax.inject.Named
 
 @HiltViewModel
 class MovieListViewModel @Inject constructor(
-    private val saveMovie: SaveMovie,
+    private val cacheMovie: CacheMovie,
     private val searchMovies: SearchMovies,
     private val getConfigurations: GetConfigurations,
     private val getMostPopularMovies: GetMostPopularMovies,
@@ -35,6 +32,7 @@ class MovieListViewModel @Inject constructor(
     private val getTopRatedMovies: GetTopRatedMovies,
     private val getSavedMovies: GetSavedMovies,
     private val deleteMovie: DeleteMovie,
+    private val addMovieToWatchList: AddMovieToWatchList,
     private val connectivityManager: ConnectivityManager,
     @Named("tmdb_apikey") private val apiKey: String,
     ): ViewModel() {
@@ -48,27 +46,46 @@ class MovieListViewModel @Inject constructor(
         getMostPopularMovies()
     }
 
+    // Differentiate between saved movies and cached movies. Saved movies are for the watchlist.
+    // Cached movies are for offline app functionality
     fun actions(action: MovieListActions){
         viewModelScope.launch {
             try {
                 when(action){
                     is NewSearch -> newSearchUseCasePicker()
                     is NextPage -> nextPage()
-                    is SaveMovieAction-> {
-                        saveMovie(movie = action.movie)
-                        getSavedMovies()
+                    is CacheMovieAction-> {
+                        cacheMovie(movie = action.movie)
                     }
                     is ResetForNewSearch -> resetForNewSearch()
                     is CategoryChanged -> onSelectedCategoryChanged(category = action.category)
                     is QueryChanged -> onQueryChanged(query = action.query)
                     is MovieScrollPositionChanged -> onChangeMovieScrollPosition(position = action.position)
                     is DeleteSavedMovie -> deleteSavedMovie(action.id)
+                    is GetAllSavedMovies -> getSavedMoviesList() // needs to be changed to get WatchList
+                    is SaveMovie -> {
+                        //change all the naming here to save movie after I change the other same movie to "cache"
+                        addMovieToWatchList(action.movie)
+                        getSavedMoviesList()
+                    }
                 }
             }catch (e: Exception){
-                Log.e(TAG, "MovieListViewModel: onTriggerEvent: Exception ${e}, ${e.cause}")
+                Log.e(TAG, "MovieListViewModel: actions: Exception ${e}, ${e.cause}")
             }
         }
     }
+
+//    fun events(event: MovieListEvents){
+//        viewModelScope.launch {
+//            try {
+//                when(event){
+//                    is MovieSavedButtonClicked -> ??
+//                }
+//            }catch (e: Exception){
+//                Log.e(TAG, "MovieListViewModel: onTriggerEvent: Exception ${e}, ${e.cause}")
+//            }
+//        }
+//    }
 
     private fun newSearch(){
         Log.d(TAG, "MovieListViewModel: newSearch: query: ${query.value}, page: ${state.value.page.value}")
@@ -163,19 +180,25 @@ class MovieListViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private suspend fun saveMovie(movie: Movie){
+    private suspend fun cacheMovie(movie: Movie){
         Log.d(TAG, "MovieListViewModel: saveMovie running")
-        saveMovie.execute(
+        cacheMovie.execute(
             movie = movie
         )
     }
 
-    private fun getSavedMovies(){
+    private suspend fun addMovieToWatchList(movie: Movie){
+        Log.d(TAG, "MovieListViewModel: addMovieToWatchList running")
+        addMovieToWatchList.execute(
+            movie = movie
+        )
+    }
+
+    private fun getSavedMoviesList(){
         Log.d(TAG, "SavedMoviesListViewModel: getSavedMovies: running")
 
         getSavedMovies.execute().onEach { dataState ->
             state.value.loading.value = dataState.loading
-//            dataState.data?.let { list -> state.value.savedMovies.value = list }
             dataState.data?.let { list -> state.value = state.value.copy(savedMovies = list) }
             dataState.error?.let { error -> Log.e(TAG,"SavedMoviesListViewModel: getSavedMovies: Error:")}
         }.launchIn(viewModelScope)
@@ -185,7 +208,7 @@ class MovieListViewModel @Inject constructor(
         deleteMovie.execute(
             id = id
         )
-        getSavedMovies()
+        getSavedMoviesList()
     }
 
     /**

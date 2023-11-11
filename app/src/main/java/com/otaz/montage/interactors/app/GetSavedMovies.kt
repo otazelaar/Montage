@@ -3,7 +3,7 @@ package com.otaz.montage.interactors.app
 import com.otaz.montage.cache.model.entitiesToMovie
 import com.otaz.montage.domain.data.DataState
 import com.otaz.montage.domain.model.Movie
-import com.otaz.montage.network.model.MovieDao
+import com.otaz.montage.cache.MovieDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -14,10 +14,11 @@ class GetSavedMovies(
         try {
             emit(DataState.loading())
 
-            val listOfMovieEntity = movieDao.getAllMovies()
-            val cachedMovies = entitiesToMovie(listOfMovieEntity)
+            val listOfMovieEntity = movieDao.getWatchList()
+            val savedMovies = entitiesToMovie(listOfMovieEntity)
 
-            emit(DataState.success(cachedMovies))
+            emit(DataState.success(savedMovies))
+
         } catch (e: Exception) {
             emit(DataState.error(e.message ?: "GetSavedMovies UseCase Error"))
         }

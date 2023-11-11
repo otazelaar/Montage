@@ -3,10 +3,10 @@ package com.otaz.montage.interactors.app
 import android.util.Log
 import com.otaz.montage.domain.model.Movie
 import com.otaz.montage.domain.model.toMovieEntity
-import com.otaz.montage.network.model.MovieDao
+import com.otaz.montage.cache.MovieDao
 import com.otaz.montage.util.TAG
 
-class SaveMovie(
+class CacheMovie(
     private val movieDao: MovieDao,
 ) {
     suspend fun execute(
@@ -17,7 +17,7 @@ class SaveMovie(
             movieDao.insertMovie(movieToBeCached)
 
         } catch (e: Exception) {
-            Log.e(TAG, "SaveMovie UseCase Error: $e")
+            Log.e(TAG, "CacheMovie UseCase Error: $e")
         }
     }
 }

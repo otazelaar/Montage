@@ -1,10 +1,11 @@
-package com.otaz.montage.network.model
+package com.otaz.montage.cache
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.otaz.montage.cache.model.MovieEntity
+import com.otaz.montage.cache.model.MovieWatchListEntity
 
 /**
  * The Long value returned by insertMovie represents whether or not the insert was successful.
@@ -33,13 +34,20 @@ interface MovieDao {
         page: Int,
     ): List<MovieEntity>
 
-
-    @Query("DELETE FROM movies WHERE id = :primaryKey")
-    suspend fun deleteMovie(primaryKey: String): Int
-
     // Same as 'searchMovies' function, but no query.
     @Query(" SELECT * FROM movies ")
     suspend fun getAllMovies(): List<MovieEntity>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertMovieWatchList(movie: MovieWatchListEntity): Long
+
+    @Query("DELETE FROM movies_watchlist WHERE id = :primaryKey")
+    suspend fun deleteMovie(primaryKey: String): Int
+
+    //order in most recently added
+    @Query(" SELECT * FROM movies_watchlist")
+    suspend fun getWatchList(): List<MovieWatchListEntity>
+
 
 //    @Query("SELECT * FROM movies WHERE id = :id")
 //    suspend fun getMovieById(id: String): MovieEntity?

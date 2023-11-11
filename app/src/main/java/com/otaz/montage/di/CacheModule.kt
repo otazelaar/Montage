@@ -2,7 +2,7 @@ package com.otaz.montage.di
 
 import androidx.room.Room
 import com.otaz.montage.cache.database.AppDatabase
-import com.otaz.montage.network.model.MovieDao
+import com.otaz.montage.cache.MovieDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

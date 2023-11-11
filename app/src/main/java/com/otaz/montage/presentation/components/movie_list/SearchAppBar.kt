@@ -84,6 +84,7 @@ fun SearchAppBar(
                     textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.onSurface),
                     trailingIcon = {
                         IconButton(onClick = onClickOpenWatchListDrawer) {
+                            actions(MovieListActions.GetAllSavedMovies)
                             Icon(
                                 imageVector = Icons.Outlined.List,
                                 contentDescription = "Toggle drawer"

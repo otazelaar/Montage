@@ -1,7 +1,7 @@
 package com.otaz.montage.interactors.app
 
 import android.util.Log
-import com.otaz.montage.network.model.MovieDao
+import com.otaz.montage.cache.MovieDao
 import com.otaz.montage.util.TAG
 
 class DeleteMovie(
