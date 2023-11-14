@@ -16,6 +16,10 @@ data class Movie(
     val poster_path: String?,
     val release_date: String?,
     val title: String,
+    val orderAdded: Int,
+    val isInWatchlist: Boolean,
+    val hasBeenWatched: Boolean,
+    val dateSavedToWatchList: String,
 )
 
 /**
@@ -30,9 +34,15 @@ fun Movie.toMovieEntity(): MovieEntity {
         poster_path = poster_path,
         release_date = release_date,
         title = title,
+        orderAdded = orderAdded,
+        isInWatchlist = isInWatchlist,
+        hasBeenWatched = hasBeenWatched,
+        dateSavedToWatchList = dateSavedToWatchList, // (Date but convert to String to store in DB).
     )
 }
 
+// TODO:
+// Get rid of this. Add properties to [MovieEntity] to track in watchlist status instead.
 fun Movie.toMovieWatchListEntity(): MovieWatchListEntity {
     return MovieWatchListEntity(
         id = id,
@@ -42,8 +52,6 @@ fun Movie.toMovieWatchListEntity(): MovieWatchListEntity {
         poster_path = poster_path,
         release_date = release_date,
         title = title,
-        orderAdded = counter
+        orderAdded = orderAdded,
     )
 }
-
-var counter = 1

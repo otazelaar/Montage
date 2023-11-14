@@ -14,6 +14,7 @@ class GetSavedMovies(
         try {
             emit(DataState.loading())
 
+            // check if database is full before calling it
             val listOfMovieEntity = movieDao.getWatchList()
             val savedMovies = entitiesToMovie(listOfMovieEntity)
 

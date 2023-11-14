@@ -6,6 +6,8 @@ import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.otaz.montage.domain.data.DataState
+import com.otaz.montage.domain.model.Counter
 import com.otaz.montage.domain.model.Movie
 import com.otaz.montage.interactors.app.*
 import com.otaz.montage.interactors.movie_list.GetMostPopularMovies
@@ -19,6 +21,7 @@ import com.otaz.montage.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -33,6 +36,8 @@ class MovieListViewModel @Inject constructor(
     private val getSavedMovies: GetSavedMovies,
     private val deleteMovie: DeleteMovie,
     private val addMovieToWatchList: AddMovieToWatchList,
+    private val counterAddUC: CounterAddUC,
+    private val counterGetUC: CounterGetUC,
     private val connectivityManager: ConnectivityManager,
     @Named("tmdb_apikey") private val apiKey: String,
     ): ViewModel() {
@@ -40,6 +45,10 @@ class MovieListViewModel @Inject constructor(
     val query = mutableStateOf("")
     private val sortingParameterPopularityDescending = "popularity.desc"
     private var movieListScrollPosition = 0
+
+    // might need to save the order added to the database so that each time the application is closed
+    // we can still access the last state of the [orderAdded]
+    private val orderAdded: MutableState<Int> = mutableStateOf(0)
 
     init {
         getConfigurations()
@@ -96,7 +105,10 @@ class MovieListViewModel @Inject constructor(
         ).onEach { dataState ->
             state.value.loading.value = dataState.loading
             dataState.data?.let { list -> state.value = state.value.copy(movie = list) }
-            dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: newSearch: Error:")}
+            dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: newSearch: Error:")
+                // show error to UI from here
+                // state.value.error
+            }
         }.launchIn(viewModelScope)
     }
 
@@ -187,11 +199,43 @@ class MovieListViewModel @Inject constructor(
         )
     }
 
+    private suspend fun counterAddToCache(counter: Counter){
+        Log.d(TAG, "MovieListViewModel: addMovieToWatchList running")
+
+        //this should actually be a transaction
+        counterAddUC.execute(counter)
+    }
+
+    private suspend fun counterGetFromCache(){
+        Log.d(TAG, "MovieListViewModel: addMovieToWatchList running")
+        counterGetUC.execute().onEach { dataState ->
+            state.value.loading.value = dataState.loading
+            dataState.data?.let { list -> state.value = state.value.copy(counter = list) }
+            dataState.error?.let { error -> Log.e(TAG,"SavedMoviesListViewModel: getSavedMovies: Error:")}
+        }.launchIn(viewModelScope)
+    }
+
+    //add date as a parameter to the following function
     private suspend fun addMovieToWatchList(movie: Movie){
         Log.d(TAG, "MovieListViewModel: addMovieToWatchList running")
+
+        // get count from cache
+        var count = counterGetFromCache()
+
+
+        // Movie item is adjusted to include the order it which it is added to the watchlist
+        val movieItemAdjusted = movie.copy(orderAdded = count)
+
+        // add movie to watchlist with adjusted order count
         addMovieToWatchList.execute(
-            movie = movie
+            movie = movieItemAdjusted
         )
+
+        // increment the count in the cache (don't forget to decrement the count in the cache after deleting a movie)
+
+        // Each time a movie is added to the watchlist, the order added is incremented allowing us
+        // to recall the list later by the order added
+        orderAdded.value++
     }
 
     private fun getSavedMoviesList(){

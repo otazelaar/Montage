@@ -12,5 +12,7 @@ sealed class MovieListActions {
     data class CacheMovieAction(val movie: Movie): MovieListActions()
     data class DeleteSavedMovie(val id: String): MovieListActions()
     object GetAllSavedMovies: MovieListActions()
+
+    // maybe bring in the date here as a parameter as well
     data class SaveMovie(val movie: Movie): MovieListActions()
 }

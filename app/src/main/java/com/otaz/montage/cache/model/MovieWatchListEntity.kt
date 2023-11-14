@@ -43,6 +43,7 @@ fun MovieWatchListEntity.toMovie(): Movie {
         poster_path = poster_path,
         release_date = release_date,
         title = title,
+        orderAdded = orderAdded,
     )
 }
 

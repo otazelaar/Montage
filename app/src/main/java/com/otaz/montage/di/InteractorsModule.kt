@@ -126,6 +126,26 @@ object InteractorsModule {
 
     @ViewModelScoped
     @Provides
+    fun provideCounterAddUC(
+        movieDao: MovieDao,
+    ): CounterAddUC{
+        return CounterAddUC(
+            movieDao = movieDao,
+        )
+    }
+
+    @ViewModelScoped
+    @Provides
+    fun provideCounterGetUC(
+        movieDao: MovieDao,
+    ): CounterGetUC{
+        return CounterGetUC(
+            movieDao = movieDao,
+        )
+    }
+
+    @ViewModelScoped
+    @Provides
     fun provideDeleteMovie(
         movieDao: MovieDao,
     ): DeleteMovie{

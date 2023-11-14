@@ -31,7 +31,9 @@ class SearchMovies(
             runCatching {
                 getMoviesFromNetwork(apikey, query, page)
             }.onSuccess { moviesFromNetwork ->
-                // if network call is successful, emit result to VM
+                // if network call is successful, store in DB so that this is the SST
+
+                // Don't emit from network. emit from DB only
                 emit(DataState.success(moviesFromNetwork))
             }.onFailure { error: Throwable ->
                 // if network call is unsuccessful, try to handle errors here. Last resort, check db and emit from there

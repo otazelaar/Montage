@@ -30,6 +30,18 @@ data class MovieEntity(
 
     @ColumnInfo(name = "title")
     var title: String,
+
+    @ColumnInfo(name = "orderAdded")
+    var orderAdded: Int,
+
+    @ColumnInfo(name = "isInWatchlist")
+    var isInWatchlist: Boolean,
+
+    @ColumnInfo(name = "hasBeenWatched")
+    var hasBeenWatched: Boolean,
+
+    @ColumnInfo(name = "dateSavedToWatchList")
+    var dateSavedToWatchList: String,
 )
 
 fun MovieEntity.toMovie(): Movie {
@@ -41,14 +53,9 @@ fun MovieEntity.toMovie(): Movie {
         poster_path = poster_path,
         release_date = release_date,
         title = title,
+        orderAdded = orderAdded,
+        isInWatchlist = isInWatchlist,
+        hasBeenWatched = hasBeenWatched,
+        dateSavedToWatchList = dateSavedToWatchList,
     )
-}
-
-fun entitiesToMovie(movieEntities: List<MovieEntity>): List<Movie> {
-    return movieEntities.map { it.toMovie() }
-}
-
-//This may not be correct because toMovieEntity is taking a single movie and turning it into a movie entity and not a list
-fun moviesToEntities(movies: List<Movie>): List<MovieEntity> {
-    return movies.map { it.toMovieEntity() }
 }

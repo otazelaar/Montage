@@ -26,5 +26,9 @@ fun MovieDto.toMovie(): Movie {
         poster_path = poster_path,
         release_date = release_date,
         title = title,
+        orderAdded = 0,
+        isInWatchlist = false,
+        hasBeenWatched = false,
+        dateSavedToWatchList = "date", // not sure what to set here? String? Date?
     )
 }

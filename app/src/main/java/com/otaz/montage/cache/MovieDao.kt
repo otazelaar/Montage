@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.otaz.montage.cache.model.CounterEntity
 import com.otaz.montage.cache.model.MovieEntity
 import com.otaz.montage.cache.model.MovieWatchListEntity
 
@@ -45,8 +46,17 @@ interface MovieDao {
     suspend fun deleteMovie(primaryKey: String): Int
 
     //order in most recently added
-    @Query(" SELECT * FROM movies_watchlist")
+    // TODO: Instead of having a movie_list table, just pull from the movies table.
+    // select from movies where "isInWatchList" = true
+    @Query(" SELECT * FROM movies_watchlist ORDER BY orderAdded DESC")
     suspend fun getWatchList(): List<MovieWatchListEntity>
+
+    // Counter to save the up to date order for watch list to survive closing the app
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertCounter(counter: CounterEntity): Long
+
+    @Query(" SELECT * FROM counter ")
+    suspend fun getCounterValue(): CounterEntity
 
 
 //    @Query("SELECT * FROM movies WHERE id = :id")

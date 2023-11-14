@@ -15,8 +15,10 @@ class AddMovieToWatchList(
         try {
             val movieToBeCached = movie.toMovieWatchListEntity()
             // the purpose of the following line is to create an order that the movies were added by
-            movieToBeCached.orderAdded+1
+            var orderAdded = movieToBeCached.orderAdded+1
+            orderAdded++
             movieDao.insertMovieWatchList(movieToBeCached)
+            Log.i(TAG, "AddMovieToWatchList movie added to watchlist: $orderAdded")
 
         } catch (e: Exception) {
             Log.e(TAG, "AddMovieToWatchList UseCase Error: $e")
