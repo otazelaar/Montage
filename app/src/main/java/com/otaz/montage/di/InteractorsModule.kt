@@ -116,30 +116,10 @@ object InteractorsModule {
 
     @ViewModelScoped
     @Provides
-    fun provideAddMovieToWatchList(
+    fun saveMovie(
         movieDao: MovieDao,
-    ): AddMovieToWatchList{
-        return AddMovieToWatchList(
-            movieDao = movieDao,
-        )
-    }
-
-    @ViewModelScoped
-    @Provides
-    fun provideCounterAddUC(
-        movieDao: MovieDao,
-    ): CounterAddUC{
-        return CounterAddUC(
-            movieDao = movieDao,
-        )
-    }
-
-    @ViewModelScoped
-    @Provides
-    fun provideCounterGetUC(
-        movieDao: MovieDao,
-    ): CounterGetUC{
-        return CounterGetUC(
+    ): SaveMovie{
+        return SaveMovie(
             movieDao = movieDao,
         )
     }

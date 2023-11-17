@@ -59,3 +59,7 @@ fun MovieEntity.toMovie(): Movie {
         dateSavedToWatchList = dateSavedToWatchList,
     )
 }
+
+fun entitiesToMovie(movieEntities: List<MovieEntity>): List<Movie> {
+    return movieEntities.map { it.toMovie() }
+}

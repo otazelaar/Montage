@@ -1,7 +1,6 @@
 package com.otaz.montage.domain.model
 
 import com.otaz.montage.cache.model.MovieEntity
-import com.otaz.montage.cache.model.MovieWatchListEntity
 
 /**
  * The following data class represents one movie in a list of movies
@@ -41,17 +40,17 @@ fun Movie.toMovieEntity(): MovieEntity {
     )
 }
 
-// TODO:
-// Get rid of this. Add properties to [MovieEntity] to track in watchlist status instead.
-fun Movie.toMovieWatchListEntity(): MovieWatchListEntity {
-    return MovieWatchListEntity(
-        id = id,
-        adult = adult,
-        backdrop_path = backdrop_path,
-        overview = overview,
-        poster_path = poster_path,
-        release_date = release_date,
-        title = title,
-        orderAdded = orderAdded,
-    )
-}
+//// TODO:
+//// Get rid of this. Add properties to [MovieEntity] to track in watchlist status instead.
+//fun Movie.toMovieWatchListEntity(): MovieWatchListEntity {
+//    return MovieWatchListEntity(
+//        id = id,
+//        adult = adult,
+//        backdrop_path = backdrop_path,
+//        overview = overview,
+//        poster_path = poster_path,
+//        release_date = release_date,
+//        title = title,
+//        orderAdded = orderAdded,
+//    )
+//}

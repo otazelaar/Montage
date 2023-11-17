@@ -1,9 +1,9 @@
 package com.otaz.montage.interactors.app
 
-import com.otaz.montage.cache.model.entitiesToMovie
 import com.otaz.montage.domain.data.DataState
 import com.otaz.montage.domain.model.Movie
 import com.otaz.montage.cache.MovieDao
+import com.otaz.montage.cache.model.entitiesToMovie
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -14,9 +14,9 @@ class GetSavedMovies(
         try {
             emit(DataState.loading())
 
-            // check if database is full before calling it
-            val listOfMovieEntity = movieDao.getWatchList()
-            val savedMovies = entitiesToMovie(listOfMovieEntity)
+            // TODO() maybe check if database is full before calling it
+            val listOfSavedMovieEntities = movieDao.getWatchListBoolean()
+            val savedMovies = entitiesToMovie(listOfSavedMovieEntities)
 
             emit(DataState.success(savedMovies))
 

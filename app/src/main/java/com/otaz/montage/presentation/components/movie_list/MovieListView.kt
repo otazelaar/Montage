@@ -67,7 +67,7 @@ fun MovieListView(
                 Button(
                     onClick = {
 //                        actions(MovieListActions.SaveMovieAction(movieItem))
-                        actions(MovieListActions.SaveMovie(movieItem))
+                        actions(MovieListActions.SaveMovieToWatchlist(movieItem))
                     },
                     interactionSource = interactionSource,
                     colors = ButtonDefaults.buttonColors(

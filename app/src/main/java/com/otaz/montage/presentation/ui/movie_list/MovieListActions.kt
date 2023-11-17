@@ -14,5 +14,5 @@ sealed class MovieListActions {
     object GetAllSavedMovies: MovieListActions()
 
     // maybe bring in the date here as a parameter as well
-    data class SaveMovie(val movie: Movie): MovieListActions()
+    data class SaveMovieToWatchlist(val movie: Movie): MovieListActions()
 }

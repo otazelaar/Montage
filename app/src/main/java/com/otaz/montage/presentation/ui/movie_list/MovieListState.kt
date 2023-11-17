@@ -2,7 +2,6 @@ package com.otaz.montage.presentation.ui.movie_list
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import com.otaz.montage.domain.model.Counter
 import com.otaz.montage.domain.model.ImageConfigs
 import com.otaz.montage.domain.model.Movie
 
@@ -14,6 +13,5 @@ data class MovieListState(
     val selectedCategory: MutableState<MovieCategory?> = mutableStateOf(null),
     val page: MutableState<Int> = mutableStateOf(1),
     val loading: MutableState<Boolean> = mutableStateOf(false),
-    val counter: Counter = Counter.EMPTY_COUNTER,
     // make an error state here for telling the UI that there was error
 )
