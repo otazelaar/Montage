@@ -13,7 +13,7 @@ import com.otaz.montage.cache.model.MovieEntity
 
 @Dao
 interface MovieDao {
-
+    // TODO() this should probably be handled in the UC but adjust the date added for SaveMovie but not for CacheMovie
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMovie(movie: MovieEntity): Long
 
@@ -33,36 +33,14 @@ interface MovieDao {
         page: Int,
     ): List<MovieEntity>
 
-//    // Same as 'searchMovies' function, but no query.
-//    @Query(" SELECT * FROM movies WHERE ")
-//    suspend fun getAllMovies(): List<MovieEntity>
-
-//    @Insert(onConflict = OnConflictStrategy.IGNORE)
-//    suspend fun insertMovieWatchList(movie: MovieWatchListEntity): Long
-
     // change the following SQL to pull MovieEntity that only has a true boolean value for isInWatchlist
     // order results by date eventually
-    @Query(" SELECT * FROM movies WHERE isInWatchlist = true")
+    // TODO() order by date
+    @Query(" SELECT * FROM movies WHERE isInWatchlist = true ORDER BY timeSavedToWatchList DESC")
     suspend fun getWatchListBoolean(): List<MovieEntity>
 
     @Query("DELETE FROM movies WHERE id = :primaryKey")
     suspend fun deleteMovie(primaryKey: String): Int
-
-//    @Query("DELETE FROM movies WHERE id = :primaryKey")
-//    suspend fun deleteMovie(primaryKey: String): Int
-
-//    //order in most recently added
-//    // TODO: Instead of having a movie_watchlist table, just pull from the movies table.
-//    // select from movies where "isInWatchList" = true
-//    @Query(" SELECT * FROM movies_watchlist ORDER BY orderAdded DESC")
-//    suspend fun getWatchList(): List<MovieWatchListEntity>
-
-//    // Counter to save the up to date order for watch list to survive closing the app
-//    @Insert(onConflict = OnConflictStrategy.IGNORE)
-//    suspend fun insertCounter(counter: CounterEntity): Long
-//
-//    @Query(" SELECT * FROM counter ")
-//    suspend fun getCounterValue(): CounterEntity
 
 //    @Query("SELECT * FROM movies WHERE id = :id")
 //    suspend fun getMovieById(id: String): MovieEntity?

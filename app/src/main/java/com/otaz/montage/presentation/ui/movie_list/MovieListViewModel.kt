@@ -20,8 +20,10 @@ import com.otaz.montage.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.collections.ArrayList
 
 @HiltViewModel
 class MovieListViewModel @Inject constructor(
@@ -44,7 +46,7 @@ class MovieListViewModel @Inject constructor(
 
     // might need to save the order added to the database so that each time the application is closed
     // we can still access the last state of the [orderAdded]
-//    private val orderAdded: MutableState<Int> = mutableStateOf(0)
+    // private val orderAdded: MutableState<Int> = mutableStateOf(0)
 
     init {
         getConfigurations()
@@ -69,8 +71,8 @@ class MovieListViewModel @Inject constructor(
                     is DeleteSavedMovie -> deleteSavedMovie(action.id)
                     is GetAllSavedMovies -> getSavedMoviesList() // needs to be changed to get WatchList
                     is SaveMovieToWatchlist -> {
-                        //change all the naming here to save movie after I change the other same movie to "cache"
-                        saveMovie(action.movie)
+                        val currentTime = Calendar.getInstance().time.toString()
+                        saveMovie(action.movie, currentTime)
                         getSavedMoviesList()
                     }
                 }
@@ -196,12 +198,12 @@ class MovieListViewModel @Inject constructor(
     }
 
     //add date as a parameter to the following function
-    private suspend fun saveMovie(movie: Movie){
+    private suspend fun saveMovie(movie: Movie, currentTime: String){
         Log.d(TAG, "MovieListViewModel: addMovieToWatchList running")
 
-        //
         val movieItemAdjusted = movie.copy(
-            isInWatchlist = true
+            isInWatchlist = true,
+            timeSavedToWatchList = currentTime
         )
 
         saveMovie.execute(

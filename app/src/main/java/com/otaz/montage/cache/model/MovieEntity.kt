@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.otaz.montage.domain.model.Movie
-import com.otaz.montage.domain.model.toMovieEntity
 
 @Entity(tableName = "movies")
 data class MovieEntity(
@@ -40,8 +39,8 @@ data class MovieEntity(
     @ColumnInfo(name = "hasBeenWatched")
     var hasBeenWatched: Boolean,
 
-    @ColumnInfo(name = "dateSavedToWatchList")
-    var dateSavedToWatchList: String,
+    @ColumnInfo(name = "timeSavedToWatchList")
+    var timeSavedToWatchList: String,
 )
 
 fun MovieEntity.toMovie(): Movie {
@@ -56,7 +55,7 @@ fun MovieEntity.toMovie(): Movie {
         orderAdded = orderAdded,
         isInWatchlist = isInWatchlist,
         hasBeenWatched = hasBeenWatched,
-        dateSavedToWatchList = dateSavedToWatchList,
+        timeSavedToWatchList = timeSavedToWatchList,
     )
 }
 

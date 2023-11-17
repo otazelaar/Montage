@@ -18,7 +18,7 @@ data class Movie(
     val orderAdded: Int,
     val isInWatchlist: Boolean,
     val hasBeenWatched: Boolean,
-    val dateSavedToWatchList: String,
+    val timeSavedToWatchList: String,
 )
 
 /**
@@ -36,7 +36,7 @@ fun Movie.toMovieEntity(): MovieEntity {
         orderAdded = orderAdded,
         isInWatchlist = isInWatchlist,
         hasBeenWatched = hasBeenWatched,
-        dateSavedToWatchList = dateSavedToWatchList, // (Date but convert to String to store in DB).
+        timeSavedToWatchList = timeSavedToWatchList, // (Date but convert to String to store in DB).
     )
 }
 

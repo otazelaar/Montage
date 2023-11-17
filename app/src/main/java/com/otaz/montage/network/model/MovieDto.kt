@@ -29,7 +29,7 @@ fun MovieDto.toMovie(): Movie {
         orderAdded = 0,
         isInWatchlist = false,
         hasBeenWatched = false,
-        dateSavedToWatchList = "date", // TODO() should this be a  string or a data?
+        timeSavedToWatchList = "date", // TODO() should this be a  string or a data?
         // TODO() find the best place to set these variables? maybe not here.
     )
 }
