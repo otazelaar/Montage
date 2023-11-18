@@ -13,8 +13,8 @@ class SaveMovie(
         movie: Movie
     ) {
         try {
-            val movieToBeCached = movie.toMovieEntity()
-            movieDao.insertMovie(movieToBeCached)
+            val movieToBeSaved = movie.toMovieEntity()
+            movieDao.insertMovie(movieToBeSaved)
 
         } catch (e: Exception) {
             Log.e(TAG, "SaveMovie UseCase Error: $e")

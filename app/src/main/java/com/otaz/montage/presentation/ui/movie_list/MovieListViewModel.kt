@@ -34,7 +34,6 @@ class MovieListViewModel @Inject constructor(
     private val getUpcomingMovies: GetUpcomingMovies,
     private val getTopRatedMovies: GetTopRatedMovies,
     private val getSavedMovies: GetSavedMovies,
-    private val deleteMovie: DeleteMovie,
     private val saveMovie: SaveMovie,
     private val connectivityManager: ConnectivityManager,
     @Named("tmdb_apikey") private val apiKey: String,
@@ -43,10 +42,6 @@ class MovieListViewModel @Inject constructor(
     val query = mutableStateOf("")
     private val sortingParameterPopularityDescending = "popularity.desc"
     private var movieListScrollPosition = 0
-
-    // might need to save the order added to the database so that each time the application is closed
-    // we can still access the last state of the [orderAdded]
-    // private val orderAdded: MutableState<Int> = mutableStateOf(0)
 
     init {
         getConfigurations()
@@ -61,14 +56,15 @@ class MovieListViewModel @Inject constructor(
                 when(action){
                     is NewSearch -> newSearchUseCasePicker()
                     is NextPage -> nextPage()
-                    is CacheMovieAction-> {
-                        cacheMovie(movie = action.movie)
-                    }
+                    is CacheMovieAction -> cacheMovie(action.movie)
                     is ResetForNewSearch -> resetForNewSearch()
-                    is CategoryChanged -> onSelectedCategoryChanged(category = action.category)
-                    is QueryChanged -> onQueryChanged(query = action.query)
-                    is MovieScrollPositionChanged -> onChangeMovieScrollPosition(position = action.position)
-                    is DeleteSavedMovie -> deleteSavedMovie(action.id)
+                    is CategoryChanged -> onSelectedCategoryChanged(action.category)
+                    is QueryChanged -> onQueryChanged(action.query)
+                    is MovieScrollPositionChanged -> onChangeMovieScrollPosition(action.position)
+                    is DeleteSavedMovie -> {
+                        deleteSavedMovie(action.movie)
+                        getSavedMoviesList()
+                    }
                     is GetAllSavedMovies -> getSavedMoviesList() // needs to be changed to get WatchList
                     is SaveMovieToWatchlist -> {
                         val currentTime = Calendar.getInstance().time.toString()
@@ -95,9 +91,8 @@ class MovieListViewModel @Inject constructor(
 //    }
 
     private fun newSearch(){
-        Log.d(TAG, "MovieListViewModel: newSearch: query: ${query.value}, page: ${state.value.page.value}")
-
         resetSearchState()
+
         searchMovies.execute(
             connectivityManager, apiKey, query.value, state.value.page.value
         ).onEach { dataState ->
@@ -111,8 +106,6 @@ class MovieListViewModel @Inject constructor(
     }
 
     private fun getMostPopularMovies(){
-        Log.d(TAG, "MovieListViewModel: getMostPopularMovies: query: ${query.value}, page: ${state.value.page.value}")
-
         resetSearchState()
 
         // Makes the "Popular" category chip selected upon launching the application
@@ -130,8 +123,6 @@ class MovieListViewModel @Inject constructor(
     }
 
     private fun getUpcomingMovies(){
-        Log.d(TAG, "MovieListViewModel: getUpcomingMovies: query: ${query.value}, page: ${state.value.page.value}")
-
         resetSearchState()
         getUpcomingMovies.execute(
             apiKey, state.value.page.value
@@ -143,8 +134,6 @@ class MovieListViewModel @Inject constructor(
     }
 
     private fun getTopRatedMovies(){
-        Log.d(TAG, "MovieListViewModel: getTopRatedMovies: query: ${query.value}, page: ${state.value.page.value}")
-
         resetSearchState()
         getTopRatedMovies.execute(
             apiKey, state.value.page.value
@@ -173,8 +162,6 @@ class MovieListViewModel @Inject constructor(
     }
 
     private fun getConfigurations(){
-        Log.d(TAG, "MovieListViewModel: getConfigurations running")
-
         getConfigurations.execute(
             apiKey,
         ).onEach { dataState ->
@@ -191,29 +178,21 @@ class MovieListViewModel @Inject constructor(
     }
 
     private suspend fun cacheMovie(movie: Movie){
-        Log.d(TAG, "MovieListViewModel: saveMovie running")
         cacheMovie.execute(
             movie = movie
         )
     }
 
-    //add date as a parameter to the following function
     private suspend fun saveMovie(movie: Movie, currentTime: String){
-        Log.d(TAG, "MovieListViewModel: addMovieToWatchList running")
-
         val movieItemAdjusted = movie.copy(
             isInWatchlist = true,
             timeSavedToWatchList = currentTime
         )
 
-        saveMovie.execute(
-            movie = movieItemAdjusted
-        )
+        saveMovie.execute(movieItemAdjusted)
     }
 
     private fun getSavedMoviesList(){
-        Log.d(TAG, "SavedMoviesListViewModel: getSavedMovies: running")
-
         getSavedMovies.execute().onEach { dataState ->
             state.value.loading.value = dataState.loading
             dataState.data?.let { list -> state.value = state.value.copy(savedMovies = list) }
@@ -221,13 +200,14 @@ class MovieListViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private suspend fun deleteSavedMovie(id: String){
-
-        // TODO() instead of deleting this movie we should just adjust the value to isInWatchlist to false and update/refresh/getSavedMoviesList()
-        deleteMovie.execute(
-            id = id
+    private suspend fun deleteSavedMovie(movieItem: Movie){
+        val movieItemAdjusted = movieItem.copy(
+            isInWatchlist = false,
+            // deleting the time doesn't matter because it is not in the watchlist. if it gets added
+            // to the watchlist again in the future, a new time will be added.
         )
-        getSavedMoviesList()
+        // Replaces movieItem with adjusted one
+        saveMovie.execute(movieItemAdjusted)
     }
 
     /**

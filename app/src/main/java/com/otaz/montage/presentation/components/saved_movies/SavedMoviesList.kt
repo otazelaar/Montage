@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.otaz.montage.presentation.navigation.Screen
+import com.otaz.montage.domain.model.Movie
 import com.otaz.montage.presentation.ui.movie_list.MovieListActions
 import com.otaz.montage.presentation.ui.movie_list.MovieListState
 
@@ -27,11 +27,13 @@ fun SavedMoviesList(
             itemsIndexed(
                 items = state.savedMovies
             ) { index, movieItem ->
-                SavedMoviesListView(
-                    movieItem = movieItem,
-                    onNavigateToMovieDetailScreen = onNavigateToMovieDetailScreen,
-                    actions = actions,
-                )
+                if (movieItem.isInWatchlist){
+                    SavedMoviesListView(
+                        movieItem = movieItem,
+                        onNavigateToMovieDetailScreen = onNavigateToMovieDetailScreen,
+                        actions = actions,
+                    )
+                }
             }
         }
     }

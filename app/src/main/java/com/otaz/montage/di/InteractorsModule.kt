@@ -126,16 +126,6 @@ object InteractorsModule {
 
     @ViewModelScoped
     @Provides
-    fun provideDeleteMovie(
-        movieDao: MovieDao,
-    ): DeleteMovie{
-        return DeleteMovie(
-            movieDao = movieDao,
-        )
-    }
-
-    @ViewModelScoped
-    @Provides
     fun getSavedMovies(
         movieDao: MovieDao,
     ): GetSavedMovies{

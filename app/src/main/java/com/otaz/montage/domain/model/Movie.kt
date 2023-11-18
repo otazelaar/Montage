@@ -39,18 +39,3 @@ fun Movie.toMovieEntity(): MovieEntity {
         timeSavedToWatchList = timeSavedToWatchList, // (Date but convert to String to store in DB).
     )
 }
-
-//// TODO:
-//// Get rid of this. Add properties to [MovieEntity] to track in watchlist status instead.
-//fun Movie.toMovieWatchListEntity(): MovieWatchListEntity {
-//    return MovieWatchListEntity(
-//        id = id,
-//        adult = adult,
-//        backdrop_path = backdrop_path,
-//        overview = overview,
-//        poster_path = poster_path,
-//        release_date = release_date,
-//        title = title,
-//        orderAdded = orderAdded,
-//    )
-//}

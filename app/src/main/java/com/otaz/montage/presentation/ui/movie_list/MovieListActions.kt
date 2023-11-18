@@ -10,7 +10,7 @@ sealed class MovieListActions {
     object NextPage: MovieListActions()
     data class MovieScrollPositionChanged(val position: Int): MovieListActions()
     data class CacheMovieAction(val movie: Movie): MovieListActions()
-    data class DeleteSavedMovie(val id: String): MovieListActions()
+    data class DeleteSavedMovie(val movie: Movie): MovieListActions()
     object GetAllSavedMovies: MovieListActions()
 
     // maybe bring in the date here as a parameter as well

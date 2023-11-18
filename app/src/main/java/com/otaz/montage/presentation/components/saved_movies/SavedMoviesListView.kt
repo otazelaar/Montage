@@ -38,8 +38,7 @@ fun SavedMoviesListView(
                     .wrapContentWidth(Alignment.Start)
                     .padding(end = 8.dp),
                 onClick = {
-                    val clickedMovieIDToBeDeleted = movieItem.id.toString()
-                    actions(MovieListActions.DeleteSavedMovie(clickedMovieIDToBeDeleted))
+                    actions(MovieListActions.DeleteSavedMovie(movieItem))
                 },
             ) {
                 Text(

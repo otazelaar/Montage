@@ -14,7 +14,9 @@ import com.otaz.montage.cache.model.MovieEntity
 @Dao
 interface MovieDao {
     // TODO() this should probably be handled in the UC but adjust the date added for SaveMovie but not for CacheMovie
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    // Replacing because this allows me to replace the old entity with a newly adjusted one and update the state
+    // this way I can "remove" or add items to my watchlist
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovie(movie: MovieEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
