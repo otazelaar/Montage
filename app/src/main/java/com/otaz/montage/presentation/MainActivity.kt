@@ -46,15 +46,15 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var connectivityManager: ConnectivityManager
 
-    override fun onStart() {
-        connectivityManager.registerConnectionObserver(this)
-        super.onStart()
-    }
-
-    override fun onDestroy() {
-        connectivityManager.unregisterConnectionObserver(this)
-        super.onDestroy()
-    }
+//    override fun onStart() {
+//        connectivityObserver = NetworkConnectivityObserver(applicationContext)
+//        super.onStart()
+//    }
+//
+//    override fun onDestroy() {
+//        connectivityObserver = NetworkConnectivityObserver(applicationContext)
+//        super.onDestroy()
+//    }
 
     private val viewModel: SplashScreenViewModel by viewModels()
 
@@ -69,6 +69,10 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             val navController = rememberNavController()
+//            val status by connectivityObserver.observe().collectAsState(
+//                initial = ConnectivityObserver.Status.Unavailable
+//            )
+
             NavHost(navController = navController, startDestination = Screen.MovieList.route) {
 
                 composable(

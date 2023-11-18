@@ -8,7 +8,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [ImplBindingModule::class])
 @InstallIn(SingletonComponent::class)
 object AppModule {
 

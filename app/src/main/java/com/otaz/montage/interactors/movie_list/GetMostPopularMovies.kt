@@ -8,18 +8,16 @@ import com.otaz.montage.domain.model.Movie
 import com.otaz.montage.domain.model.toMovieEntity
 import com.otaz.montage.network.TmdbApiService
 import com.otaz.montage.network.model.toMovie
-import com.otaz.montage.presentation.ConnectivityManager
 import com.otaz.montage.util.MOVIE_PAGINATION_PAGE_SIZE
 import com.otaz.montage.util.TAG
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 
 class GetMostPopularMovies(
     private val tmdbApiService: TmdbApiService,
     private val movieDao: MovieDao,
 ) {
     fun execute(
-        connectivityManager: ConnectivityManager,
+        isNetworkAvailable: Boolean,
         apikey: String,
         sortBy: String,
         page: Int,
@@ -28,7 +26,7 @@ class GetMostPopularMovies(
         emit(DataState.loading())
 
         // check for internet connection
-        if (connectivityManager.isNetworkAvailable.value) {
+        if (isNetworkAvailable) {
             // if have internet, call network to have most up to date data
             runCatching {
                 getMostPopularMoviesFromNetwork(apikey, sortBy, page)

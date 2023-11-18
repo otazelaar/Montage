@@ -17,7 +17,7 @@ class SearchMovies(
     private val movieDao: MovieDao,
 ) {
     fun execute(
-        connectivityManager: ConnectivityManager,
+        isNetworkAvailable: Boolean,
         apikey: String,
         query: String,
         page: Int,
@@ -27,7 +27,7 @@ class SearchMovies(
         emit(DataState.loading())
 
         // check for internet connection
-        if (connectivityManager.isNetworkAvailable.value) {
+        if (isNetworkAvailable) {
             // if have internet, call network to have most up to date data
             runCatching {
                 getMoviesFromNetwork(apikey, query, page)

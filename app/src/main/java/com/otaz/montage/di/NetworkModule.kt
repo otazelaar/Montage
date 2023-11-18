@@ -3,6 +3,7 @@ package com.otaz.montage.di
 import com.otaz.montage.network.OmdbApiService
 import com.otaz.montage.network.TmdbApiService
 import com.otaz.montage.network.model.*
+import com.otaz.montage.presentation.ConnectivityManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

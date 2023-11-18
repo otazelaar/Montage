@@ -4,6 +4,7 @@ import android.net.ConnectivityManager.*
 import android.net.NetworkCapabilities.*
 import android.util.Log
 import androidx.compose.runtime.*
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.otaz.montage.domain.model.Movie
@@ -43,7 +44,11 @@ class MovieListViewModel @Inject constructor(
     private val sortingParameterPopularityDescending = "popularity.desc"
     private var movieListScrollPosition = 0
 
+    // Does the UI need the following variable to display UI logic such as if internet isn't available
+    private val isNetworkAvailable: MutableLiveData<Boolean> = connectivityManager.isNetworkAvailable
+
     init {
+        connectivityManager.registerConnectionObserver()
         getConfigurations()
         getMostPopularMovies()
     }
@@ -93,16 +98,19 @@ class MovieListViewModel @Inject constructor(
     private fun newSearch(){
         resetSearchState()
 
-        searchMovies.execute(
-            connectivityManager, apiKey, query.value, state.value.page.value
-        ).onEach { dataState ->
-            state.value.loading.value = dataState.loading
-            dataState.data?.let { list -> state.value = state.value.copy(movie = list) }
-            dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: newSearch: Error:")
-                // show error to UI from here
-                // state.value.error
-            }
-        }.launchIn(viewModelScope)
+        val status = isNetworkAvailable.value
+        if (status != null) {
+            searchMovies.execute(
+                status, apiKey, query.value, state.value.page.value
+            ).onEach { dataState ->
+                state.value.loading.value = dataState.loading
+                dataState.data?.let { list -> state.value = state.value.copy(movie = list) }
+                dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: newSearch: Error:")
+                    // show error to UI from here
+                    // state.value.error
+                }
+            }.launchIn(viewModelScope)
+        }
     }
 
     private fun getMostPopularMovies(){
@@ -113,13 +121,16 @@ class MovieListViewModel @Inject constructor(
             state.value.selectedCategory.value = MovieCategory.GET_MOST_POPULAR_MOVIES
         }
 
-        getMostPopularMovies.execute(
-            connectivityManager, apiKey, sortingParameterPopularityDescending, state.value.page.value
-        ).onEach { dataState ->
-            state.value.loading.value = dataState.loading
-            dataState.data?.let { list -> state.value = state.value.copy(movie = list) }
-            dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: getMostPopularMovies: $error:")}
-        }.launchIn(viewModelScope)
+        val status = isNetworkAvailable.value
+        if (status != null){
+            getMostPopularMovies.execute(
+                status, apiKey, sortingParameterPopularityDescending, state.value.page.value
+            ).onEach { dataState ->
+                state.value.loading.value = dataState.loading
+                dataState.data?.let { list -> state.value = state.value.copy(movie = list) }
+                dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: getMostPopularMovies: $error:")}
+            }.launchIn(viewModelScope)
+        }
     }
 
     private fun getUpcomingMovies(){
@@ -149,9 +160,11 @@ class MovieListViewModel @Inject constructor(
             incrementPage()
             Log.d(TAG, "MovieListViewModel: nextPage: triggered: ${state.value.page.value}")
 
-            if(state.value.page.value > 1){
+            val status = isNetworkAvailable.value
+
+            if(state.value.page.value > 1 && status != null){
                 searchMovies.execute(
-                    connectivityManager, apiKey, query.value, state.value.page.value,
+                    status, apiKey, query.value, state.value.page.value,
                 ).onEach { dataState ->
                     state.value.loading.value = dataState.loading
                     dataState.data?.let { list -> appendMovies(list) }
