@@ -21,6 +21,9 @@ data class MovieEntity(
     @ColumnInfo(name = "overview")
     var overview: String,
 
+    @ColumnInfo(name = "popularity")
+    var popularity: Double,
+
     @ColumnInfo(name = "posterPath")
     var poster_path: String?,
 
@@ -29,9 +32,6 @@ data class MovieEntity(
 
     @ColumnInfo(name = "title")
     var title: String,
-
-    @ColumnInfo(name = "orderAdded")
-    var orderAdded: Int,
 
     @ColumnInfo(name = "isInWatchlist")
     var isInWatchlist: Boolean,
@@ -49,10 +49,10 @@ fun MovieEntity.toMovie(): Movie {
         adult = adult,
         backdrop_path = backdrop_path,
         overview = overview,
+        popularity = popularity,
         poster_path = poster_path,
         release_date = release_date,
         title = title,
-        orderAdded = orderAdded,
         isInWatchlist = isInWatchlist,
         hasBeenWatched = hasBeenWatched,
         timeSavedToWatchList = timeSavedToWatchList,

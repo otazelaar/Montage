@@ -114,7 +114,7 @@ class MovieListViewModel @Inject constructor(
         }
 
         getMostPopularMovies.execute(
-            apiKey, sortingParameterPopularityDescending, state.value.page.value
+            connectivityManager, apiKey, sortingParameterPopularityDescending, state.value.page.value
         ).onEach { dataState ->
             state.value.loading.value = dataState.loading
             dataState.data?.let { list -> state.value = state.value.copy(movie = list) }

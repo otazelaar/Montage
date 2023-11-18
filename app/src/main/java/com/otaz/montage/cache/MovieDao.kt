@@ -35,6 +35,16 @@ interface MovieDao {
         page: Int,
     ): List<MovieEntity>
 
+    @Query(""" 
+        SELECT * FROM movies 
+        ORDER BY popularity DESC
+        LIMIT :paginationSize OFFSET ((:page -1) * :paginationSize)
+        """)
+    suspend fun getMostPopularMovies(
+        paginationSize: Int,
+        page: Int,
+    ): List<MovieEntity>
+
     // change the following SQL to pull MovieEntity that only has a true boolean value for isInWatchlist
     // order results by date eventually
     // TODO() order by date

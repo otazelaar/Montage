@@ -19,7 +19,7 @@ class SplashScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            delay(1000)
+            delay(500)
             _isLoading.value = false
         }
     }

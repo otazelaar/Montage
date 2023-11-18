@@ -38,9 +38,11 @@ object InteractorsModule {
     @Provides
     fun provideGetMostPopularMovies(
         tmdbApiService: TmdbApiService,
+        movieDao: MovieDao,
     ): GetMostPopularMovies{
         return GetMostPopularMovies(
             tmdbApiService = tmdbApiService,
+            movieDao = movieDao,
         )
     }
 
