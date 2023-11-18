@@ -46,15 +46,15 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var connectivityManager: ConnectivityManager
 
-//    override fun onStart() {
-//        connectivityObserver = NetworkConnectivityObserver(applicationContext)
-//        super.onStart()
-//    }
-//
-//    override fun onDestroy() {
-//        connectivityObserver = NetworkConnectivityObserver(applicationContext)
-//        super.onDestroy()
-//    }
+    override fun onStart() {
+        connectivityManager.registerConnectionObserver()
+        super.onStart()
+    }
+
+    override fun onDestroy() {
+        connectivityManager.unregisterConnectionObserver()
+        super.onDestroy()
+    }
 
     private val viewModel: SplashScreenViewModel by viewModels()
 

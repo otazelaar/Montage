@@ -17,17 +17,18 @@ class SearchMovies(
     private val movieDao: MovieDao,
 ) {
     fun execute(
-        isNetworkAvailable: Boolean,
+        connectivityManager: ConnectivityManager,
         apikey: String,
         query: String,
         page: Int,
     ): Flow<DataState<List<Movie>>> = flow {
 
+        val status = connectivityManager.isNetworkAvailable.value
         // emit loading status
         emit(DataState.loading())
 
         // check for internet connection
-        if (isNetworkAvailable) {
+        if (status == true) {
             // if have internet, call network to have most up to date data
             runCatching {
                 getMoviesFromNetwork(apikey, query, page)
@@ -36,11 +37,6 @@ class SearchMovies(
                 val newMoviesToBeCached = moviesFromNetwork.map { it.toMovieEntity() }
                 // cache movies in DB
                 movieDao.insertMovies(newMoviesToBeCached)
-                // get list of Movie from DB using DAO getMoviesByQuery function as modeled after API call
-                val moviesFromDB = movieDao.getMoviesByQuery(query, MOVIE_PAGINATION_PAGE_SIZE, page)
-                    .map { it.toMovie() }
-                // emit list of Movie from DB as SST
-                emit(DataState.success(moviesFromDB))
 
             }.onFailure { error: Throwable ->
                 // if network call is unsuccessful, try to handle errors here. Last resort, check db and emit from there
@@ -49,6 +45,15 @@ class SearchMovies(
                 // TODO(show empty content screen if no results)
             }
         }
+
+        // get list of Movie from DB using DAO getMoviesByQuery function as modeled after API call
+        val moviesFromDB = movieDao.getMoviesByQuery(query, MOVIE_PAGINATION_PAGE_SIZE, page)
+            .map { it.toMovie() }
+        // emit list of Movie from DB as SST
+        emit(DataState.success(moviesFromDB))
+
+//        // stop observing internet connection here so you don't observe forever
+//        connectivityManager.unregisterConnectionObserver()
     }
 
     private suspend fun getMoviesFromNetwork(
@@ -62,8 +67,8 @@ class SearchMovies(
             page = page,
         ).moviesDto.map { it.toMovie() }.filter {
             it.poster_path != null &&
-                    it.backdrop_path != null &&
-                    !it.adult
+            it.backdrop_path != null &&
+            !it.adult
         }
     }
 }

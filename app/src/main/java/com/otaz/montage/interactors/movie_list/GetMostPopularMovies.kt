@@ -8,6 +8,7 @@ import com.otaz.montage.domain.model.Movie
 import com.otaz.montage.domain.model.toMovieEntity
 import com.otaz.montage.network.TmdbApiService
 import com.otaz.montage.network.model.toMovie
+import com.otaz.montage.presentation.ConnectivityManager
 import com.otaz.montage.util.MOVIE_PAGINATION_PAGE_SIZE
 import com.otaz.montage.util.TAG
 import kotlinx.coroutines.flow.*
@@ -17,7 +18,7 @@ class GetMostPopularMovies(
     private val movieDao: MovieDao,
 ) {
     fun execute(
-        isNetworkAvailable: Boolean,
+        connectivityManager: ConnectivityManager,
         apikey: String,
         sortBy: String,
         page: Int,
@@ -25,8 +26,11 @@ class GetMostPopularMovies(
         // emit loading status
         emit(DataState.loading())
 
+        val status = connectivityManager.isNetworkAvailable.value
+
+
         // check for internet connection
-        if (isNetworkAvailable) {
+        if (status == true) {
             // if have internet, call network to have most up to date data
             runCatching {
                 getMostPopularMoviesFromNetwork(apikey, sortBy, page)
@@ -37,6 +41,7 @@ class GetMostPopularMovies(
                 Log.i(TAG, "getMostPopularMovies is working")
                 // cache movies in DB
                 movieDao.insertMovies(newMoviesToBeCached)
+
             }.onFailure { error: Throwable ->
                 // if network call is unsuccessful, try to handle errors here. Last resort, check db and emit from there
                 emit(DataState.error(error.message.toString()))
@@ -50,7 +55,10 @@ class GetMostPopularMovies(
         // emit list of Movie from DB as SST
         emit(DataState.success(moviesFromDB))
 
+//         stop observing internet connection here so you don't observe forever
+//        connectivityManager.unregisterConnectionObserver()
     }
+
     private suspend fun getMostPopularMoviesFromNetwork(
         apikey: String,
         sortBy: String,

@@ -44,11 +44,8 @@ class MovieListViewModel @Inject constructor(
     private val sortingParameterPopularityDescending = "popularity.desc"
     private var movieListScrollPosition = 0
 
-    // Does the UI need the following variable to display UI logic such as if internet isn't available
-    private val isNetworkAvailable: MutableLiveData<Boolean> = connectivityManager.isNetworkAvailable
-
     init {
-        connectivityManager.registerConnectionObserver()
+//        connectivityManager.registerConnectionObserver() // don't need to do this if I am registering in the MainActivity for onstart and on destroy
         getConfigurations()
         getMostPopularMovies()
     }
@@ -98,19 +95,16 @@ class MovieListViewModel @Inject constructor(
     private fun newSearch(){
         resetSearchState()
 
-        val status = isNetworkAvailable.value
-        if (status != null) {
-            searchMovies.execute(
-                status, apiKey, query.value, state.value.page.value
-            ).onEach { dataState ->
-                state.value.loading.value = dataState.loading
-                dataState.data?.let { list -> state.value = state.value.copy(movie = list) }
-                dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: newSearch: Error:")
-                    // show error to UI from here
-                    // state.value.error
-                }
-            }.launchIn(viewModelScope)
-        }
+        searchMovies.execute(
+            connectivityManager, apiKey, query.value, state.value.page.value,
+        ).onEach { dataState ->
+            state.value.loading.value = dataState.loading
+            dataState.data?.let { list -> state.value = state.value.copy(movie = list) }
+            dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: newSearch: Error:")
+                // show error to UI from here
+                // state.value.error
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun getMostPopularMovies(){
@@ -121,16 +115,13 @@ class MovieListViewModel @Inject constructor(
             state.value.selectedCategory.value = MovieCategory.GET_MOST_POPULAR_MOVIES
         }
 
-        val status = isNetworkAvailable.value
-        if (status != null){
-            getMostPopularMovies.execute(
-                status, apiKey, sortingParameterPopularityDescending, state.value.page.value
-            ).onEach { dataState ->
-                state.value.loading.value = dataState.loading
-                dataState.data?.let { list -> state.value = state.value.copy(movie = list) }
-                dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: getMostPopularMovies: $error:")}
-            }.launchIn(viewModelScope)
-        }
+        getMostPopularMovies.execute(
+            connectivityManager, apiKey, sortingParameterPopularityDescending, state.value.page.value
+        ).onEach { dataState ->
+            state.value.loading.value = dataState.loading
+            dataState.data?.let { list -> state.value = state.value.copy(movie = list) }
+            dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: getMostPopularMovies: $error:")}
+        }.launchIn(viewModelScope)
     }
 
     private fun getUpcomingMovies(){
@@ -160,11 +151,9 @@ class MovieListViewModel @Inject constructor(
             incrementPage()
             Log.d(TAG, "MovieListViewModel: nextPage: triggered: ${state.value.page.value}")
 
-            val status = isNetworkAvailable.value
-
-            if(state.value.page.value > 1 && status != null){
+            if(state.value.page.value > 1){
                 searchMovies.execute(
-                    status, apiKey, query.value, state.value.page.value,
+                    connectivityManager, apiKey, query.value, state.value.page.value,
                 ).onEach { dataState ->
                     state.value.loading.value = dataState.loading
                     dataState.data?.let { list -> appendMovies(list) }
