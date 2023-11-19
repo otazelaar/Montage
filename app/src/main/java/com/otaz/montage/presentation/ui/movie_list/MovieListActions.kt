@@ -7,7 +7,7 @@ sealed class MovieListActions {
     object ResetForNewSearch: MovieListActions()
     data class CategoryChanged(val category: String): MovieListActions()
     data class QueryChanged(val query: String): MovieListActions()
-    object NextPage: MovieListActions()
+    object SearchMoviesNextPage: MovieListActions()
     data class MovieScrollPositionChanged(val position: Int): MovieListActions()
     data class CacheMovieAction(val movie: Movie): MovieListActions()
     data class DeleteSavedMovie(val movie: Movie): MovieListActions()

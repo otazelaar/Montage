@@ -4,7 +4,6 @@ import android.net.ConnectivityManager.*
 import android.net.NetworkCapabilities.*
 import android.util.Log
 import androidx.compose.runtime.*
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.otaz.montage.domain.model.Movie
@@ -57,7 +56,7 @@ class MovieListViewModel @Inject constructor(
             try {
                 when(action){
                     is NewSearch -> newSearchUseCasePicker()
-                    is NextPage -> nextPage()
+                    is SearchMoviesNextPage -> nextPage()
                     is CacheMovieAction -> cacheMovie(action.movie)
                     is ResetForNewSearch -> resetForNewSearch()
                     is CategoryChanged -> onSelectedCategoryChanged(action.category)
@@ -146,19 +145,36 @@ class MovieListViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    // The following function is calling the next page properly only when a movie is being searched.
+    // Otherwise if the MovieListAction.NextPage() is called when the user is searching using a
+    // MovieCategoryChip such as 'Popular", it will make the getPopularMovies API or DB call and
+    // then when nextPage is triggered it will start to use the searchMovies.execute() UC as seen below.
+    // This is creating mixed results being displayed to the user.
     private fun nextPage(){
+        // how do I handle pagination for each UC
+        // how do I know which UC is currently being called
+        // the UI doesn't need to know which UC is currently being called.
+        // How do i handle the logic here in the VM
+        // this function is called each time the position changes
+        // can I make this pagination a more generic function?
+        // I still will need a way to tell which function we are paginating right? maybe not
+
+
         if((movieListScrollPosition + 1) >= (state.value.page.value * MOVIE_PAGINATION_PAGE_SIZE)){
             incrementPage()
             Log.d(TAG, "MovieListViewModel: nextPage: triggered: ${state.value.page.value}")
 
             if(state.value.page.value > 1){
-                searchMovies.execute(
-                    connectivityManager, apiKey, query.value, state.value.page.value,
-                ).onEach { dataState ->
-                    state.value.loading.value = dataState.loading
-                    dataState.data?.let { list -> appendMovies(list) }
-                    dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: Error") }
-                }.launchIn(viewModelScope)
+                // the following function does not have all of the appropriate variables passed to it yet
+                nextPageUseCasePicker()
+
+//                searchMovies.execute(
+//                    connectivityManager, apiKey, query.value, state.value.page.value,
+//                ).onEach { dataState ->
+//                    state.value.loading.value = dataState.loading
+//                    dataState.data?.let { list -> appendMovies(list) }
+//                    dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: Error") }
+//                }.launchIn(viewModelScope)
             }
         }
     }
@@ -262,7 +278,7 @@ class MovieListViewModel @Inject constructor(
      * The function below abstracts out the if statements for deciding which use case/api call to
      * use for the search for example if a category is picked that requires a different use case
      * than the traditional search bar is using, then it uses the selected category to tell the
-     * onTriggerEvent which UseCase to use.
+     * onTriggerAction which UseCase to use.
      *
      * textViewQuery is needed to determine if user is attempting to search for a movie after having
      * searched using a MovieCategoryChip.
@@ -282,6 +298,24 @@ class MovieListViewModel @Inject constructor(
             getTopRatedMovies()
         } else if(textViewQuery != movieCategorySelected?.value){
             newSearch()
+        }
+    }
+
+    private fun nextPageUseCasePicker(){
+        val textViewQuery = query.value
+        val movieCategorySelected = state.value.selectedCategory.value
+        val mostPopularMovies = getMovieCategory(MovieCategory.GET_MOST_POPULAR_MOVIES.value)
+        val upcomingMovies = getMovieCategory(MovieCategory.GET_UPCOMING_MOVIES.value)
+        val topRatedMovies = getMovieCategory(MovieCategory.GET_TOP_RATED_MOVIES.value)
+
+        if(movieCategorySelected == mostPopularMovies && textViewQuery == movieCategorySelected?.value){
+            getMostPopularMovies.execute()
+        } else if(movieCategorySelected == upcomingMovies && textViewQuery == movieCategorySelected?.value){
+            getUpcomingMovies.execute()
+        } else if(movieCategorySelected == topRatedMovies && textViewQuery == movieCategorySelected?.value){
+            getTopRatedMovies.execute()
+        } else if(textViewQuery != movieCategorySelected?.value){
+            searchMovies.execute()
         }
     }
 

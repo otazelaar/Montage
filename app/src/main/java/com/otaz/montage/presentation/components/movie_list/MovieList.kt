@@ -39,7 +39,7 @@ fun MovieList(
                     actions(MovieListActions.MovieScrollPositionChanged(index))
 
                     if((index + 1) >= (state.page.value * MOVIE_PAGINATION_PAGE_SIZE) && !state.loading.value){
-                        actions(MovieListActions.NextPage)
+                        actions(MovieListActions.SearchMoviesNextPage)
                     }
 
                     MovieListView(
