@@ -15,6 +15,11 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
 
         classpath "com.google.dagger:hilt-android-gradle-plugin:${Versions.hilt}"
+
+        classpath "com.google.gms:google-services:${Versions.firebase}"
+
+        classpath "com.google.firebase:firebase-crashlytics-gradle:${Versions.firebase_classpath}"
+
     }
 }
 

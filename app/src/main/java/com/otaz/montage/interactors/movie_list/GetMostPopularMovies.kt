@@ -17,7 +17,7 @@ class GetMostPopularMovies(
     private val tmdbApiService: TmdbApiService,
     private val movieDao: MovieDao,
 ) {
-    fun execute(
+    suspend fun execute(
         connectivityManager: ConnectivityManager,
         apikey: String,
         sortBy: String,

@@ -11,6 +11,8 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -89,6 +91,10 @@ dependencies {
 
     implementation Google.material
     implementation Google.hilt_android
+    implementation Google.firebase_auth
+    implementation Google.firebase_crashlytics
+    implementation Google.firebase_firestore
+    implementation Google.firebase_analytics
 
     implementation Glide.glide
 
@@ -101,4 +107,8 @@ dependencies {
     kapt AnnotationProcessing.hilt_compiler
     kapt AnnotationProcessing.glide_compiler
     kapt AnnotationProcessing.room_compiler
+}
+
+kapt {
+    correctErrorTypes true
 }

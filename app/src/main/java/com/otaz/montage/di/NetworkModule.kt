@@ -1,9 +1,11 @@
 package com.otaz.montage.di
 
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 import com.otaz.montage.network.OmdbApiService
 import com.otaz.montage.network.TmdbApiService
 import com.otaz.montage.network.model.*
-import com.otaz.montage.presentation.ConnectivityManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -44,6 +46,10 @@ object NetworkModule {
             .build()
             .create(OmdbApiService::class.java)
     }
+
+    @Singleton
+    @Provides
+    fun provideFirebaseAuth(): FirebaseAuth = Firebase.auth
 
     @Singleton
     @Provides

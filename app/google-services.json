@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "917521015093",
+    "project_id": "montage-695e4",
+    "storage_bucket": "montage-695e4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:917521015093:android:ce72eca322fc56d13aec7c",
+        "android_client_info": {
+          "package_name": "com.otaz.montage"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHPhYwgpZ4NpOu01dHBEwaP2h5faPSJg4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

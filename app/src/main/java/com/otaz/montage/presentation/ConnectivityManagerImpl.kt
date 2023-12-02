@@ -1,4 +1,4 @@
-package com.otaz.montage.presentation.ui
+package com.otaz.montage.presentation
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData

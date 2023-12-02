@@ -11,7 +11,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.otaz.montage.di.BaseApplication
+import com.otaz.montage.network.firebase.FirebaseLogger
 import com.otaz.montage.presentation.navigation.Screen
 import com.otaz.montage.presentation.ui.movie_detail.MovieDetailScreen
 import com.otaz.montage.presentation.ui.movie_detail.MovieDetailViewModel
@@ -46,9 +48,24 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var connectivityManager: ConnectivityManager
 
+    @Inject
+    lateinit var firebaseLogger: FirebaseLogger
+
     override fun onStart() {
         connectivityManager.registerConnectionObserver()
         super.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // fragment's class name for firebase logging
+        val className = this.javaClass.simpleName
+        //log screen view to firebase
+        firebaseLogger.logFirebaseEvent(
+            FirebaseAnalytics.Event.SCREEN_VIEW,
+            FirebaseAnalytics.Param.SCREEN_CLASS,
+            className
+        )
     }
 
     override fun onDestroy() {
