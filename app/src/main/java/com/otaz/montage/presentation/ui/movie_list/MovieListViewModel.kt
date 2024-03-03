@@ -19,6 +19,7 @@ import com.otaz.montage.presentation.ui.movie_list.MovieListActions.*
 import com.otaz.montage.util.MOVIE_PAGINATION_PAGE_SIZE
 import com.otaz.montage.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.job
@@ -120,17 +121,13 @@ class MovieListViewModel @Inject constructor(
             state.value.selectedCategory.value = MovieCategory.GET_MOST_POPULAR_MOVIES
         }
 
-        val job = viewModelScope.launch {
-            getMostPopularMovies.execute(
-                connectivityManager, apiKey, sortingParameterPopularityDescending, state.value.page.value
-            ).onEach { dataState ->
-                state.value.loading.value = dataState.loading
-                dataState.data?.let { list -> state.value = state.value.copy(movie = list)
-                    Log.i(TAG,"MovieListViewModel: getMostPopularMovies: ${state.value.movie}:")
-                }
-                dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: getMostPopularMovies: $error:")}
-            }.launchIn(viewModelScope)
-        }
+        getMostPopularMovies.execute(
+            connectivityManager, apiKey, sortingParameterPopularityDescending, state.value.page.value
+        ).onEach { dataState ->
+            state.value.loading.value = dataState.loading
+            dataState.data?.let { list -> state.value = state.value.copy(movie = list) }
+            dataState.error?.let { error -> Log.e(TAG,"MovieListViewModel: getMostPopularMovies: $error:")}
+        }.launchIn(viewModelScope)
     }
 
     private fun getUpcomingMovies(){

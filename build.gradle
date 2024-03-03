@@ -16,7 +16,7 @@ buildscript {
 
         classpath "com.google.dagger:hilt-android-gradle-plugin:${Versions.hilt}"
 
-        classpath "com.google.gms:google-services:${Versions.firebase}"
+        classpath "com.google.gms:google-services:${Versions.google_play}"
 
         classpath "com.google.firebase:firebase-crashlytics-gradle:${Versions.firebase_classpath}"
 

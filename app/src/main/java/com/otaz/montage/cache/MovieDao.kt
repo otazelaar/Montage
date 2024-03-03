@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.otaz.montage.cache.model.MovieEntity
+import kotlinx.coroutines.flow.Flow
 
 /**
  * The Long value returned by insertMovie represents whether or not the insert was successful.
@@ -17,10 +18,10 @@ interface MovieDao {
     // Replacing because this allows me to replace the old entity with a newly adjusted one and update the state
     // this way I can "remove" or add items to my watchlist
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMovie(movie: MovieEntity): Long
+    suspend fun insertMovie(movie: MovieEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertMovies(movies: List<MovieEntity>): LongArray
+    suspend fun insertMovies(movies: List<MovieEntity>): LongArray
 
     // DB version of the SearchMovies API call
     // pageSize is 4
@@ -29,7 +30,7 @@ interface MovieDao {
         WHERE title LIKE '%' || :query || '%'
         LIMIT :paginationSize OFFSET ((:page -1) * :paginationSize)
         """)
-    fun getMoviesByQuery(
+    suspend fun getMoviesByQuery(
         query: String,
         paginationSize: Int,
         page: Int,
@@ -40,7 +41,7 @@ interface MovieDao {
         ORDER BY popularity DESC
         LIMIT :paginationSize OFFSET ((:page -1) * :paginationSize)
         """)
-    fun getMostPopularMovies(
+    suspend fun getMostPopularMovies(
         paginationSize: Int,
         page: Int,
     ): List<MovieEntity>
@@ -49,10 +50,10 @@ interface MovieDao {
     // order results by date eventually
     // TODO() order by date
     @Query(" SELECT * FROM movies WHERE isInWatchlist = true ORDER BY timeSavedToWatchList DESC")
-    fun getWatchListBoolean(): List<MovieEntity>
+    suspend fun getWatchListBoolean(): List<MovieEntity>
 
     @Query("DELETE FROM movies WHERE id = :primaryKey")
-    fun deleteMovie(primaryKey: String): Int
+    suspend fun deleteMovie(primaryKey: String): Int
 
 //    @Query("SELECT * FROM movies WHERE id = :id")
 //    suspend fun getMovieById(id: String): MovieEntity?

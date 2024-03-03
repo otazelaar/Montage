@@ -17,7 +17,7 @@ class GetMostPopularMovies(
     private val tmdbApiService: TmdbApiService,
     private val movieDao: MovieDao,
 ) {
-    suspend fun execute(
+    fun execute(
         connectivityManager: ConnectivityManager,
         apikey: String,
         sortBy: String,
@@ -27,7 +27,6 @@ class GetMostPopularMovies(
         emit(DataState.loading())
 
         val status = connectivityManager.isNetworkAvailable.value
-
 
         // check for internet connection
         if (status == true) {
